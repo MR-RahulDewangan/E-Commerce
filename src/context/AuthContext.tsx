@@ -29,11 +29,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch('/api/v1/auth/me', { credentials: 'include' });
       if (res.ok) {
         const json = await res.json();
-        setUser(json.data.user);
+        const userObj = json.user || json.data?.user || null;
+        setUser(userObj);
       } else {
         setUser(null);
       }
-    } catch {
+    } catch (err) {
+      console.error('Session refresh error:', err);
       setUser(null);
     } finally {
       setIsLoading(false);
@@ -65,13 +67,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!res.ok) {
         return { success: false, error: json.error?.message || 'Login failed.' };
       }
-      setUser(json.data.user);
+      const userObj = json.user || json.data?.user || null;
+      setUser(userObj);
       setIsAuthModalOpen(false);
       // Trigger cart event to merge guest cart
       window.dispatchEvent(new Event('auth:changed'));
       return { success: true };
-    } catch {
-      return { success: false, error: 'Network error during login.' };
+    } catch (err: any) {
+      console.error('Login error:', err);
+      return { success: false, error: err?.message || 'Network error during login.' };
     }
   };
 
@@ -93,12 +97,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (!res.ok) {
         return { success: false, error: json.error?.message || 'Registration failed.' };
       }
-      setUser(json.data.user);
+      const userObj = json.user || json.data?.user || null;
+      setUser(userObj);
       setIsAuthModalOpen(false);
       window.dispatchEvent(new Event('auth:changed'));
       return { success: true };
-    } catch {
-      return { success: false, error: 'Network error during registration.' };
+    } catch (err: any) {
+      console.error('Registration error:', err);
+      return { success: false, error: err?.message || 'Network error during registration.' };
     }
   };
 
