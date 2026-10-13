@@ -11,6 +11,7 @@ enum Role {
   CUSTOMER
   ADMIN
   FULFILLMENT
+  SELLER
 }
 
 enum OrderStatus {
@@ -59,6 +60,7 @@ model User {
   orders          Order[]
   carts           Cart[]
   wishlist        Wishlist?
+  sellerProfile   SellerProfile?
 
   @@map("users")
 }
@@ -99,6 +101,7 @@ model Category {
 model Product {
   id          String           @id @default(uuid())
   categoryId  String
+  sellerId    String?
   name        String
   slug        String           @unique
   description String           @db.Text
@@ -109,6 +112,7 @@ model Product {
   updatedAt   DateTime         @updatedAt
 
   category    Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  seller      SellerProfile?   @relation(fields: [sellerId], references: [id], onDelete: SetNull)
   variants    ProductVariant[]
   images      ProductImage[]
 
@@ -273,3 +277,25 @@ model PaymentTransaction {
 
   @@map("payment_transactions")
 }
+
+model SellerProfile {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  storeName      String
+  storeSlug      String    @unique
+  description    String?   @db.Text
+  gstin          String?
+  pan            String?
+  bankAccount    String?
+  bankIfsc       String?
+  commissionRate Decimal   @default(10.00) @db.Decimal(5, 2)
+  isVerified     Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products       Product[]
+
+  @@map("seller_profiles")
+}
+

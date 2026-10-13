@@ -176,6 +176,13 @@ export async function getCatalogProductBySlug(
           slug: true,
         },
       },
+      seller: {
+        select: {
+          storeName: true,
+          storeSlug: true,
+          isVerified: true,
+        },
+      },
       images: {
         orderBy: { sortOrder: 'asc' },
         select: {
@@ -232,6 +239,13 @@ export async function getCatalogProductBySlug(
     basePrice: basePriceNum,
     isFeatured: product.isFeatured,
     category: product.category,
+    seller: product.seller
+      ? {
+          storeName: product.seller.storeName,
+          storeSlug: product.seller.storeSlug,
+          isVerified: product.seller.isVerified,
+        }
+      : null,
     images: product.images,
     variants,
     totalStock,

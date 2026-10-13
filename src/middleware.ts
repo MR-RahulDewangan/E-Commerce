@@ -54,14 +54,18 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // 2. Protected Routes (Account & Admin)
+  // 2. Protected Routes (Account, Admin & Seller)
   const isAccountRoute = pathname.startsWith('/account');
   const isAdminRoute =
     pathname.startsWith('/admin') ||
     pathname.startsWith('/api/admin') ||
     pathname.startsWith('/api/v1/admin');
+  const isSellerRoute =
+    pathname.startsWith('/seller') ||
+    pathname.startsWith('/api/seller') ||
+    pathname.startsWith('/api/v1/seller');
 
-  if (!isAccountRoute && !isAdminRoute) {
+  if (!isAccountRoute && !isAdminRoute && !isSellerRoute) {
     const res = NextResponse.next();
     return applySecurityHeaders(res);
   }
@@ -133,6 +137,53 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // Seller Routes: Must be authenticated AND have SELLER or ADMIN role
+  if (isSellerRoute) {
+    const isApi = pathname.startsWith('/api');
+
+    if (!user) {
+      if (isApi) {
+        const unauthRes = NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: 'UNAUTHORIZED',
+              message: 'Authentication session required.',
+              timestamp: new Date().toISOString(),
+            },
+          },
+          { status: 401 }
+        );
+        return applySecurityHeaders(unauthRes);
+      }
+      const loginUrl = new URL('/login', request.url);
+      loginUrl.searchParams.set('callbackUrl', encodeURI(pathname));
+      return applySecurityHeaders(NextResponse.redirect(loginUrl));
+    }
+
+    if (user.role !== 'SELLER' && user.role !== 'ADMIN') {
+      if (isApi) {
+        const forbiddenRes = NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: 'FORBIDDEN',
+              message: 'Seller or administrator privileges required.',
+              timestamp: new Date().toISOString(),
+            },
+          },
+          { status: 403 }
+        );
+        return applySecurityHeaders(forbiddenRes);
+      }
+      const forbiddenPage = new NextResponse(
+        'Forbidden: Seller or administrator privileges required.',
+        { status: 403 }
+      );
+      return applySecurityHeaders(forbiddenPage);
+    }
+  }
+
   // Forward user context in headers to downstream handlers
   const requestHeaders = new Headers(request.headers);
   if (user) {
@@ -154,6 +205,7 @@ export const config = {
   matcher: [
     '/account/:path*',
     '/admin/:path*',
+    '/seller/:path*',
     '/api/:path*',
   ],
 };

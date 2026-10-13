@@ -15,10 +15,11 @@
 | **Repository Baseline** | 🟢 Initialized | Next.js 15, React 19, TypeScript strict mode, Tailwind CSS, Prisma 6, Vitest. |
 | **Documentation & Architecture** | 🟢 Complete & Aligned | All specification documents synchronized with modular monolith architecture. |
 | **Storefront & Customer UI** | 🟢 100% Complete | Responsive Header, Footer, Category Showcase, Homepage, Catalog Grid with Filters, PDP with Variant Switcher, Cart Drawer, Wishlist, Multi-Step Indian Checkout with PIN validation, and GST Tax Invoices. |
+| **Multi-Vendor Marketplace & Seller Portal** | 🟢 100% Complete | `SELLER` role, `SellerProfile` model, `/seller/*` portal (Dashboard, Products, New Product, Inventory, Orders, Settings), multi-tenant isolation, seller badges on PDP, and 2 seeded sellers with realistic GSTIN/PAN. |
 | **Admin Backoffice Portal** | 🟢 100% Complete | Dedicated `/admin` portal with responsive sidebar, live revenue & order KPIs, product/variant CRUD, atomic inventory adjustments with audit history, order fulfillment dispatch with courier tracking attachment, and gateway refund management. |
 | **Domain Logic Core** | 🟢 Verified & Tested | Auth crypto, 14-day rolling sessions, password reset with 15-min single-use tokens, catalog query module, GST pricing engine (paise), concurrency-safe stock reservation, payment gateways (Mock/Razorpay/COD), order state machine, checkout order creation, signature verification, Razorpay webhook ingestion, stock reservation release worker, and rate limiting. |
-| **Test Suite Status** | 🟢 Passing | 192/192 tests passing (32 test files), 50-worker concurrency stress test passed, zero lint warnings/errors, zero TypeScript errors, clean production build (37 static & dynamic routes compiled). |
-| **Database Status** | 🟢 Migrated & Seeded | PostgreSQL 16 container running and healthy; seeded with admin, customer, 10 categories, 30 products, 62 multi-variants. Binary-safe backup & verification verified. |
+| **Test Suite Status** | 🟢 Passing | 201/201 tests passing (33 test files), 50-worker concurrency stress test passed, zero lint warnings/errors, zero TypeScript errors, clean production build (44 static & dynamic routes compiled). |
+| **Database Status** | 🟢 Migrated & Seeded | PostgreSQL 16 container running and healthy; seeded with admin, customer, 2 dummy sellers, 10 categories, 30 products, 62 multi-variants. Binary-safe backup & verification verified. |
 
 ---
 
@@ -83,6 +84,7 @@ Total Implementation Progress: 95.8% (46 / 48 tasks completed)
 | **M7-T03** | Build Admin Inventory Manager & Audit Log | P1 | `[x] Completed` | `src/app/admin/inventory` UI, `/api/v1/admin/inventory/adjust` route, and `test/integration/admin-inventory-api.test.ts` (5/5 pass); JSONB audit logs verified |
 | **M7-T04** | Build Admin Order Fulfillment Dashboard | P1 | `[x] Completed` | `src/app/admin/orders` UI, `/api/v1/admin/orders/[id]/status` route, and `test/integration/admin-orders-fulfillment.test.ts` (6/6 pass); attaches courier tracking |
 | **M7-T05** | Implement Admin Refund Processing | P2 | `[x] Completed` | `src/components/admin/OrderRefundModal.tsx`, `/api/v1/admin/orders/[id]/refund` route, and `test/integration/admin-refund-api.test.ts` (4/4 pass); full/partial refunds and stock restitution |
+| **M7-T06** | Multi-Vendor Marketplace & Seller Portal | P0 | `[x] Completed` | `SELLER` role, `SellerProfile` model, `/seller/*` portal with KPIs, catalog/inventory/order isolation, and `test/integration/seller-marketplace.test.ts` (9/9 pass) |
 | **M8-T01** | Implement Vitest Unit Test Suite | P0 | `[x] Completed` | 14 test files, 95/95 tests passing (`npm run test:unit`) |
 | **M8-T02** | Implement Integration Test Suite | P0 | `[x] Completed` | 17 test files, 93/93 tests passing (`npm run test:integration`) |
 | **M8-T03** | Execute High-Concurrency Inventory Stress Test | P0 | `[x] Completed` | `scripts/test-concurrency.ts` executes 50 parallel requests on 5 items; 5 succeed, 45 fail, 0 negative stock |

@@ -16,6 +16,7 @@ import {
   Minus,
   Check,
   Zap,
+  Store,
 } from 'lucide-react';
 import type { CatalogProductDetail } from '@/modules/catalog/types';
 
@@ -137,9 +138,17 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
       <div className="space-y-6 flex flex-col justify-between">
         <div className="space-y-4">
           <div>
-            <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md">
-              {product.category.name}
-            </span>
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md">
+                {product.category.name}
+              </span>
+              {product.seller && (
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2.5 py-1 rounded-md">
+                  <Store className="w-3.5 h-3.5 text-indigo-600" />
+                  Sold by {product.seller.storeName}
+                </span>
+              )}
+            </div>
             <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 mt-2.5 tracking-tight">
               {product.name}
             </h1>

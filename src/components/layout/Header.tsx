@@ -17,6 +17,8 @@ import {
   Package,
   MapPin,
   ChevronDown,
+  Store,
+  Shield,
 } from 'lucide-react';
 
 export function Header() {
@@ -168,6 +170,26 @@ export function Header() {
                       >
                         <UserIcon className="w-4 h-4" /> Account Profile
                       </Link>
+
+                      {(user.role === 'SELLER' || user.role === 'ADMIN') && (
+                        <Link
+                          href="/seller"
+                          onClick={() => setIsUserDropdownOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-indigo-700 bg-indigo-50/50 hover:bg-indigo-50 font-semibold"
+                        >
+                          <Store className="w-4 h-4 text-indigo-600" /> Seller Portal
+                        </Link>
+                      )}
+
+                      {user.role === 'ADMIN' && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setIsUserDropdownOpen(false)}
+                          className="flex items-center gap-2 px-4 py-2 text-emerald-800 bg-emerald-50/50 hover:bg-emerald-50 font-semibold"
+                        >
+                          <Shield className="w-4 h-4 text-emerald-700" /> Admin Portal
+                        </Link>
+                      )}
 
                       <div className="border-t border-zinc-100 mt-1 pt-1">
                         <button

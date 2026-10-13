@@ -49,3 +49,18 @@ export async function requireAdmin(req: Request): Promise<SessionUser> {
 export async function requireAdminOrFulfillment(req: Request): Promise<SessionUser> {
   return requireRole([Role.ADMIN, Role.FULFILLMENT], req);
 }
+
+/**
+ * Convenience guard asserting that the authenticated user possesses the SELLER role.
+ */
+export async function requireSeller(req: Request): Promise<SessionUser> {
+  return requireRole(Role.SELLER, req);
+}
+
+/**
+ * Convenience guard asserting that the authenticated user possesses either SELLER or ADMIN role.
+ */
+export async function requireSellerOrAdmin(req: Request): Promise<SessionUser> {
+  return requireRole([Role.SELLER, Role.ADMIN], req);
+}
+

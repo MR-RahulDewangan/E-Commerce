@@ -66,6 +66,99 @@ async function main() {
     },
   });
 
+  // 1b. Seed 2 Dummy Marketplace Sellers
+  const sellerPasswordHash = await hashPassword('SellerSecure2026!');
+
+  const seller1User = await prisma.user.upsert({
+    where: { email: 'seller.kashmir@ecommerce.example.in' },
+    update: {
+      role: Role.SELLER,
+      firstName: 'Tariq',
+      lastName: 'Ahmad',
+    },
+    create: {
+      email: 'seller.kashmir@ecommerce.example.in',
+      passwordHash: sellerPasswordHash,
+      firstName: 'Tariq',
+      lastName: 'Ahmad',
+      role: Role.SELLER,
+      phoneNumber: '+919876543221',
+    },
+  });
+
+  const seller1Profile = await prisma.sellerProfile.upsert({
+    where: { userId: seller1User.id },
+    update: {
+      storeName: 'Kashmir Pashmina & Crafts',
+      storeSlug: 'kashmir-crafts',
+      description: 'Authentic handcrafted Kashmiri pashmina shawls, walnut wood carvings, and saffron.',
+      gstin: '01ABCDE1234F1Z5',
+      pan: 'ABCDE1234F',
+      bankAccount: '9876543210123',
+      bankIfsc: 'SBIN0001234',
+      commissionRate: 10.0,
+      isVerified: true,
+    },
+    create: {
+      userId: seller1User.id,
+      storeName: 'Kashmir Pashmina & Crafts',
+      storeSlug: 'kashmir-crafts',
+      description: 'Authentic handcrafted Kashmiri pashmina shawls, walnut wood carvings, and saffron.',
+      gstin: '01ABCDE1234F1Z5',
+      pan: 'ABCDE1234F',
+      bankAccount: '9876543210123',
+      bankIfsc: 'SBIN0001234',
+      commissionRate: 10.0,
+      isVerified: true,
+    },
+  });
+  console.log(`🏪 Seller 1 seeded: ${seller1User.email} (Store: ${seller1Profile.storeName})`);
+
+  const seller2User = await prisma.user.upsert({
+    where: { email: 'seller.jaipur@ecommerce.example.in' },
+    update: {
+      role: Role.SELLER,
+      firstName: 'Rajesh',
+      lastName: 'Meena',
+    },
+    create: {
+      email: 'seller.jaipur@ecommerce.example.in',
+      passwordHash: sellerPasswordHash,
+      firstName: 'Rajesh',
+      lastName: 'Meena',
+      role: Role.SELLER,
+      phoneNumber: '+919876543222',
+    },
+  });
+
+  const seller2Profile = await prisma.sellerProfile.upsert({
+    where: { userId: seller2User.id },
+    update: {
+      storeName: 'Jaipur Heritage Textiles',
+      storeSlug: 'jaipur-textiles',
+      description: 'Traditional Rajasthani block printed textiles, handcrafted quilts, and ethnic apparel.',
+      gstin: '08FGHIJ5678K1Z2',
+      pan: 'FGHIJ5678K',
+      bankAccount: '1234567890987',
+      bankIfsc: 'HDFC0005678',
+      commissionRate: 10.0,
+      isVerified: true,
+    },
+    create: {
+      userId: seller2User.id,
+      storeName: 'Jaipur Heritage Textiles',
+      storeSlug: 'jaipur-textiles',
+      description: 'Traditional Rajasthani block printed textiles, handcrafted quilts, and ethnic apparel.',
+      gstin: '08FGHIJ5678K1Z2',
+      pan: 'FGHIJ5678K',
+      bankAccount: '1234567890987',
+      bankIfsc: 'HDFC0005678',
+      commissionRate: 10.0,
+      isVerified: true,
+    },
+  });
+  console.log(`🏪 Seller 2 seeded: ${seller2User.email} (Store: ${seller2Profile.storeName})`);
+
   // 2. Seed 10 Categories
   const categoriesData = [
     {
@@ -598,6 +691,13 @@ async function main() {
       continue;
     }
 
+    let sellerId: string | null = null;
+    if (['ethnic-wear', 'sarees', 'handcrafted-decor'].includes(item.categorySlug)) {
+      sellerId = seller1Profile.id;
+    } else if (['western-wear', 'home-living', 'kitchen-dining'].includes(item.categorySlug)) {
+      sellerId = seller2Profile.id;
+    }
+
     const product = await prisma.product.upsert({
       where: { slug: item.slug },
       update: {
@@ -607,6 +707,7 @@ async function main() {
         isPublished: item.isPublished,
         isFeatured: item.isFeatured,
         categoryId,
+        sellerId,
       },
       create: {
         name: item.name,
@@ -616,6 +717,7 @@ async function main() {
         isPublished: item.isPublished,
         isFeatured: item.isFeatured,
         categoryId,
+        sellerId,
         images: {
           create: [
             {

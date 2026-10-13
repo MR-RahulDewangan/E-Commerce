@@ -52,6 +52,12 @@ export interface CatalogImageDetail {
   sortOrder: number;
 }
 
+export interface CatalogSellerSummary {
+  storeName: string;
+  storeSlug: string;
+  isVerified: boolean;
+}
+
 export interface CatalogProductDetail {
   id: string;
   name: string;
@@ -60,6 +66,7 @@ export interface CatalogProductDetail {
   basePrice: number;
   isFeatured: boolean;
   category: CatalogCategorySummary;
+  seller?: CatalogSellerSummary | null;
   images: CatalogImageDetail[];
   variants: CatalogVariantDetail[];
   totalStock: number;
@@ -67,3 +74,4 @@ export interface CatalogProductDetail {
   createdAt: string;
   updatedAt: string;
 }
+
