@@ -69,7 +69,7 @@ export default function WishlistPage() {
             >
               <Link
                 href={`/products/${item.productSlug}`}
-                className="block relative aspect-3/4 bg-zinc-100 overflow-hidden"
+                className="block relative w-full aspect-[3/4] bg-zinc-100 overflow-hidden"
               >
                 {item.imageUrl ? (
                   <Image

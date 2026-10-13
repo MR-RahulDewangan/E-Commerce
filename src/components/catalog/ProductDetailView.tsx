@@ -76,7 +76,7 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
       {/* Gallery Section */}
       <div className="space-y-4">
         {/* Main image */}
-        <div className="relative aspect-3/4 rounded-2xl overflow-hidden bg-zinc-100 border border-zinc-200">
+        <div className="relative w-full aspect-[3/4] min-h-[380px] sm:min-h-[480px] rounded-2xl overflow-hidden bg-zinc-100 border border-zinc-200">
           {images[selectedImageIndex]?.url ? (
             <Image
               src={images[selectedImageIndex].url!}
