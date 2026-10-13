@@ -1,0 +1,72 @@
+name: Enterprise CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  verify:
+    name: Lint, Typecheck, Test & Build
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: ecommerce_user
+          POSTGRES_PASSWORD: ecommerce_secure_password
+          POSTGRES_DB: ecommerce_db
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: "postgresql://ecommerce_user:ecommerce_secure_password@localhost:5432/ecommerce_db?schema=public"
+      NEXTAUTH_SECRET: "ci-test-secure-random-32-byte-secret-for-jwt-signing"
+      PAYMENT_PROVIDER: "MOCK"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Code Quality - ESLint
+        run: npm run lint
+
+      - name: Static Analysis - TypeScript Typecheck
+        run: npx tsc --noEmit
+
+      - name: Database - Generate Prisma Client & Migrate
+        run: |
+          npx prisma generate
+          npx prisma db push --skip-generate
+
+      - name: Database - Seed Catalog Fixtures
+        run: npx prisma db seed
+
+      - name: Test Suite - Vitest Unit Tests
+        run: npm run test:unit
+
+      - name: Test Suite - Vitest Integration Tests
+        run: npm run test:integration
+
+      - name: Concurrency Stress Test - 50 Simultaneous Workers
+        run: npm run test:stress
+
+      - name: Production Build - Next.js App Router Compilation
+        run: npm run build
