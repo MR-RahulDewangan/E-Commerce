@@ -29,7 +29,8 @@ The platform is an enterprise-grade, high-performance, mobile-first e-commerce w
 | :--- | :--- | :--- |
 | **Guest User** | Unauthenticated public visitor | Browse catalog, search/filter products, manage session cart, initiate guest checkout with phone number & delivery address. |
 | **Registered Customer** | Authenticated consumer | Manage profile, save multiple delivery addresses with 6-digit Indian PIN codes, maintain persistent cart across devices, place orders, view order history/tracking, request returns. |
-| **Store Administrator** | Business/Store owner | Full administrative access: Product/category CRUD, price and inventory adjustments, discount promotions, sales analytics, user role management. |
+| **Marketplace Seller** | Independent merchant | Dedicated `/seller` portal: Self-service catalog authoring, variant stock adjustments, store order tracking, statutory compliance (GSTIN/PAN/IFSC), and performance KPIs. |
+| **Store Administrator** | Business/Store owner | Full administrative access: Superuser catalog/category CRUD, price and inventory adjustments, discount promotions, vendor oversight, refund approvals, and sales analytics. |
 | **Fulfillment Agent** | Warehouse / Order staff | Restricted admin access: View order fulfillment queues, update order shipping status, generate packing slips, assign courier tracking numbers (e.g., Delhivery, Blue Dart, Shiprocket). |
 
 ---
@@ -76,6 +77,29 @@ The platform is an enterprise-grade, high-performance, mobile-first e-commerce w
     ```
 - **US-2.2 Inventory Control:** As an admin, I want to receive low-stock alerts and adjust inventory levels with mandatory reason codes.
 - **US-2.3 Order Lifecycle Management:** As an admin, I want to transition order states (`PAID` / `AWAITING_PAYMENT` -> `PROCESSING` -> `SHIPPED` -> `DELIVERED` or `CANCELLED`), generate refunds via the payment gateway, and record refund rationale.
+
+### 3.3 Persona C: Marketplace Seller (Tariq, Srinagar / Rajesh, Jaipur)
+- **US-3.1 Seller Portal Onboarding & Compliance:** As a marketplace vendor, I want to manage my store bio, statutory GSTIN, PAN, and settlement bank IFSC credentials so that my sales are compliant with Indian tax laws.
+  - *Acceptance Criteria:*
+    ```gherkin
+    Given an authenticated user with SELLER role
+    When entering a 15-character GSTIN, 10-character PAN, and bank IFSC code
+    Then details are validated via server-side regex schemas and persisted to the seller profile
+    ```
+- **US-3.2 Isolated Catalog Management:** As a vendor, I want to publish products and multi-variants that belong specifically to my merchant profile without seeing or mutating other vendors' listings.
+  - *Acceptance Criteria:*
+    ```gherkin
+    Given a seller authenticated with their merchant profile
+    When viewing the seller catalog or submitting a new product
+    Then all catalog queries and mutations are isolated strictly to the seller's merchant ID
+    ```
+- **US-3.3 Live Stock Adjustments & Fulfillment Tracking:** As a vendor, I want to adjust stock counts across all my variants in real time and track customer orders containing items dispatched by my store.
+  - *Acceptance Criteria:*
+    ```gherkin
+    Given a seller viewing their inventory dashboard
+    When incrementing or decrementing stock for a self-owned variant
+    Then the new quantity is updated immediately and unauthorized cross-vendor mutations are blocked
+    ```
 
 ---
 
@@ -124,6 +148,13 @@ The platform is an enterprise-grade, high-performance, mobile-first e-commerce w
 - **FR-ORD-2:** Immutable address snapshot stored with every order (user address book edits never alter past orders).
 - **FR-ORD-3:** Full and partial refunds processed through Razorpay API / Mock adapter with stock replenishment options.
 
+### 4.7 Multi-Vendor Marketplace Operations
+- **FR-MKT-1:** Independent merchant portal (`/seller`) providing store metrics (catalog count, units in stock, low-stock warnings, store orders).
+- **FR-MKT-2:** Isolated self-service catalog authoring (`/seller/products/new`) with multi-variants and base pricing.
+- **FR-MKT-3:** Real-time stock adjusting interface (`/seller/inventory`) with tenant-isolated ownership checks.
+- **FR-MKT-4:** Multi-vendor order breakdown (`/seller/orders`) showing vendor item line totals and realized revenue.
+- **FR-MKT-5:** Storefront merchant attribution displaying "Sold by [Store Name]" badge on Product Detail Pages.
+
 ---
 
 ## 5. Non-Functional Requirements (NFRs)
@@ -151,5 +182,5 @@ The platform is an enterprise-grade, high-performance, mobile-first e-commerce w
 
 ### 6.2 Out-of-Scope for Initial Release
 - Multi-currency international forex conversion (USD/EUR conversion deferred).
-- Multi-vendor marketplace capabilities (single merchant only).
 - Native iOS/Android mobile apps (mobile web responsiveness prioritized).
+- Cross-border export customs documentation.

@@ -291,3 +291,76 @@
     "restockInventory": true
   }
   ```
+
+---
+
+## 8. Multi-Vendor Marketplace & Seller Endpoints (Protected: `SELLER` / `ADMIN`)
+
+All seller routes enforce strict tenant isolation (`where: { seller: { userId: user.id } }` or `sellerId: sellerProfile.id`), preventing cross-tenant access.
+
+### 8.1 Seller Profile & Settings
+- **Retrieve Profile:** `GET /api/v1/seller/profile`
+  - **Auth:** `SELLER` or `ADMIN`
+  - **Response `200 OK`:** Returns store name, slug, bio, GSTIN, PAN, bank settlement details, and platform commission rate.
+- **Update Profile:** `PUT /api/v1/seller/profile`
+  - **Auth:** `SELLER` or `ADMIN`
+  - **Request Body:**
+    ```json
+    {
+      "storeName": "Kashmir Pashmina & Crafts",
+      "description": "Authentic handcrafted Kashmiri pashmina shawls and wood carvings.",
+      "gstin": "01ABCDE1234F1Z5",
+      "pan": "ABCDE1234F",
+      "bankAccount": "9876543210123",
+      "bankIfsc": "SBIN0001234"
+    }
+    ```
+  - **Validation:** Validates 15-char Indian GSTIN regex, 10-char PAN regex, and 11-char IFSC code.
+
+### 8.2 Seller Catalog Management
+- **List Seller Products:** `GET /api/v1/seller/products?search={term}&categoryId={id}`
+  - **Auth:** `SELLER` or `ADMIN`
+  - **Response `200 OK`:** Returns products authored by and isolated to the authenticated seller.
+- **Create Product Listing:** `POST /api/v1/seller/products`
+  - **Auth:** `SELLER` or `ADMIN`
+  - **Request Body:**
+    ```json
+    {
+      "name": "Hand-Embroidered Pashmina Stole",
+      "description": "Pure Ladakhi cashmere with intricate Sozni needlework.",
+      "basePrice": 4499.00,
+      "categoryId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "imageUrl": "https://images.unsplash.com/photo-1610030469983-98e550d6193c",
+      "isPublished": true,
+      "variants": [
+        {
+          "sku": "KSH-STL-NAVY",
+          "name": "Standard / Navy Blue",
+          "stockQuantity": 15,
+          "size": "2m x 70cm",
+          "color": "Navy Blue"
+        }
+      ]
+    }
+    ```
+
+### 8.3 Seller Inventory Management
+- **List Inventory Variants:** `GET /api/v1/seller/inventory?search={term}`
+  - **Auth:** `SELLER` or `ADMIN`
+  - **Response `200 OK`:** Returns all variants belonging to the seller's catalog with real-time stock levels.
+- **Adjust Variant Stock:** `PATCH /api/v1/seller/inventory`
+  - **Auth:** `SELLER` or `ADMIN`
+  - **Request Body:**
+    ```json
+    {
+      "variantId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "stockQuantity": 25
+    }
+    ```
+  - **Security:** Verifies that the variant's product belongs to `sellerId`. Rejects cross-tenant attempts with HTTP 400/403.
+
+### 8.4 Seller Order Tracking
+- **List Marketplace Orders:** `GET /api/v1/seller/orders`
+  - **Auth:** `SELLER` or `ADMIN`
+  - **Response `200 OK`:** Returns customer orders that include items supplied by the seller, including line-item breakdowns and the seller's specific revenue share.
+

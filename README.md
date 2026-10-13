@@ -1,8 +1,8 @@
 # Modern Enterprise E-Commerce Platform (India-Focused)
 
-A production-grade, high-performance, mobile-responsive e-commerce platform built with **Next.js 15+ (App Router)**, **TypeScript**, **PostgreSQL**, **Prisma ORM**, **Redis**, and a **Pluggable Payment Engine (Razorpay + Zero-Credential Mock Gateway + Cash on Delivery)**.
+A production-grade, high-performance, mobile-responsive **Multi-Vendor Marketplace & E-Commerce Platform** built with **Next.js 15+ (App Router)**, **TypeScript**, **PostgreSQL**, **Prisma ORM**, **Redis**, and a **Pluggable Payment Engine (Razorpay + Zero-Credential Mock Gateway + Cash on Delivery)**.
 
-Designed with **Domain-Driven Design (Modular Monolith)** to guarantee sub-second catalog page loads, atomic inventory protection (zero overselling), and native support for Indian payment methods (UPI, Cards, Netbanking, COD).
+Designed with **Domain-Driven Design (Modular Monolith)** to guarantee sub-second catalog page loads, atomic inventory protection (zero overselling), multi-tenant seller isolation, and native support for Indian payment methods (UPI, Cards, Netbanking, COD).
 
 ---
 
@@ -79,9 +79,24 @@ Visit [http://localhost:3000](http://localhost:3000) to view the storefront.
 
 ---
 
+## 👥 Seeded Test Accounts & Portal Access
+
+The database seed (`npm run prisma:seed` or `npx tsx prisma/seed.ts`) populates default test accounts for all user roles:
+
+| Role | Email | Password | Portal / URL | Scope & Features |
+| :--- | :--- | :--- | :--- | :--- |
+| **Customer** | `customer@ecommerce.example.in` | `CustomerPass123!` | `/`, `/account/*` | Consumer storefront, cart, wishlist, checkout, orders |
+| **Seller 1 (Kashmir Crafts)** | `seller.kashmir@ecommerce.example.in` | `SellerSecure2026!` | `/seller` | Handloom & pashmina catalog, live inventory, seller orders |
+| **Seller 2 (Jaipur Textiles)** | `seller.jaipur@ecommerce.example.in` | `SellerSecure2026!` | `/seller` | Block print & quilt catalog, live inventory, seller orders |
+| **System Admin** | `admin@ecommerce.example.in` | `AdminSecure2026!` | `/admin` & `/seller` | Superuser oversight across all vendors, products, and fulfillment |
+
+---
+
 ## 🔒 Security & Concurrency Highlights
 
 1. **Zero Overselling:** Inventory is decremented using atomic conditional SQL statements (`WHERE stock >= requested_quantity`) backed by a dedicated `stock_reservations` table.
-2. **Server-Authoritative Pricing:** Client requests never dictate prices, GST, or discount amounts; all financial totals are computed strictly on the backend in integer paise.
-3. **Immutable Order Snapshots:** Delivery addresses are permanently frozen on the order record at the moment of checkout, guaranteeing that customer address book modifications never alter historical invoices.
-4. **Zero-Credential Local Dev:** Works out of the box with `MockPaymentGateway` without needing active merchant accounts or live credentials.
+2. **Multi-Vendor Tenant Isolation:** Independent sellers can only view, manage, and restock products belonging strictly to their store. Cross-tenant access is blocked at both the middleware and database query layers.
+3. **Server-Authoritative Pricing:** Client requests never dictate prices, GST, or discount amounts; all financial totals are computed strictly on the backend in integer paise.
+4. **Immutable Order Snapshots:** Delivery addresses are permanently frozen on the order record at the moment of checkout, guaranteeing that customer address book modifications never alter historical invoices.
+5. **Zero-Credential Local Dev:** Works out of the box with `MockPaymentGateway` without needing active merchant accounts or live credentials.
+

@@ -26,6 +26,9 @@ erDiagram
     User ||--o{ Order : "places"
     User ||--o{ Cart : "owns"
     User ||--o| Wishlist : "maintains"
+    User ||--o| SellerProfile : "operates"
+
+    SellerProfile ||--o{ Product : "supplies"
 
     Category ||--o{ Category : "has subcategories"
     Category ||--o{ Product : "categorizes"
@@ -59,10 +62,33 @@ erDiagram
 | `first_name` | `VARCHAR(100)` | NOT NULL | User given name |
 | `last_name` | `VARCHAR(100)` | NOT NULL | User family name |
 | `phone_number` | `VARCHAR(20)` | NULLABLE | 10-digit Indian phone (e.g., `+919876543210`) |
-| `role` | `VARCHAR(20)` | NOT NULL, DEFAULT 'CUSTOMER' | Enum: `CUSTOMER`, `ADMIN`, `FULFILLMENT` |
+| `role` | `VARCHAR(20)` | NOT NULL, DEFAULT 'CUSTOMER' | Enum: `CUSTOMER`, `ADMIN`, `FULFILLMENT`, `SELLER` |
 | `email_verified_at` | `TIMESTAMP` | NULLABLE | Verification timestamp |
 | `created_at` | `TIMESTAMP` | NOT NULL, DEFAULT NOW() | Record creation date |
 | `updated_at` | `TIMESTAMP` | NOT NULL, DEFAULT NOW() | Automatic update timestamp |
+
+---
+
+### 3.2 Seller Profiles (`seller_profiles`)
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `VARCHAR(36)` / UUID | PK, NOT NULL | Merchant profile UUID |
+| `user_id` | `VARCHAR(36)` | UNIQUE, FK -> `users.id` (ON DELETE CASCADE) | Associated user account |
+| `store_name` | `VARCHAR(100)` | NOT NULL | Registered store name |
+| `store_slug` | `VARCHAR(100)` | UNIQUE, NOT NULL | URL-safe store identifier |
+| `description` | `TEXT` | NULLABLE | Store background and craftsmanship details |
+| `gstin` | `VARCHAR(15)` | NULLABLE | 15-character statutory Indian GSTIN |
+| `pan` | `VARCHAR(10)` | NULLABLE | 10-character Indian Permanent Account Number |
+| `bank_account` | `VARCHAR(30)` | NULLABLE | Merchant settlement bank account number |
+| `bank_ifsc` | `VARCHAR(11)` | NULLABLE | 11-character Indian Financial System Code |
+| `commission_rate`| `DECIMAL(5,2)` | DEFAULT 10.00 | Marketplace platform commission percentage |
+| `is_verified` | `BOOLEAN` | DEFAULT TRUE | Compliance verification status flag |
+| `created_at` | `TIMESTAMP` | NOT NULL, DEFAULT NOW() | Record creation date |
+| `updated_at` | `TIMESTAMP` | NOT NULL, DEFAULT NOW() | Automatic update timestamp |
+
+**Indexes:**
+- `CREATE UNIQUE INDEX idx_seller_profiles_user_id ON seller_profiles(user_id);`
+- `CREATE UNIQUE INDEX idx_seller_profiles_store_slug ON seller_profiles(store_slug);`
 
 **Indexes:**
 - `CREATE UNIQUE INDEX idx_users_email ON users(email);`
@@ -113,6 +139,7 @@ erDiagram
 | :--- | :--- | :--- | :--- |
 | `id` | `VARCHAR(36)` | PK, NOT NULL | Product UUID |
 | `category_id` | `VARCHAR(36)` | FK -> `categories.id` (ON DELETE RESTRICT) | Primary category |
+| `seller_id` | `VARCHAR(36)` | NULLABLE, FK -> `seller_profiles.id` (ON DELETE SET NULL) | Marketplace merchant store reference |
 | `name` | `VARCHAR(255)` | NOT NULL | Product title |
 | `slug` | `VARCHAR(255)` | UNIQUE, NOT NULL | URL-friendly slug |
 | `description` | `TEXT` | NOT NULL | Detailed Markdown/HTML content |
@@ -125,6 +152,7 @@ erDiagram
 **Indexes:**
 - `CREATE UNIQUE INDEX idx_products_slug ON products(slug);`
 - `CREATE INDEX idx_products_category ON products(category_id);`
+- `CREATE INDEX idx_products_seller_id ON products(seller_id);`
 - `CREATE INDEX idx_products_published_featured ON products(is_published, is_featured);`
 
 ---
@@ -273,6 +301,7 @@ enum Role {
   CUSTOMER
   ADMIN
   FULFILLMENT
+  SELLER
 }
 
 enum OrderStatus {
@@ -321,6 +350,7 @@ model User {
   orders          Order[]
   carts           Cart[]
   wishlist        Wishlist?
+  sellerProfile   SellerProfile?
 
   @@map("users")
 }
@@ -361,6 +391,7 @@ model Category {
 model Product {
   id          String           @id @default(uuid())
   categoryId  String
+  sellerId    String?
   name        String
   slug        String           @unique
   description String           @db.Text
@@ -371,6 +402,7 @@ model Product {
   updatedAt   DateTime         @updatedAt
 
   category    Category         @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  seller      SellerProfile?   @relation(fields: [sellerId], references: [id], onDelete: SetNull)
   variants    ProductVariant[]
   images      ProductImage[]
 
@@ -534,5 +566,26 @@ model PaymentTransaction {
   order             Order           @relation(fields: [orderId], references: [id], onDelete: Restrict)
 
   @@map("payment_transactions")
+}
+
+model SellerProfile {
+  id             String    @id @default(uuid())
+  userId         String    @unique
+  storeName      String
+  storeSlug      String    @unique
+  description    String?   @db.Text
+  gstin          String?
+  pan            String?
+  bankAccount    String?
+  bankIfsc       String?
+  commissionRate Decimal   @default(10.00) @db.Decimal(5, 2)
+  isVerified     Boolean   @default(true)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  products       Product[]
+
+  @@map("seller_profiles")
 }
 ```

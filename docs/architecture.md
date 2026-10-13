@@ -29,6 +29,7 @@ flowchart TD
     
     subgraph CoreDomains ["Modular Monolith Domain Core"]
         AuthMod["Auth & RBAC Module"]
+        SellerMod["Seller & Marketplace Module"]
         CatalogMod["Catalog & Search Module"]
         CartMod["Cart & Pricing Module"]
         CheckoutMod["Checkout & Order Module"]
@@ -238,3 +239,30 @@ stateDiagram-v2
 To protect legal, tax, and courier delivery integrity:
 - An `Order` stores a **frozen JSONB snapshot** (or dedicated table columns) of the recipient name, phone number, address lines, city, state, and 6-digit PIN code.
 - If a customer later edits or removes an address from their profile address book, **past order records remain strictly immutable**.
+
+---
+
+## 9. Multi-Vendor Marketplace Architecture & RBAC
+
+The platform operates as a multi-vendor marketplace where independent Indian merchants manage their own catalogs and fulfillment pipelines.
+
+### 9.1 Role Hierarchy & Permissions
+| Role | Scope | Accessible Routes | Description |
+| :--- | :--- | :--- | :--- |
+| **`CUSTOMER`** | Consumer Storefront | `/`, `/products/*`, `/cart`, `/checkout`, `/account/*` | Browses catalog, places orders, manages personal profile & addresses. |
+| **`SELLER`** | Merchant Portal | `/seller/*`, `/api/v1/seller/*` | Manages store profile, self-owned catalog, variant stock levels, and store orders. |
+| **`FULFILLMENT`** | Order Processing | `/admin/orders`, `/admin/inventory` | Dispatches orders, updates courier tracking numbers, monitors inventory. |
+| **`ADMIN`** | Platform Superuser | All routes (`/admin/*`, `/seller/*`, `/api/*`) | Superuser oversight across all vendors, refunds, catalog management, and platform configuration. |
+
+### 9.2 Strict Tenant Isolation Guarantees
+- Every seller database query enforces ownership boundaries:
+  - Catalog queries filter by `where: { sellerId: sellerProfile.id }`.
+  - Stock update operations strictly assert:
+    ```ts
+    const variant = await db.productVariant.findFirst({
+      where: { id: variantId, product: { sellerId } }
+    });
+    ```
+  - Cross-tenant inventory manipulation attempts throw immediate authorization errors.
+- Storefront Product Detail Pages (PDP) dynamically credit the originating seller with a verified merchant badge (`Sold by [Store Name]`).
+
