@@ -61,7 +61,7 @@ export function ProductCard({
   return (
     <div className="group relative bg-white border border-zinc-200 rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col">
       {/* Thumbnail Container */}
-      <Link href={`/products/${slug}`} className="block relative w-full aspect-[3/4] bg-zinc-100 overflow-hidden">
+      <Link href={`/products/${slug}`} className="block relative aspect-3/4 bg-zinc-100 overflow-hidden">
         {imageUrl ? (
           <Image
             src={imageUrl}
