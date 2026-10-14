@@ -83,9 +83,9 @@ export function AuthModal() {
         aria-hidden="true"
       />
 
-      <div className="relative w-full max-w-md bg-card rounded-xs shadow-2xl border border-border overflow-hidden z-10 text-card-foreground animate-in fade-in zoom-in-95 duration-200">
+      <div className="relative w-full max-w-md bg-card rounded-xs shadow-2xl border border-border overflow-hidden z-10 text-card-foreground animate-in fade-in zoom-in-95 duration-200 max-h-[90vh] flex flex-col">
         {/* Header bar */}
-        <div className="flex items-center justify-between px-6 py-5 border-b border-border bg-stone-50/50">
+        <div className="flex items-center justify-between px-5 sm:px-6 py-4 sm:py-5 border-b border-border bg-stone-50/50 flex-shrink-0">
           <div className="flex gap-4">
             <button
               type="button"
@@ -128,7 +128,7 @@ export function AuthModal() {
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 sm:p-7 space-y-4">
+        <form onSubmit={handleSubmit} className="p-5 sm:p-7 space-y-4 overflow-y-auto flex-1">
           <div className="space-y-1">
             <h2 id="auth-modal-title" className="font-serif text-2xl font-normal text-foreground">
               {authModalTab === 'login' ? 'Welcome Back' : 'Create an Account'}

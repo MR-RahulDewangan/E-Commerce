@@ -74,10 +74,10 @@ export function Header() {
       {/* Top Promotional Announcement Bar */}
       <aside
         aria-label="Promotional Announcement"
-        className="bg-luxury-obsidian text-luxury-ivory text-[11px] sm:text-xs py-2 px-4 text-center tracking-widest uppercase font-sans border-b border-stone-800"
+        className="bg-luxury-obsidian text-luxury-ivory text-[10px] sm:text-xs py-1.5 sm:py-2 px-3 sm:px-4 text-center tracking-wider sm:tracking-widest uppercase font-sans border-b border-stone-800"
       >
         <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
-          <span className="font-medium">Complimentary All-India Shipping on Orders ₹999+</span>
+          <span className="font-medium">Complimentary Shipping on Orders ₹999+</span>
           <span className="hidden sm:inline text-luxury-champagne">•</span>
           <span className="hidden sm:inline text-stone-300">Certified Master Artisan Handlooms</span>
           <span className="hidden md:inline text-luxury-champagne">•</span>
@@ -87,8 +87,8 @@ export function Header() {
 
       {/* Main Luxury Header */}
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border transition-colors duration-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-18 sm:h-20 gap-4">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-20 gap-2 sm:gap-4">
             {/* Mobile menu trigger */}
             <button
               type="button"
@@ -110,10 +110,10 @@ export function Header() {
               href="/"
               className="flex flex-col items-start flex-shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring p-1 rounded-xs"
             >
-              <span className="font-serif text-xl sm:text-2xl font-medium tracking-[0.18em] uppercase text-foreground group-hover:text-luxury-charcoal transition-colors">
+              <span className="font-serif text-lg sm:text-2xl font-medium tracking-[0.14em] sm:tracking-[0.18em] uppercase text-foreground group-hover:text-luxury-charcoal transition-colors">
                 BharatStore
               </span>
-              <span className="text-[9px] tracking-[0.28em] uppercase text-muted-foreground font-sans font-medium -mt-1 group-hover:text-luxury-champagne transition-colors">
+              <span className="text-[8px] sm:text-[9px] tracking-[0.2em] sm:tracking-[0.28em] uppercase text-muted-foreground font-sans font-medium -mt-0.5 sm:-mt-1 group-hover:text-luxury-champagne transition-colors">
                 Maison &bull; Handcrafted
               </span>
             </Link>
@@ -148,16 +148,16 @@ export function Header() {
             </form>
 
             {/* Actions: Wishlist, Cart, Account */}
-            <div className="flex items-center gap-1 sm:gap-3">
+            <div className="flex items-center gap-1 sm:gap-2">
               {/* Wishlist Link */}
               <Link
                 href="/account/wishlist"
-                className="relative p-2.5 text-foreground hover:text-luxury-champagne hover:bg-muted/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                className="relative p-2 sm:p-2.5 text-foreground hover:text-luxury-champagne hover:bg-muted/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 aria-label={`Wishlist, ${wishlistCount} items saved`}
               >
                 <Heart className="w-5 h-5" aria-hidden="true" />
                 {wishlistCount > 0 && (
-                  <span className="absolute 1 top-1 right-1 bg-luxury-obsidian text-luxury-ivory border border-luxury-champagne text-[10px] font-medium rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center shadow-xs">
+                  <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 bg-luxury-obsidian text-luxury-ivory border border-luxury-champagne text-[10px] font-medium rounded-full min-w-[17px] h-[17px] px-1 flex items-center justify-center shadow-xs">
                     {wishlistCount > 9 ? '9+' : wishlistCount}
                   </span>
                 )}
@@ -167,12 +167,12 @@ export function Header() {
               <button
                 type="button"
                 onClick={openCartDrawer}
-                className="relative p-2.5 text-foreground hover:text-luxury-champagne hover:bg-muted/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+                className="relative p-2 sm:p-2.5 text-foreground hover:text-luxury-champagne hover:bg-muted/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
                 aria-label={`Shopping bag, ${itemCount} items`}
               >
                 <ShoppingBag className="w-5 h-5" aria-hidden="true" />
                 {itemCount > 0 && (
-                  <span className="absolute top-1 right-1 bg-luxury-obsidian text-luxury-ivory border border-luxury-champagne text-[10px] font-medium rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center shadow-xs">
+                  <span className="absolute top-0.5 right-0.5 sm:top-1 sm:right-1 bg-luxury-obsidian text-luxury-ivory border border-luxury-champagne text-[10px] font-medium rounded-full min-w-[17px] h-[17px] px-1 flex items-center justify-center shadow-xs">
                     {itemCount > 9 ? '9+' : itemCount}
                   </span>
                 )}
@@ -287,10 +287,11 @@ export function Header() {
                 <button
                   type="button"
                   onClick={() => openAuthModal('login')}
-                  className="flex items-center gap-1.5 px-3.5 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background text-[11px] font-sans font-medium uppercase tracking-editorial transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  className="flex items-center gap-1.5 p-2 sm:px-3 sm:py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background text-[11px] font-sans font-medium uppercase tracking-editorial transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  aria-label="Sign In"
                 >
-                  <UserIcon className="w-3.5 h-3.5" aria-hidden="true" />
-                  <span>Sign In</span>
+                  <UserIcon className="w-4 h-4 sm:w-3.5 sm:h-3.5" aria-hidden="true" />
+                  <span className="hidden sm:inline">Sign In</span>
                 </button>
               )}
             </div>
@@ -351,7 +352,7 @@ export function Header() {
           <div
             id="mobile-navigation-drawer"
             ref={mobileMenuRef}
-            className="lg:hidden border-t border-border bg-background px-4 pt-4 pb-8 space-y-5 animate-in slide-in-from-top-2 duration-200"
+            className="lg:hidden border-t border-border bg-background px-4 pt-4 pb-8 space-y-5 animate-in slide-in-from-top-2 duration-200 max-h-[calc(100vh-5rem)] overflow-y-auto"
           >
             {/* Mobile Search Form */}
             <form onSubmit={handleSearch} role="search" className="relative">

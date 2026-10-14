@@ -56,15 +56,15 @@ export function CartDrawer() {
         aria-hidden="true"
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-full flex pl-8 sm:pl-10">
+      <div className="fixed inset-y-0 right-0 max-w-full flex pl-0 sm:pl-10">
         <div className="w-screen max-w-md bg-card border-l border-border shadow-2xl flex flex-col text-card-foreground animate-in slide-in-from-right duration-300">
           {/* Header */}
-          <div className="px-6 py-5 border-b border-border flex items-center justify-between bg-card">
-            <div className="flex items-baseline gap-3">
-              <h2 className="font-serif text-2xl font-normal tracking-tight text-foreground">
+          <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-border flex items-center justify-between bg-card">
+            <div className="flex items-baseline gap-2 sm:gap-3">
+              <h2 className="font-serif text-xl sm:text-2xl font-normal tracking-tight text-foreground">
                 Shopping Bag
               </h2>
-              <span className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
+              <span className="text-[11px] sm:text-xs uppercase tracking-widest text-muted-foreground font-medium">
                 {itemCount} {itemCount === 1 ? 'Creation' : 'Creations'}
               </span>
             </div>
@@ -80,19 +80,19 @@ export function CartDrawer() {
 
           {/* Complimentary Delivery Progress Indicator */}
           {cart && cart.items.length > 0 && (
-            <div className="bg-stone-50 border-b border-stone-200 px-6 py-3.5 text-xs text-charcoal">
+            <div className="bg-stone-50 border-b border-stone-200 px-4 sm:px-6 py-3 sm:py-3.5 text-xs text-charcoal">
               <div className="flex justify-between items-center mb-2">
                 {remainingForFreeShipping > 0 ? (
-                  <span className="text-muted-foreground">
+                  <span className="text-muted-foreground text-[11px] sm:text-xs">
                     Add <strong className="font-semibold text-foreground">{formatInr(remainingForFreeShipping)}</strong> more for complimentary delivery.
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
+                  <span className="inline-flex items-center gap-1.5 font-medium text-foreground text-[11px] sm:text-xs">
                     <Sparkles className="w-3.5 h-3.5 text-champagne-dark" />
                     Complimentary White-Glove Delivery Unlocked
                   </span>
                 )}
-                <span className="text-[11px] font-mono font-medium text-muted-foreground">
+                <span className="text-[10px] sm:text-[11px] font-mono font-medium text-muted-foreground">
                   {freeShippingProgress}%
                 </span>
               </div>
@@ -106,7 +106,7 @@ export function CartDrawer() {
           )}
 
           {/* Items Container */}
-          <div className="flex-1 overflow-y-auto px-6 py-6 divide-y divide-border/60">
+          <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 sm:py-6 divide-y divide-border/60">
             {!cart || cart.items.length === 0 ? (
               <div className="text-center py-20 space-y-5">
                 <div className="w-16 h-16 mx-auto rounded-full bg-stone-100 border border-stone-200 text-muted-foreground flex items-center justify-center">
@@ -218,7 +218,7 @@ export function CartDrawer() {
 
           {/* Footer Summary & Checkout CTA */}
           {cart && cart.items.length > 0 && (
-            <div className="p-6 border-t border-border bg-stone-50/70 space-y-4">
+            <div className="p-4 sm:p-6 border-t border-border bg-stone-50/70 space-y-4">
               <div className="space-y-2 text-xs text-muted-foreground">
                 <div className="flex justify-between">
                   <span>Atelier Subtotal</span>

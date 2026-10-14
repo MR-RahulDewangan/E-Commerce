@@ -33,31 +33,33 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     .slice(0, 4);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-12 sm:space-y-16">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-12 space-y-8 sm:space-y-16 min-w-0">
       {/* 1. Editorial Breadcrumbs */}
-      <nav
-        aria-label="Breadcrumb"
-        className="flex items-center gap-2 text-xs font-sans uppercase tracking-editorial text-muted-foreground overflow-x-auto whitespace-nowrap"
-      >
-        <Link href="/" className="hover:text-foreground transition-colors">
-          Maison
-        </Link>
-        <ChevronRight className="w-3.5 h-3.5 text-stone-400 flex-shrink-0" aria-hidden="true" />
-        <Link href="/products" className="hover:text-foreground transition-colors">
-          All Collections
-        </Link>
-        <ChevronRight className="w-3.5 h-3.5 text-stone-400 flex-shrink-0" aria-hidden="true" />
-        <Link
-          href={`/products?category=${product.category.slug}`}
-          className="hover:text-foreground transition-colors"
+      <div className="w-full min-w-0 overflow-x-auto no-scrollbar">
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-sans uppercase tracking-editorial text-muted-foreground whitespace-nowrap min-w-max pb-1"
         >
-          {product.category.name}
-        </Link>
-        <ChevronRight className="w-3.5 h-3.5 text-stone-400 flex-shrink-0" aria-hidden="true" />
-        <span className="text-foreground font-medium truncate max-w-xs" aria-current="page">
-          {product.name}
-        </span>
-      </nav>
+          <Link href="/" className="hover:text-foreground transition-colors flex-shrink-0">
+            Maison
+          </Link>
+          <ChevronRight className="w-3 h-3 text-stone-400 flex-shrink-0" aria-hidden="true" />
+          <Link href="/products" className="hover:text-foreground transition-colors flex-shrink-0">
+            Collections
+          </Link>
+          <ChevronRight className="w-3 h-3 text-stone-400 flex-shrink-0" aria-hidden="true" />
+          <Link
+            href={`/products?category=${product.category.slug}`}
+            className="hover:text-foreground transition-colors flex-shrink-0"
+          >
+            {product.category.name}
+          </Link>
+          <ChevronRight className="w-3 h-3 text-stone-400 flex-shrink-0" aria-hidden="true" />
+          <span className="text-foreground font-medium truncate max-w-[140px] sm:max-w-xs flex-shrink-0" aria-current="page">
+            {product.name}
+          </span>
+        </nav>
+      </div>
 
       {/* 2. Primary Product Showcase */}
       <main>

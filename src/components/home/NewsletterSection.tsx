@@ -21,7 +21,7 @@ export function NewsletterSection() {
   return (
     <section
       aria-label="Newsletter Subscription"
-      className="bg-card border border-border p-8 sm:p-12 lg:p-16 text-center max-w-4xl mx-auto space-y-6"
+      className="bg-card border border-border p-5 sm:p-12 lg:p-16 text-center max-w-4xl mx-auto space-y-5 sm:space-y-6"
     >
       <div className="space-y-3">
         <p className="text-[10px] sm:text-xs font-sans uppercase tracking-[0.2em] text-muted-foreground font-medium">

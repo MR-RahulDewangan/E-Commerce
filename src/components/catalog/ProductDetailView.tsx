@@ -79,8 +79,8 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
   };
 
   return (
-    <div className="space-y-12">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 bg-card p-6 sm:p-10 lg:p-12 border border-border">
+    <div className="space-y-8 sm:space-y-12">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-14 bg-card p-4 sm:p-8 lg:p-12 border border-border">
         {/* Gallery Section (5 Columns on Large Desktop) */}
         <div className="lg:col-span-6 space-y-4">
           {/* Main Visual Frame */}
@@ -171,17 +171,17 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
                 )}
               </div>
 
-              <h1 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-normal text-foreground tracking-tight leading-tight">
+              <h1 className="font-serif text-2xl sm:text-4xl lg:text-5xl font-normal text-foreground tracking-tight leading-tight">
                 {product.name}
               </h1>
 
-              <p className="font-mono text-[11px] text-muted-foreground uppercase tracking-widest">
+              <p className="font-mono text-[10px] sm:text-[11px] text-muted-foreground uppercase tracking-widest">
                 Identifier: {selectedVariant?.sku || 'N/A'}
               </p>
             </div>
 
             {/* Pricing Display */}
-            <div className="p-5 bg-background border border-border space-y-2">
+            <div className="p-4 sm:p-5 bg-background border border-border space-y-2">
               <div className="flex items-baseline gap-3 flex-wrap">
                 <span className="font-sans text-3xl sm:text-4xl font-medium text-foreground tracking-tight">
                   {formatInr(currentPrice)}
@@ -296,12 +296,12 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
               )}
 
               {/* Action Buttons */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 sm:gap-3 pt-2">
                 <button
                   type="button"
                   onClick={handleAddToCart}
                   disabled={!isAvailable || isAdding}
-                  className="py-4 px-6 bg-primary text-primary-foreground hover:bg-primary-hover disabled:bg-muted disabled:text-muted-foreground text-xs font-sans uppercase tracking-[0.18em] font-medium transition flex items-center justify-center gap-2.5 cursor-pointer shadow-xs disabled:cursor-not-allowed"
+                  className="py-3.5 sm:py-4 px-4 sm:px-6 bg-primary text-primary-foreground hover:bg-primary-hover disabled:bg-muted disabled:text-muted-foreground text-[11px] sm:text-xs font-sans uppercase tracking-wider sm:tracking-[0.18em] font-medium transition flex items-center justify-center gap-2 cursor-pointer shadow-xs disabled:cursor-not-allowed"
                 >
                   {justAdded ? (
                     <>
@@ -320,7 +320,7 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
                   type="button"
                   onClick={handleBuyNow}
                   disabled={!isAvailable || isBuyingNow}
-                  className="py-4 px-6 bg-transparent border border-foreground text-foreground hover:bg-foreground hover:text-background disabled:border-border disabled:text-muted-foreground text-xs font-sans uppercase tracking-[0.18em] font-medium transition flex items-center justify-center gap-2.5 cursor-pointer disabled:cursor-not-allowed"
+                  className="py-3.5 sm:py-4 px-4 sm:px-6 bg-transparent border border-foreground text-foreground hover:bg-foreground hover:text-background disabled:border-border disabled:text-muted-foreground text-[11px] sm:text-xs font-sans uppercase tracking-wider sm:tracking-[0.18em] font-medium transition flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed"
                 >
                   <Zap className="w-4 h-4 text-luxury-champagne fill-luxury-champagne" aria-hidden="true" />
                   <span>Instant Checkout</span>
@@ -331,11 +331,11 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
 
           {/* Tabbed Product Dossier */}
           <div className="border-t border-border pt-6 space-y-4">
-            <div className="flex border-b border-border text-xs uppercase tracking-editorial font-medium">
+            <div className="flex border-b border-border text-[11px] sm:text-xs uppercase tracking-editorial font-medium overflow-x-auto no-scrollbar whitespace-nowrap">
               <button
                 type="button"
                 onClick={() => setActiveTab('details')}
-                className={`py-2.5 px-4 border-b-2 cursor-pointer transition ${
+                className={`py-2.5 px-3 sm:px-4 border-b-2 cursor-pointer transition flex-shrink-0 ${
                   activeTab === 'details'
                     ? 'border-foreground text-foreground font-semibold'
                     : 'border-transparent text-muted-foreground hover:text-foreground'
@@ -346,7 +346,7 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
               <button
                 type="button"
                 onClick={() => setActiveTab('shipping')}
-                className={`py-2.5 px-4 border-b-2 cursor-pointer transition ${
+                className={`py-2.5 px-3 sm:px-4 border-b-2 cursor-pointer transition flex-shrink-0 ${
                   activeTab === 'shipping'
                     ? 'border-foreground text-foreground font-semibold'
                     : 'border-transparent text-muted-foreground hover:text-foreground'
@@ -357,7 +357,7 @@ export function ProductDetailView({ product }: { product: CatalogProductDetail }
               <button
                 type="button"
                 onClick={() => setActiveTab('taxes')}
-                className={`py-2.5 px-4 border-b-2 cursor-pointer transition ${
+                className={`py-2.5 px-3 sm:px-4 border-b-2 cursor-pointer transition flex-shrink-0 ${
                   activeTab === 'taxes'
                     ? 'border-foreground text-foreground font-semibold'
                     : 'border-transparent text-muted-foreground hover:text-foreground'

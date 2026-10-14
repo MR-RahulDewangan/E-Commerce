@@ -91,14 +91,14 @@ export default function CartPage() {
   const remainingForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD_INR - subtotalInr);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-14 space-y-8 sm:space-y-10">
       {/* Header */}
       <div className="border-b border-border pb-6">
         <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
-          <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+          <h1 className="font-serif text-2xl sm:text-4xl font-normal text-foreground tracking-tight">
             Shopping Bag
           </h1>
-          <span className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
+          <span className="text-[11px] sm:text-xs uppercase tracking-widest text-muted-foreground font-medium">
             {itemCount} {itemCount === 1 ? 'Handcrafted Creation' : 'Handcrafted Creations'}
           </span>
         </div>
@@ -107,18 +107,18 @@ export default function CartPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
         {/* Cart Line Items Column (8 Cols) */}
         <div className="lg:col-span-8 space-y-6">
           {/* Complimentary Shipping Progress Banner */}
-          <div className="p-5 bg-stone-50 border border-stone-200/80 rounded-xs space-y-2.5">
+          <div className="p-4 sm:p-5 bg-stone-50 border border-stone-200/80 rounded-xs space-y-2.5">
             <div className="flex justify-between items-center text-xs text-charcoal">
               {remainingForFreeShipping > 0 ? (
-                <span className="text-muted-foreground">
+                <span className="text-muted-foreground text-[11px] sm:text-xs">
                   Add <strong className="font-semibold text-foreground">{formatInr(remainingForFreeShipping)}</strong> more to qualify for complimentary white-glove delivery across India.
                 </span>
               ) : (
-                <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
+                <span className="inline-flex items-center gap-1.5 font-medium text-foreground text-[11px] sm:text-xs">
                   <Sparkles className="w-3.5 h-3.5 text-champagne-dark" />
                   Your order qualifies for complimentary white-glove delivery.
                 </span>
@@ -138,9 +138,9 @@ export default function CartPage() {
           {/* Line Items List */}
           <div className="bg-card rounded-xs border border-border divide-y divide-border/60 overflow-hidden shadow-xs">
             {cart.items.map((item) => (
-              <div key={item.id} className="p-5 sm:p-6 flex gap-5 sm:gap-6 items-start">
+              <div key={item.id} className="p-4 sm:p-6 flex gap-3.5 sm:gap-6 items-start">
                 {/* Product Thumbnail in Luxury Portrait */}
-                <div className="relative w-24 aspect-[3/4] sm:w-28 rounded-xs bg-stone-100 border border-border/80 flex-shrink-0 overflow-hidden">
+                <div className="relative w-20 sm:w-28 aspect-[3/4] rounded-xs bg-stone-100 border border-border/80 flex-shrink-0 overflow-hidden">
                   {item.imageUrl ? (
                     <Image
                       src={item.imageUrl}
@@ -246,7 +246,7 @@ export default function CartPage() {
 
         {/* Order Summary Column (4 Cols) */}
         <div className="lg:col-span-4 space-y-6">
-          <div className="bg-card p-6 sm:p-7 rounded-xs border border-border shadow-xs space-y-6 sticky top-28">
+          <div className="bg-card p-4 sm:p-7 rounded-xs border border-border shadow-xs space-y-6 sticky top-28">
             <h2 className="font-serif text-xl font-normal text-foreground border-b border-border pb-4">
               Order Summary
             </h2>

@@ -115,26 +115,26 @@ export function ProductCard({
       </div>
 
       {/* Product Information */}
-      <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between gap-3 bg-card">
-        <div className="space-y-1">
+      <div className="p-3 sm:p-5 flex flex-col flex-1 justify-between gap-2.5 sm:gap-3 bg-card">
+        <div className="space-y-0.5 sm:space-y-1">
           {categoryName && (
-            <p className="text-[10px] font-sans uppercase tracking-widest text-muted-foreground">
+            <p className="text-[9px] sm:text-[10px] font-sans uppercase tracking-wider sm:tracking-widest text-muted-foreground truncate">
               {categoryName}
             </p>
           )}
-          <h3 className="font-serif text-sm sm:text-base font-medium text-foreground line-clamp-2 leading-snug group-hover:text-luxury-charcoal transition-colors">
+          <h3 className="font-serif text-xs sm:text-base font-medium text-foreground line-clamp-2 leading-snug group-hover:text-luxury-charcoal transition-colors">
             <Link href={`/products/${slug}`} className="focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
               {name}
             </Link>
           </h3>
         </div>
 
-        <div className="space-y-3 pt-1 border-t border-border/50">
-          <div className="flex items-baseline justify-between">
-            <span className="font-sans text-sm sm:text-base font-medium text-foreground tracking-tight">
+        <div className="space-y-2.5 sm:space-y-3 pt-1 border-t border-border/50">
+          <div className="flex items-baseline justify-between gap-1 flex-wrap">
+            <span className="font-sans text-xs sm:text-base font-medium text-foreground tracking-tight">
               {formatInr(startingPrice)}
             </span>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-sans">
+            <span className="text-[9px] sm:text-[10px] text-muted-foreground uppercase tracking-wider font-sans">
               Incl. 18% GST
             </span>
           </div>
@@ -143,7 +143,7 @@ export function ProductCard({
             {variantsCount > 1 ? (
               <Link
                 href={`/products/${slug}`}
-                className="block text-center w-full py-2.5 px-3 bg-secondary text-secondary-foreground hover:bg-secondary-hover text-[11px] font-sans uppercase tracking-widest font-medium transition cursor-pointer border border-border"
+                className="block text-center w-full py-2 sm:py-2.5 px-2 sm:px-3 bg-secondary text-secondary-foreground hover:bg-secondary-hover text-[10px] sm:text-[11px] font-sans uppercase tracking-wider sm:tracking-widest font-medium transition cursor-pointer border border-border"
               >
                 Select Options ({variantsCount})
               </Link>
@@ -152,7 +152,7 @@ export function ProductCard({
                 type="button"
                 onClick={handleQuickAdd}
                 disabled={isAdding}
-                className="flex items-center justify-center gap-1.5 w-full py-2.5 px-3 bg-primary text-primary-foreground hover:bg-primary-hover text-[11px] font-sans uppercase tracking-widest font-medium transition cursor-pointer disabled:opacity-50"
+                className="flex items-center justify-center gap-1.5 w-full py-2 sm:py-2.5 px-2 sm:px-3 bg-primary text-primary-foreground hover:bg-primary-hover text-[10px] sm:text-[11px] font-sans uppercase tracking-wider sm:tracking-widest font-medium transition cursor-pointer disabled:opacity-50"
               >
                 {justAdded ? (
                   <>
@@ -170,7 +170,7 @@ export function ProductCard({
               <button
                 type="button"
                 disabled
-                className="w-full py-2.5 px-3 bg-muted text-muted-foreground text-[11px] font-sans uppercase tracking-widest font-medium cursor-not-allowed border border-border/60"
+                className="w-full py-2 sm:py-2.5 px-2 sm:px-3 bg-muted text-muted-foreground text-[10px] sm:text-[11px] font-sans uppercase tracking-wider sm:tracking-widest font-medium cursor-not-allowed border border-border/60"
               >
                 Sold Out
               </button>

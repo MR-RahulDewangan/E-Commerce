@@ -202,7 +202,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-14 space-y-8 sm:space-y-10">
       {/* Back Link & Header */}
       <div>
         <Link
@@ -214,14 +214,14 @@ export default function CheckoutPage() {
 
         <div className="border-b border-border pb-6 flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
           <div>
-            <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            <h1 className="font-serif text-2xl sm:text-4xl font-normal text-foreground tracking-tight">
               Maison Checkout
             </h1>
             <p className="text-xs text-muted-foreground mt-1.5">
               Atomic inventory hold active. Compliant with 18% inclusive GST Indian tax invoicing.
             </p>
           </div>
-          <span className="text-[11px] font-mono text-muted-foreground tracking-wider uppercase">
+          <span className="text-[10px] sm:text-[11px] font-mono text-muted-foreground tracking-wider uppercase">
             Secured with TLS 1.3
           </span>
         </div>
@@ -243,11 +243,11 @@ export default function CheckoutPage() {
         </div>
       )}
 
-      <form onSubmit={handleCreateOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+      <form onSubmit={handleCreateOrder} className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-start">
         {/* Form Inputs (7 Cols) */}
         <div className="lg:col-span-7 space-y-8">
           {/* Step 1: Customer Contact & Shipping Address */}
-          <div className="bg-card p-6 sm:p-8 rounded-xs border border-border shadow-xs space-y-6">
+          <div className="bg-card p-4 sm:p-8 rounded-xs border border-border shadow-xs space-y-6">
             <h2 className="font-serif text-xl font-normal text-foreground flex items-center gap-2.5 border-b border-border pb-4">
               <MapPin className="w-4 h-4 text-champagne-dark" />
               <span>1. Delivery Destination & Contact</span>
@@ -391,7 +391,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Step 2: Payment Method Selection */}
-          <div className="bg-card p-6 sm:p-8 rounded-xs border border-border shadow-xs space-y-6">
+          <div className="bg-card p-4 sm:p-8 rounded-xs border border-border shadow-xs space-y-6">
             <h2 className="font-serif text-xl font-normal text-foreground flex items-center gap-2.5 border-b border-border pb-4">
               <CreditCard className="w-4 h-4 text-champagne-dark" />
               <span>2. Preferred Payment Atelier</span>
@@ -400,7 +400,7 @@ export default function CheckoutPage() {
             <div className="space-y-3.5">
               {/* Online Payment (UPI / Cards / Netbanking) */}
               <label
-                className={`flex items-start gap-4 p-5 border rounded-xs cursor-pointer transition ${
+                className={`flex items-start gap-3 sm:gap-4 p-3.5 sm:p-5 border rounded-xs cursor-pointer transition ${
                   paymentMethod === 'MOCK'
                     ? 'border-primary bg-stone-50/80 ring-1 ring-primary'
                     : 'border-border hover:border-stone-400 bg-card'
@@ -471,7 +471,7 @@ export default function CheckoutPage() {
 
         {/* Order Summary & Submit (5 Cols) */}
         <div className="lg:col-span-5 space-y-6">
-          <div className="bg-card p-6 sm:p-7 rounded-xs border border-border shadow-xs space-y-6 sticky top-28">
+          <div className="bg-card p-4 sm:p-7 rounded-xs border border-border shadow-xs space-y-6 sticky top-28">
             <h2 className="font-serif text-xl font-normal text-foreground border-b border-border pb-4">
               Order Review
             </h2>

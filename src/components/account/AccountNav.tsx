@@ -27,7 +27,7 @@ export function AccountNav() {
           <span className="text-[11px] uppercase tracking-widest text-muted-foreground font-medium">
             Customer Atelier Portal
           </span>
-          <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight pt-1">
+          <h1 className="font-serif text-2xl sm:text-4xl font-normal text-foreground tracking-tight pt-1">
             Welcome, {user.firstName}
           </h1>
           <p className="text-xs text-muted-foreground mt-1">
@@ -45,7 +45,7 @@ export function AccountNav() {
       </div>
 
       {/* Tabs */}
-      <nav className="flex items-center gap-2 overflow-x-auto pb-1" aria-label="Account navigation">
+      <nav className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" aria-label="Account navigation">
         {ACCOUNT_TABS.map((tab) => {
           const isActive = pathname === tab.href;
           const Icon = tab.icon;
@@ -54,7 +54,7 @@ export function AccountNav() {
             <Link
               key={tab.href}
               href={tab.href}
-              className={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xs text-xs uppercase tracking-wider font-medium whitespace-nowrap transition border ${
+              className={`inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xs text-[11px] sm:text-xs uppercase tracking-wider font-medium whitespace-nowrap transition border ${
                 isActive
                   ? 'border-primary bg-primary text-primary-foreground shadow-xs'
                   : 'border-border/80 bg-card text-muted-foreground hover:text-foreground hover:border-stone-400'

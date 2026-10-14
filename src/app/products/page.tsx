@@ -54,9 +54,9 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const hasActiveFilters = Boolean(category || search || minPrice || maxPrice);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8 sm:space-y-10">
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-12 space-y-6 sm:space-y-10">
       {/* 1. Editorial Collection Header */}
-      <header className="bg-card border border-border p-6 sm:p-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+      <header className="bg-card border border-border p-4 sm:p-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
         <div className="space-y-2 max-w-2xl">
           <div className="inline-flex items-center gap-1.5 text-[10px] font-sans uppercase tracking-[0.25em] text-muted-foreground font-medium">
             <Sparkles className="w-3 h-3 text-luxury-champagne" aria-hidden="true" />
@@ -197,7 +197,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
           ) : (
             <>
               {/* Refined Luxury Product Grid */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-6 lg:gap-8">
                 {products.map((p) => (
                   <ProductCard
                     key={p.id}
