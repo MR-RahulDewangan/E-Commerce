@@ -131,8 +131,14 @@ describe('Stock Reservation Cleanup Worker Integration (Live PostgreSQL 16)', ()
       },
     });
 
+    const headers: Record<string, string> = {};
+    if (process.env.CRON_SECRET) {
+      headers.authorization = `Bearer ${process.env.CRON_SECRET}`;
+    }
+
     const req = new NextRequest('http://localhost:3000/api/cron/release-reservations', {
       method: 'POST',
+      headers,
     });
 
     const res = await cronHandler(req);
