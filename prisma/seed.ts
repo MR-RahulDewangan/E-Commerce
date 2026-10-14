@@ -9,27 +9,45 @@ async function hashPassword(password: string): Promise<string> {
 }
 
 async function main() {
-  console.log('🌱 Starting comprehensive database seed for India-Focused E-Commerce Store...');
+  console.log('🌿 Starting Luxury, Eco-Friendly & Handcrafted Database Reset & Seeding...');
 
-  // 1. Seed Administrative and Test Customer Users
+  // -------------------------------------------------------------
+  // 1. CLEANUP ALL EXISTING ITEMS FROM DATABASE
+  // -------------------------------------------------------------
+  console.log('🧹 Purging old catalog, variants, and dependent transactions...');
+  await prisma.cartItem.deleteMany({});
+  await prisma.wishlistItem.deleteMany({});
+  await prisma.stockReservation.deleteMany({});
+  await prisma.paymentTransaction.deleteMany({});
+  await prisma.orderItem.deleteMany({});
+  await prisma.order.deleteMany({});
+  await prisma.productImage.deleteMany({});
+  await prisma.productVariant.deleteMany({});
+  await prisma.product.deleteMany({});
+  await prisma.category.deleteMany({});
+  console.log('✨ All old items purged successfully from database.');
+
+  // -------------------------------------------------------------
+  // 2. SEED SYSTEM ADMIN & VERIFIED ARTISAN SELLERS
+  // -------------------------------------------------------------
   const adminPasswordHash = await hashPassword('AdminSecure2026!');
   const admin = await prisma.user.upsert({
     where: { email: 'admin@ecommerce.example.in' },
     update: {
       role: Role.ADMIN,
-      firstName: 'System',
-      lastName: 'Administrator',
+      firstName: 'Maison',
+      lastName: 'Curator',
     },
     create: {
       email: 'admin@ecommerce.example.in',
       passwordHash: adminPasswordHash,
-      firstName: 'System',
-      lastName: 'Administrator',
+      firstName: 'Maison',
+      lastName: 'Curator',
       role: Role.ADMIN,
       phoneNumber: '+919876543200',
     },
   });
-  console.log(`👤 Admin user seeded: ${admin.email} (ID: ${admin.id})`);
+  console.log(`👤 Admin user verified: ${admin.email}`);
 
   const customerPasswordHash = await hashPassword('CustomerPass123!');
   const customer = await prisma.user.upsert({
@@ -47,7 +65,6 @@ async function main() {
       phoneNumber: '+919876543210',
     },
   });
-  console.log(`👤 Customer user seeded: ${customer.email} (ID: ${customer.id})`);
 
   // Default Customer Address
   await prisma.address.deleteMany({ where: { userId: customer.id } });
@@ -66,16 +83,12 @@ async function main() {
     },
   });
 
-  // 1b. Seed 2 Dummy Marketplace Sellers
   const sellerPasswordHash = await hashPassword('SellerSecure2026!');
 
+  // Seller 1: Kashmir Artisans Guild
   const seller1User = await prisma.user.upsert({
     where: { email: 'seller.kashmir@ecommerce.example.in' },
-    update: {
-      role: Role.SELLER,
-      firstName: 'Tariq',
-      lastName: 'Ahmad',
-    },
+    update: { role: Role.SELLER, firstName: 'Tariq', lastName: 'Ahmad' },
     create: {
       email: 'seller.kashmir@ecommerce.example.in',
       passwordHash: sellerPasswordHash,
@@ -89,9 +102,9 @@ async function main() {
   const seller1Profile = await prisma.sellerProfile.upsert({
     where: { userId: seller1User.id },
     update: {
-      storeName: 'Kashmir Pashmina & Crafts',
-      storeSlug: 'kashmir-crafts',
-      description: 'Authentic handcrafted Kashmiri pashmina shawls, walnut wood carvings, and saffron.',
+      storeName: 'Kashmir Master Weavers Guild',
+      storeSlug: 'kashmir-master-weavers',
+      description: 'Certified GI-tagged Kashmiri Pashmina, hand-needle Sozni embroidery, and organic Himalayan cashmere.',
       gstin: '01ABCDE1234F1Z5',
       pan: 'ABCDE1234F',
       bankAccount: '9876543210123',
@@ -101,9 +114,9 @@ async function main() {
     },
     create: {
       userId: seller1User.id,
-      storeName: 'Kashmir Pashmina & Crafts',
-      storeSlug: 'kashmir-crafts',
-      description: 'Authentic handcrafted Kashmiri pashmina shawls, walnut wood carvings, and saffron.',
+      storeName: 'Kashmir Master Weavers Guild',
+      storeSlug: 'kashmir-master-weavers',
+      description: 'Certified GI-tagged Kashmiri Pashmina, hand-needle Sozni embroidery, and organic Himalayan cashmere.',
       gstin: '01ABCDE1234F1Z5',
       pan: 'ABCDE1234F',
       bankAccount: '9876543210123',
@@ -112,15 +125,11 @@ async function main() {
       isVerified: true,
     },
   });
-  console.log(`🏪 Seller 1 seeded: ${seller1User.email} (Store: ${seller1Profile.storeName})`);
 
+  // Seller 2: Jaipur Heritage Handlooms
   const seller2User = await prisma.user.upsert({
     where: { email: 'seller.jaipur@ecommerce.example.in' },
-    update: {
-      role: Role.SELLER,
-      firstName: 'Rajesh',
-      lastName: 'Meena',
-    },
+    update: { role: Role.SELLER, firstName: 'Rajesh', lastName: 'Meena' },
     create: {
       email: 'seller.jaipur@ecommerce.example.in',
       passwordHash: sellerPasswordHash,
@@ -134,9 +143,9 @@ async function main() {
   const seller2Profile = await prisma.sellerProfile.upsert({
     where: { userId: seller2User.id },
     update: {
-      storeName: 'Jaipur Heritage Textiles',
-      storeSlug: 'jaipur-textiles',
-      description: 'Traditional Rajasthani block printed textiles, handcrafted quilts, and ethnic apparel.',
+      storeName: 'Jaipur Eco Heritage Atelier',
+      storeSlug: 'jaipur-eco-atelier',
+      description: 'Organic natural plant-dyed Dabu block prints, cruelty-free Ahimsa silks, and hand-beaten bronze tableware.',
       gstin: '08FGHIJ5678K1Z2',
       pan: 'FGHIJ5678K',
       bankAccount: '1234567890987',
@@ -146,9 +155,9 @@ async function main() {
     },
     create: {
       userId: seller2User.id,
-      storeName: 'Jaipur Heritage Textiles',
-      storeSlug: 'jaipur-textiles',
-      description: 'Traditional Rajasthani block printed textiles, handcrafted quilts, and ethnic apparel.',
+      storeName: 'Jaipur Eco Heritage Atelier',
+      storeSlug: 'jaipur-eco-atelier',
+      description: 'Organic natural plant-dyed Dabu block prints, cruelty-free Ahimsa silks, and hand-beaten bronze tableware.',
       gstin: '08FGHIJ5678K1Z2',
       pan: 'FGHIJ5678K',
       bankAccount: '1234567890987',
@@ -157,528 +166,346 @@ async function main() {
       isVerified: true,
     },
   });
-  console.log(`🏪 Seller 2 seeded: ${seller2User.email} (Store: ${seller2Profile.storeName})`);
 
-  // 2. Seed 10 Categories
+  // -------------------------------------------------------------
+  // 3. SEED 6 ECO-FRIENDLY & LUXURY HANDCRAFTED CATEGORIES
+  // -------------------------------------------------------------
   const categoriesData = [
     {
-      name: 'Ethnic Wear',
-      slug: 'ethnic-wear',
-      imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+      name: 'Artisanal Handlooms & Silks',
+      slug: 'artisanal-handlooms',
+      imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1200&q=80',
       sortOrder: 1,
     },
     {
-      name: 'Western Wear',
-      slug: 'western-wear',
-      imageUrl: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80',
+      name: 'Eco Cashmere & Pashmina',
+      slug: 'pashmina-shawls',
+      imageUrl: 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=1200&q=80',
       sortOrder: 2,
     },
     {
-      name: 'Sarees',
-      slug: 'sarees',
-      imageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80',
+      name: 'Heritage Handcrafted Jewellery',
+      slug: 'handcrafted-jewellery',
+      imageUrl: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=80',
       sortOrder: 3,
     },
     {
-      name: 'Footwear',
-      slug: 'footwear',
-      imageUrl: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=800&q=80',
+      name: 'Organic Khadi & Ahimsa Cotton',
+      slug: 'organic-khadi',
+      imageUrl: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1200&q=80',
       sortOrder: 4,
     },
     {
-      name: 'Jewellery & Accessories',
-      slug: 'jewellery-accessories',
-      imageUrl: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=80',
+      name: 'Sustainable Living & Decor',
+      slug: 'sustainable-decor',
+      imageUrl: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=1200&q=80',
       sortOrder: 5,
     },
     {
-      name: 'Home & Living',
-      slug: 'home-living',
-      imageUrl: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=800&q=80',
+      name: 'Botanical Wellness & Pure Aromas',
+      slug: 'botanical-wellness',
+      imageUrl: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1200&q=80',
       sortOrder: 6,
-    },
-    {
-      name: 'Beauty & Personal Care',
-      slug: 'beauty-personal-care',
-      imageUrl: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
-      sortOrder: 7,
-    },
-    {
-      name: 'Kitchen & Dining',
-      slug: 'kitchen-dining',
-      imageUrl: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80',
-      sortOrder: 8,
-    },
-    {
-      name: 'Handcrafted Decor',
-      slug: 'handcrafted-decor',
-      imageUrl: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80',
-      sortOrder: 9,
-    },
-    {
-      name: 'Menswear Essentials',
-      slug: 'menswear-essentials',
-      imageUrl: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?auto=format&fit=crop&w=800&q=80',
-      sortOrder: 10,
     },
   ];
 
   const categoryMap: Record<string, string> = {};
   for (const catData of categoriesData) {
-    const category = await prisma.category.upsert({
-      where: { slug: catData.slug },
-      update: {
-        name: catData.name,
-        imageUrl: catData.imageUrl,
-        sortOrder: catData.sortOrder,
-      },
-      create: catData,
+    const category = await prisma.category.create({
+      data: catData,
     });
     categoryMap[catData.slug] = category.id;
   }
-  console.log(`📁 10 categories created/updated.`);
+  console.log(`📁 6 luxury handcrafted categories created.`);
 
-  // 3. Define 30 Multi-Variant Products (3 per category)
+  // -------------------------------------------------------------
+  // 4. SEED 18 AUTHENTIC, HANDCRAFTED, ECO-FRIENDLY LUXURY PRODUCTS
+  // -------------------------------------------------------------
   const productsData = [
-    // --- Category 1: Ethnic Wear ---
+    // --- Category 1: Artisanal Handlooms & Silks ---
     {
-      categorySlug: 'ethnic-wear',
-      name: 'Pure Handloom Cotton Kurta',
-      slug: 'pure-handloom-cotton-kurta',
-      description: 'Crafted from 100% breathable natural cotton with intricate Lucknowi chikan hand-embroidery. Perfect for festive celebrations and everyday elegance.',
-      basePrice: 1499.0,
+      categorySlug: 'artisanal-handlooms',
+      name: 'Imperial Banarasi Katan Silk Saree',
+      slug: 'imperial-banarasi-katan-silk-saree',
+      description: 'Handwoven over 65 days by master weavers in Varanasi using the ancient Kadwa technique. Crafted from 100% pure Mulberry silk and certified pure silver electro-refined zari. Naturally dyed using pomegranate peels and madder root extracts. An heirloom treasure that breathes royal Indian heritage.',
+      basePrice: 48500.0,
       isPublished: true,
       isFeatured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller2Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'ETH-KUR-S', name: 'Small / Beige', stock: 15, size: 'S', color: 'Beige' },
-        { sku: 'ETH-KUR-M', name: 'Medium / Beige', stock: 25, size: 'M', color: 'Beige' },
-        { sku: 'ETH-KUR-L', name: 'Large / Beige', stock: 18, size: 'L', color: 'Beige' },
-        { sku: 'ETH-KUR-XL', name: 'XL / Beige', stock: 10, size: 'XL', color: 'Beige', priceOverride: 1699.0 },
+        { sku: 'BAN-KAT-GLD', name: 'Royal Gold Zari Border', stock: 6, color: 'Gold Amber', priceOverride: 48500.0 },
+        { sku: 'BAN-KAT-SLV', name: 'Moonlit Silver Zari Border', stock: 4, color: 'Moonlit Silver', priceOverride: 52000.0 },
+        { sku: 'BAN-KAT-RBY', name: 'Imperial Ruby & Gold Zari', stock: 5, color: 'Deep Ruby', priceOverride: 54500.0 },
       ],
     },
     {
-      categorySlug: 'ethnic-wear',
-      name: 'Embroidered Anarkali Suit Set',
-      slug: 'embroidered-anarkali-suit-set',
-      description: 'Royal maroon floor-length Georgette Anarkali suit set with heavy zari work, paired with matching santoon churidar and netted dupatta.',
-      basePrice: 3499.0,
+      categorySlug: 'artisanal-handlooms',
+      name: 'Chanderi Silk-Cotton Royal Angrakha',
+      slug: 'chanderi-silk-cotton-royal-angrakha',
+      description: 'Handwoven Chanderi weave with hand-block Ajrakh motifs from Kachchh artisans. Crafted from organic wild tussar silk and handspun rainfed cotton. Naturally dyed in fermented indigo vats with 100% natural coconut-shell fastenings. Completely chemical-free and skin-nourishing.',
+      basePrice: 18900.0,
       isPublished: true,
       isFeatured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller2Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'ETH-ANA-M', name: 'Medium / Maroon', stock: 8, size: 'M', color: 'Maroon' },
-        { sku: 'ETH-ANA-L', name: 'Large / Maroon', stock: 12, size: 'L', color: 'Maroon' },
-        { sku: 'ETH-ANA-XL', name: 'XL / Maroon', stock: 0, size: 'XL', color: 'Maroon' }, // Out of stock variant
+        { sku: 'CHN-ANG-S', name: 'Small / Indigo Dabu', stock: 8, size: 'S', color: 'Indigo Blue' },
+        { sku: 'CHN-ANG-M', name: 'Medium / Indigo Dabu', stock: 12, size: 'M', color: 'Indigo Blue' },
+        { sku: 'CHN-ANG-L', name: 'Large / Indigo Dabu', stock: 9, size: 'L', color: 'Indigo Blue' },
       ],
     },
     {
-      categorySlug: 'ethnic-wear',
-      name: 'Festive Jacquard Silk Nehru Jacket',
-      slug: 'festive-jacquard-silk-nehru-jacket',
-      description: 'Mandarin collar woven silk-blend Nehru jacket in golden mustard. Tailored fit designed to layer seamlessly over classic kurtas.',
-      basePrice: 2199.0,
+      categorySlug: 'artisanal-handlooms',
+      name: 'Patan Patola Double-Ikat Heritage Scarf',
+      slug: 'patan-patola-double-ikat-scarf',
+      description: 'An exquisite museum-grade textile crafted by the surviving Master Salvi weavers of Gujarat. Features mathematical warp and weft alignment with natural plant dyes of marigold, catechu, and turmeric. Soft, lightweight, and completely identical on both sides.',
+      basePrice: 32000.0,
       isPublished: true,
       isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1598033129183-c4f50c736f10?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller2Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'ETH-NJ-38', name: 'Size 38 / Gold', stock: 14, size: '38', color: 'Gold' },
-        { sku: 'ETH-NJ-40', name: 'Size 40 / Gold', stock: 16, size: '40', color: 'Gold' },
-        { sku: 'ETH-NJ-42', name: 'Size 42 / Gold', stock: 8, size: '42', color: 'Gold' },
+        { sku: 'PAT-PAT-STD', name: 'Standard Heritage Weave (180cm x 60cm)', stock: 5, size: 'Standard' },
+        { sku: 'PAT-PAT-ZAR', name: 'Collector Gold Zari Trim (200cm x 70cm)', stock: 3, size: 'Grand', priceOverride: 36500.0 },
       ],
     },
 
-    // --- Category 2: Western Wear ---
+    // --- Category 2: Eco Cashmere & Pashmina ---
     {
-      categorySlug: 'western-wear',
-      name: 'Structured Linen Blend Blazer',
-      slug: 'structured-linen-blend-blazer',
-      description: 'Contemporary double-breasted relaxed blazer crafted from Italian linen blend. Ideal for smart-casual office styling and weekend brunches.',
-      basePrice: 2899.0,
+      categorySlug: 'pashmina-shawls',
+      name: 'Master Artisan Sozni Needle Pashmina',
+      slug: 'master-artisan-sozni-pashmina',
+      description: 'GI-certified authentic Kashmiri Pashmina requiring over 600 hours of continuous needle Sozni craftsmanship. Harvested ethically from the underfleece of high-altitude Changthangi goats in Ladakh. Unbleached, chemical-free, and feathery soft with unmatched natural thermal insulation.',
+      basePrice: 74500.0,
       isPublished: true,
       isFeatured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1584273143981-41c073dfe8f8?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller1Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1608256246200-53e635b5b65f?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'WES-BLZ-S', name: 'Small / Oatmeal', stock: 10, size: 'S', color: 'Oatmeal' },
-        { sku: 'WES-BLZ-M', name: 'Medium / Oatmeal', stock: 15, size: 'M', color: 'Oatmeal' },
-        { sku: 'WES-BLZ-L', name: 'Large / Oatmeal', stock: 12, size: 'L', color: 'Oatmeal' },
+        { sku: 'PAS-SOZ-IVY', name: 'Natural Ivory / Fine Needle Sozni', stock: 4, color: 'Natural Ivory', priceOverride: 74500.0 },
+        { sku: 'PAS-SOZ-WAL', name: 'Raw Walnut Bark Charcoal Needle Sozni', stock: 3, color: 'Walnut Charcoal', priceOverride: 79000.0 },
       ],
     },
     {
-      categorySlug: 'western-wear',
-      name: 'High-Rise Relaxed Wide-Leg Trousers',
-      slug: 'high-rise-relaxed-wide-leg-trousers',
-      description: 'Tailored high-waisted pleated trousers in fluid crepe. Elasticated back waistband ensures all-day comfort without sacrificing silhouette.',
-      basePrice: 1799.0,
+      categorySlug: 'pashmina-shawls',
+      name: 'Hand-Spun Reversible Kani Shawl',
+      slug: 'hand-spun-reversible-kani-shawl',
+      description: 'Woven with miniature wooden eyeless bobbins (Tujis) on traditional Kashmiri wooden pit looms. The artisan memorizes mathematical notations (Talim) to create intricately woven floral tapestry patterns. Natural untreated cashmere fiber with zero synthetic sizing.',
+      basePrice: 58000.0,
       isPublished: true,
-      isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?auto=format&fit=crop&w=800&q=80',
+      isFeatured: true,
+      sellerId: seller1Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1544441893-675973e31985?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'WES-TR-28', name: '28 / Black', stock: 12, size: '28', color: 'Black' },
-        { sku: 'WES-TR-30', name: '30 / Black', stock: 20, size: '30', color: 'Black' },
-        { sku: 'WES-TR-32', name: '32 / Black', stock: 15, size: '32', color: 'Black' },
+        { sku: 'PAS-KAN-FLR', name: 'Mughal Chinar Floral Motif', stock: 5, color: 'Pashmina Ecru' },
+        { sku: 'PAS-KAN-CHV', name: 'Artisan Heritage Paisley Motif', stock: 4, color: 'Antique Saffron', priceOverride: 62000.0 },
       ],
     },
     {
-      categorySlug: 'western-wear',
-      name: 'Floral Print Tiered Maxi Dress',
-      slug: 'floral-print-tiered-maxi-dress',
-      description: 'Airy chiffon floral maxi dress featuring sweetheart neckline, smocked bodice, and graceful tiered ruffles.',
-      basePrice: 2299.0,
+      categorySlug: 'pashmina-shawls',
+      name: 'Undyed Himalayan Cashmere Blanket Throw',
+      slug: 'undyed-himalayan-cashmere-throw',
+      description: 'Pure, organic, un-dyed Changthangi cashmere woven in a refined herringbone twill with hand-twisted artisanal fringes. Completely biodegradable, zero dyes, zero artificial bleaches. Delivers sublime warmth and cloud-like tactile luxury for discerning living spaces.',
+      basePrice: 24500.0,
       isPublished: true,
       isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller1Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1580301762395-21ce84d00bc6?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'WES-DRS-S', name: 'Small / Sage', stock: 10, size: 'S', color: 'Sage Green' },
-        { sku: 'WES-DRS-M', name: 'Medium / Sage', stock: 14, size: 'M', color: 'Sage Green' },
-        { sku: 'WES-DRS-L', name: 'Large / Sage', stock: 8, size: 'L', color: 'Sage Green' },
+        { sku: 'PAS-THR-CLD', name: 'Cloud Grey (140cm x 200cm)', stock: 7, color: 'Cloud Grey' },
+        { sku: 'PAS-THR-OAT', name: 'Dune Oatmeal (140cm x 200cm)', stock: 6, color: 'Dune Oatmeal' },
       ],
     },
 
-    // --- Category 3: Sarees ---
+    // --- Category 3: Heritage Handcrafted Jewellery ---
     {
-      categorySlug: 'sarees',
-      name: 'Pure Kanjeevaram Silk Saree',
-      slug: 'pure-kanjeevaram-silk-saree',
-      description: 'Handwoven pure mulberry silk saree featuring traditional temple borders and heavy 2-gram gold zari pallu. Comes with unstitched blouse piece.',
-      basePrice: 7999.0,
+      categorySlug: 'handcrafted-jewellery',
+      name: 'Recycled Temple Silver Hasli Choker',
+      slug: 'recycled-temple-silver-hasli-choker',
+      description: 'Solid 92.5 sterling silver hand-beaten by hereditary silversmiths using the ancient repoussé embossing technique. Crafted entirely from 100% recycled hallmarked silver to prevent mining exploitation. Coated with natural beeswax for lasting antique patina.',
+      basePrice: 29800.0,
       isPublished: true,
       isFeatured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller2Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'SAR-KAN-RED', name: 'Crimson Red & Gold', stock: 6, size: 'Free Size', color: 'Crimson Red' },
-        { sku: 'SAR-KAN-GRN', name: 'Emerald Green & Gold', stock: 5, size: 'Free Size', color: 'Emerald Green' },
+        { sku: 'JWL-HAS-ANT', name: 'Antique Patina Finish (92.5 Silver)', stock: 5, priceOverride: 29800.0 },
+        { sku: 'JWL-HAS-MIR', name: 'Hand-Burnished High Luster', stock: 4, priceOverride: 31500.0 },
       ],
     },
     {
-      categorySlug: 'sarees',
-      name: 'Handloom Banarasi Georgette Saree',
-      slug: 'handloom-banarasi-georgette-saree',
-      description: 'Lightweight Khaddi Georgette woven with intricate floral jaal motifs and scalloped silver zari border.',
-      basePrice: 4899.0,
+      categorySlug: 'handcrafted-jewellery',
+      name: 'Bidriware Hand-Inlaid Silver Cuff',
+      slug: 'bidriware-hand-inlaid-silver-cuff',
+      description: 'A 500-year-old metallic craft from Bidar, Karnataka. Pure 99.9% fine silver wire is hand-hammered into engraved grooves of a zinc-copper alloy, then oxidized black using unique soil from historic Bidar fort. Non-electroplated, non-toxic, and truly one-of-a-kind.',
+      basePrice: 14200.0,
       isPublished: true,
       isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller2Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1611591475878-5a2a97576571?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'SAR-BAN-PNK', name: 'Baby Pink / Silver', stock: 8, size: 'Free Size', color: 'Pink' },
-        { sku: 'SAR-BAN-BLU', name: 'Sky Blue / Silver', stock: 7, size: 'Free Size', color: 'Blue' },
+        { sku: 'JWL-BID-S', name: 'Small (Wrist 5.5 - 6.0 in)', stock: 6, size: 'S' },
+        { sku: 'JWL-BID-M', name: 'Medium (Wrist 6.0 - 6.5 in)', stock: 8, size: 'M' },
+        { sku: 'JWL-BID-L', name: 'Large (Wrist 6.5 - 7.2 in)', stock: 5, size: 'L' },
       ],
     },
     {
-      categorySlug: 'sarees',
-      name: 'Chanderi Silk Cotton Saree',
-      slug: 'chanderi-silk-cotton-saree',
-      description: 'Subtle sheer Chanderi weave with traditional hand-block printed bagru motifs and gold tissue border.',
-      basePrice: 2499.0,
+      categorySlug: 'handcrafted-jewellery',
+      name: 'Raw Tourmaline & Hand-Carved Brass Ring',
+      slug: 'uncut-tourmaline-handcrafted-brass-ring',
+      description: 'Cast in 100% recycled architectural brass using the ancient lost-wax technique. Features an uncut, conflict-free raw green tourmaline set in organic sculpted prongs. Lead-free, nickel-free, and ethically certified.',
+      basePrice: 8900.0,
       isPublished: true,
       isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller2Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'SAR-CHN-IND', name: 'Indigo Blue', stock: 12, size: 'Free Size', color: 'Indigo' },
-        { sku: 'SAR-CHN-MUST', name: 'Mustard Yellow', stock: 10, size: 'Free Size', color: 'Mustard' },
+        { sku: 'JWL-RNG-SZ6', name: 'Size 6 / Verdant Green Tourmaline', stock: 7, size: '6' },
+        { sku: 'JWL-RNG-SZ7', name: 'Size 7 / Verdant Green Tourmaline', stock: 10, size: '7' },
+        { sku: 'JWL-RNG-SZ8', name: 'Size 8 / Verdant Green Tourmaline', stock: 6, size: '8' },
       ],
     },
 
-    // --- Category 4: Footwear ---
+    // --- Category 4: Organic Khadi & Ahimsa Cotton ---
     {
-      categorySlug: 'footwear',
-      name: 'Handcrafted Leather Kolhapuri Chappals',
-      slug: 'handcrafted-leather-kolhapuri-chappals',
-      description: 'Authentic vegetable-tanned handcrafted buffalo leather Kolhapuris with hand-braided straps and durable cord sole.',
-      basePrice: 1299.0,
-      isPublished: true,
-      isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'FTW-KOL-7', name: 'Size UK 7 / Tan', stock: 10, size: 'UK 7', color: 'Tan' },
-        { sku: 'FTW-KOL-8', name: 'Size UK 8 / Tan', stock: 14, size: 'UK 8', color: 'Tan' },
-        { sku: 'FTW-KOL-9', name: 'Size UK 9 / Tan', stock: 12, size: 'UK 9', color: 'Tan' },
-      ],
-    },
-    {
-      categorySlug: 'footwear',
-      name: 'Embroidered Velvet Juttis',
-      slug: 'embroidered-velvet-juttis',
-      description: 'Handcrafted Punjabi mojaris with plush memory foam insole and delicate zari pearl embroidery on midnight black velvet.',
-      basePrice: 1699.0,
+      categorySlug: 'organic-khadi',
+      name: 'Solar-Spun Ahimsa Silk & Khadi Tunic',
+      slug: 'handspun-ahimsa-silk-khadi-tunic',
+      description: 'Woven from handspun organic rainfed cotton blended with peace (Ahimsa) silk, where silkworms are allowed to hatch naturally without harm. Woven on traditional wooden handlooms in Wardha. Breathable, hypoallergenic, and finished with mother-of-pearl buttons.',
+      basePrice: 16500.0,
       isPublished: true,
       isFeatured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1560769629-975ec94e6a86?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller2Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'FTW-JUT-36', name: 'EU 36 / Black', stock: 8, size: 'EU 36', color: 'Black' },
-        { sku: 'FTW-JUT-38', name: 'EU 38 / Black', stock: 12, size: 'EU 38', color: 'Black' },
-        { sku: 'FTW-JUT-40', name: 'EU 40 / Black', stock: 6, size: 'EU 40', color: 'Black' },
+        { sku: 'KHA-TUN-S', name: 'Small / Organic Unbleached Ivory', stock: 8, size: 'S', color: 'Ivory' },
+        { sku: 'KHA-TUN-M', name: 'Medium / Organic Unbleached Ivory', stock: 12, size: 'M', color: 'Ivory' },
+        { sku: 'KHA-TUN-L', name: 'Large / Organic Unbleached Ivory', stock: 7, size: 'L', color: 'Ivory' },
       ],
     },
     {
-      categorySlug: 'footwear',
-      name: 'Casual Canvas Low-Top Sneakers',
-      slug: 'casual-canvas-low-top-sneakers',
-      description: 'Everyday vulcanized rubber sole sneakers with breathable organic canvas upper and cushioned arch support.',
-      basePrice: 1899.0,
+      categorySlug: 'organic-khadi',
+      name: 'Indigo Dabu Hand-Block Trench Robe',
+      slug: 'indigo-dabu-hand-block-trench-robe',
+      description: 'Crafted with mud-resist Dabu hand-block printing by 5th-generation Chippa artisan families in Bagru. Dyed through multiple dips in 15-year-old living indigo fermentation pits. Tailored from heavy 100% organic cotton twill with relaxed kimono sleeves.',
+      basePrice: 19800.0,
+      isPublished: true,
+      isFeatured: true,
+      sellerId: seller2Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=1000&q=80',
+      variants: [
+        { sku: 'KHA-ROB-SM', name: 'Size 1 (Fits US 4 - 8 / S-M)', stock: 9, size: 'S-M', color: 'Living Indigo' },
+        { sku: 'KHA-ROB-LXL', name: 'Size 2 (Fits US 10 - 14 / L-XL)', stock: 6, size: 'L-XL', color: 'Living Indigo' },
+      ],
+    },
+    {
+      categorySlug: 'organic-khadi',
+      name: 'Handwoven Jamdani Muslin Overlay',
+      slug: 'handwoven-jamdani-muslin-overlay',
+      description: 'A celebration of Bengal 200-count sheer organic muslin handwoven with delicate Jamdani geometric motifs. Takes over 45 days of rhythmic shuttle work on pit looms. Incredibly lightweight, semi-sheer, and luxuriously soft against sensitive skin.',
+      basePrice: 22400.0,
       isPublished: true,
       isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1525966222134-fcfa99b8ae77?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller2Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'FTW-SNK-8', name: 'UK 8 / White', stock: 15, size: 'UK 8', color: 'White' },
-        { sku: 'FTW-SNK-9', name: 'UK 9 / White', stock: 18, size: 'UK 9', color: 'White' },
-        { sku: 'FTW-SNK-10', name: 'UK 10 / White', stock: 10, size: 'UK 10', color: 'White' },
+        { sku: 'KHA-JAM-BTI', name: 'Geometric Buti Motif (Free Size)', stock: 5, size: 'One Size' },
+        { sku: 'KHA-JAM-JAL', name: 'Intricate Floral Jaal Weave', stock: 4, size: 'One Size', priceOverride: 24800.0 },
       ],
     },
 
-    // --- Category 5: Jewellery & Accessories ---
+    // --- Category 5: Sustainable Living & Decor ---
     {
-      categorySlug: 'jewellery-accessories',
-      name: 'Kundan Meenakari Choker Necklace Set',
-      slug: 'kundan-meenakari-choker-necklace-set',
-      description: 'Traditional 22K gold-plated bridal choker necklace set studded with uncut glass polki stones, emerald beads, and matching jhumki earrings.',
-      basePrice: 3899.0,
+      categorySlug: 'sustainable-decor',
+      name: 'Reclaimed Teak & Brass Inlay Tray',
+      slug: 'reclaimed-teakwood-brass-inlay-tray',
+      description: 'Hand-chiseled by Saharanpur woodcraft artisans from salvaged 80-year-old structural teakwood beams. Inlaid with solid recycled brass geometric motifs and finished with food-grade cold-pressed walnut oil and natural carnauba wax. Zero trees cut.',
+      basePrice: 12500.0,
       isPublished: true,
       isFeatured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller1Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'JWL-KUN-EM', name: 'Emerald Green', stock: 8, size: 'Adjustable', color: 'Green' },
-        { sku: 'JWL-KUN-RU', name: 'Ruby Red', stock: 7, size: 'Adjustable', color: 'Red' },
+        { sku: 'DEC-TRY-STD', name: 'Standard Platter (16 x 11 in)', stock: 8, size: '16x11 in' },
+        { sku: 'DEC-TRY-GRD', name: 'Grande Banquet Tray (20 x 14 in)', stock: 5, size: '20x14 in', priceOverride: 15200.0 },
       ],
     },
     {
-      categorySlug: 'jewellery-accessories',
-      name: 'Silver Oxide Tribal Statement Jhumkas',
-      slug: 'silver-oxide-tribal-statement-jhumkas',
-      description: '925 sterling silver antique-finish chandelier dome jhumkas featuring delicate hanging ghungroos.',
-      basePrice: 1199.0,
+      categorySlug: 'sustainable-decor',
+      name: 'Hand-Hammered Kansa Bronze Dining Thali',
+      slug: 'hand-hammered-kansa-dining-set',
+      description: 'Hand-forged by Kansara bell-metal artisans using the ancient 78% Copper & 22% Tin alloy documented in Ayurvedic texts for its alkalizing and wellness properties. Each piece is heated over charcoal embers and hand-beaten thousands of times to produce a resonant golden gleam.',
+      basePrice: 21000.0,
       isPublished: true,
-      isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80',
+      isFeatured: true,
+      sellerId: seller2Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'JWL-JHM-SIL', name: 'Oxidized Silver', stock: 20, size: 'Standard', color: 'Silver' },
+        { sku: 'DEC-KAN-4PC', name: '4-Piece Individual Banquet Service', stock: 7, size: '4-Piece Set', priceOverride: 21000.0 },
+        { sku: 'DEC-KAN-6PC', name: '6-Piece Royal Feast Collection', stock: 4, size: '6-Piece Set', priceOverride: 28500.0 },
       ],
     },
     {
-      categorySlug: 'jewellery-accessories',
-      name: 'Top-Grain Leather Minimalist Wallet',
-      slug: 'top-grain-leather-minimalist-wallet',
-      description: 'RFID-protected bi-fold wallet made from premium full-grain Indian leather with 8 card slots and currency compartment.',
-      basePrice: 899.0,
+      categorySlug: 'sustainable-decor',
+      name: 'Jaipur Blue Pottery Botanical Amphora',
+      slug: 'jaipur-blue-pottery-botanical-vessel',
+      description: 'Distinctive Jaipur Blue Pottery made without clay using quartz stone powder, raw fuller earth, and natural gum. Hand-painted with cobalt oxide botanical motifs and glazed in low-fire wood kilns. Clay-free construction prevents agricultural soil depletion.',
+      basePrice: 9400.0,
       isPublished: true,
       isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1627123424574-724758594e93?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller2Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'ACC-WLT-BRN', name: 'Cognac Brown', stock: 25, size: 'Compact', color: 'Brown' },
-        { sku: 'ACC-WLT-BLK', name: 'Charcoal Black', stock: 20, size: 'Compact', color: 'Black' },
+        { sku: 'DEC-POT-10', name: '10-inch Fluted Urn / Cobalt', stock: 6, size: '10 inch' },
+        { sku: 'DEC-POT-14', name: '14-inch Master Amphora / Persian Blue', stock: 4, size: '14 inch', priceOverride: 11800.0 },
       ],
     },
 
-    // --- Category 6: Home & Living ---
+    // --- Category 6: Botanical Wellness & Pure Aromas ---
     {
-      categorySlug: 'home-living',
-      name: '300 TC Organic Cotton King Bedsheet Set',
-      slug: '300-tc-organic-cotton-king-bedsheet-set',
-      description: 'Crisp percale weave 100% long-staple Indian organic cotton sheet set. Includes 1 King flat sheet and 2 matching pillow covers.',
-      basePrice: 1999.0,
+      categorySlug: 'botanical-wellness',
+      name: 'Kannauj Mitti Attar (Scent of Monsoon Earth)',
+      slug: 'kannauj-mitti-attar-monsoon-earth',
+      description: 'The ancient art of capturing the fragrance of wet baked earth (petrichor). Riverbed alluvial clay discs are baked, then hydro-distilled into pure sandalwood oil in copper cauldrons (Degs & Bhapkas) over slow wood fire in Kannauj, UP. 100% natural, alcohol-free, and vegan.',
+      basePrice: 7800.0,
       isPublished: true,
       isFeatured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1583847268964-b28dc8f51f92?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller1Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1608571423902-eed4a5ad8108?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'HOM-BED-WHT', name: 'King / Ivory White', stock: 15, size: 'King', color: 'Ivory' },
-        { sku: 'HOM-BED-BLU', name: 'King / Slate Blue', stock: 12, size: 'King', color: 'Slate Blue' },
+        { sku: 'WEL-MIT-10ML', name: '10ml Handcrafted Cut-Crystal Flacon', stock: 15, size: '10ml', priceOverride: 7800.0 },
+        { sku: 'WEL-MIT-25ML', name: '25ml Heritage Brass Casket Edition', stock: 8, size: '25ml', priceOverride: 14500.0 },
       ],
     },
     {
-      categorySlug: 'home-living',
-      name: 'Hand-Tufted Woollen Geometric Rug',
-      slug: 'hand-tufted-woollen-geometric-rug',
-      description: 'Artisan-crafted 4x6 feet heavy pile area rug woven from New Zealand wool with Scandinavian geometric patterns.',
-      basePrice: 5499.0,
+      categorySlug: 'botanical-wellness',
+      name: 'Wild Kashmir Saffron & Rosehip Facial Elixir',
+      slug: 'wild-kashmir-saffron-rose-elixir',
+      description: 'A slow-infused botanical facial oil featuring hand-harvested Grade-A Mongra saffron stigmas from Pampore, Kashmir and wild-foraged Himalayan rosehip oil. Cold-pressed, unrefined, and packed in biophotonic ultraviolet glass to preserve enzymatic vitality.',
+      basePrice: 6500.0,
       isPublished: true,
       isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller1Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1617897903246-719242758050?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'HOM-RUG-46', name: '4x6 Feet / Monochrome', stock: 5, size: '4x6 ft', color: 'Grey' },
+        { sku: 'WEL-SAF-30ML', name: '30ml Dropper Flacon', stock: 14, size: '30ml' },
+        { sku: 'WEL-SAF-50ML', name: '50ml Apothecary Reserve', stock: 9, size: '50ml', priceOverride: 9200.0 },
       ],
     },
     {
-      categorySlug: 'home-living',
-      name: 'Woven Cotton Macrame Cushion Covers (Set of 2)',
-      slug: 'woven-cotton-macrame-cushion-covers-set-of-2',
-      description: 'Bohemian 16x16 inch handmade cotton macrame textured cushion covers with hidden zipper closures.',
-      basePrice: 799.0,
+      categorySlug: 'botanical-wellness',
+      name: 'Temple Sacred Flower Charcoal-Free Dhoop',
+      slug: 'temple-flower-recycled-sacred-dhoop',
+      description: 'Eco-conscious ceremonial incense made from sacred temple flowers collected from river banks, blended with wild loban (frankincense) and sandalwood powder. 100% charcoal-free, non-toxic, clean burning, and packaged in seed-paper boxes that can be planted after use.',
+      basePrice: 2400.0,
       isPublished: true,
       isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?auto=format&fit=crop&w=800&q=80',
+      sellerId: seller2Profile.id,
+      imageUrl: 'https://images.unsplash.com/photo-1602928321679-560bb453f190?auto=format&fit=crop&w=1000&q=80',
       variants: [
-        { sku: 'HOM-CUS-NAT', name: 'Natural Beige', stock: 30, size: '16x16 in', color: 'Beige' },
-      ],
-    },
-
-    // --- Category 7: Beauty & Personal Care ---
-    {
-      categorySlug: 'beauty-personal-care',
-      name: 'Kumkumadi Ayurvedic Miracle Night Serum',
-      slug: 'kumkumadi-ayurvedic-miracle-night-serum',
-      description: 'Cold-pressed authentic Ayurvedic facial oil infused with Kashmiri saffron, sandalwood, and lotus pollen for natural radiance.',
-      basePrice: 1299.0,
-      isPublished: true,
-      isFeatured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1608248597359-5f257bbdb597?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'BTY-KUM-30', name: '30ml Bottle', stock: 40, size: '30ml', color: 'Saffron' },
-      ],
-    },
-    {
-      categorySlug: 'beauty-personal-care',
-      name: 'Pure Cold-Pressed Virgin Coconut Oil',
-      slug: 'pure-cold-pressed-virgin-coconut-oil',
-      description: '100% edible-grade wood-pressed virgin coconut oil extracted from sun-dried Kerala coconuts.',
-      basePrice: 499.0,
-      isPublished: true,
-      isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'BTY-COC-500', name: '500ml Glass Jar', stock: 50, size: '500ml', color: 'Clear' },
-      ],
-    },
-    {
-      categorySlug: 'beauty-personal-care',
-      name: 'Handcrafted Neem & Tea Tree Bathing Soap (Pack of 3)',
-      slug: 'handcrafted-neem-tea-tree-bathing-soap-pack-of-3',
-      description: 'Sulfate and paraben-free artisanal cold-process herbal soap enriched with pure essential oils.',
-      basePrice: 399.0,
-      isPublished: true,
-      isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1607006314144-8cb3897d2e5d?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'BTY-SOP-3X', name: 'Pack of 3 (125g each)', stock: 60, size: '3 x 125g', color: 'Green' },
-      ],
-    },
-
-    // --- Category 8: Kitchen & Dining ---
-    {
-      categorySlug: 'kitchen-dining',
-      name: 'Heavy Pre-Seasoned Cast Iron Kadai',
-      slug: 'heavy-pre-seasoned-cast-iron-kadai',
-      description: 'Traditional 2.5-liter deep wok pre-seasoned with 100% natural vegetable oil for lifetime non-stick cooking without toxic coatings.',
-      basePrice: 1599.0,
-      isPublished: true,
-      isFeatured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'KIT-KAD-25', name: '2.5 Litre (26cm)', stock: 20, size: '2.5L', color: 'Black' },
-        { sku: 'KIT-KAD-35', name: '3.5 Litre (30cm)', stock: 15, size: '3.5L', color: 'Black', priceOverride: 1899.0 },
-      ],
-    },
-    {
-      categorySlug: 'kitchen-dining',
-      name: 'Pure Brass Hammered Dinner Thali Set (6-Piece)',
-      slug: 'pure-brass-hammered-dinner-thali-set-6-piece',
-      description: 'Hand-hammered authentic Kansa-finish brass dinner set. Includes 1 large thali, 2 katoris, 1 halwa plate, 1 glass, and 1 brass spoon.',
-      basePrice: 3299.0,
-      isPublished: true,
-      isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'KIT-THL-6P', name: '6-Piece Set / Golden', stock: 10, size: 'Standard Set', color: 'Brass Gold' },
-      ],
-    },
-    {
-      categorySlug: 'kitchen-dining',
-      name: 'Glazed Ceramic Dinner Plates (Set of 4)',
-      slug: 'glazed-ceramic-dinner-plates-set-of-4',
-      description: 'Microwave and dishwasher-safe handcrafted stoneware studio pottery dinner plates in speckled terracotta finish.',
-      basePrice: 1499.0,
-      isPublished: true,
-      isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1584269600464-37b1b58a9fe7?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'KIT-PLT-4P', name: 'Set of 4 (10 inch)', stock: 18, size: '10 inch', color: 'Terracotta' },
-      ],
-    },
-
-    // --- Category 9: Handcrafted Decor ---
-    {
-      categorySlug: 'handcrafted-decor',
-      name: 'Brass Dhokra Tribal Art Figurine',
-      slug: 'brass-dhokra-tribal-art-figurine',
-      description: 'Lost-wax casting non-ferrous metal folk art sculpture handcrafted by indigenous Bastar artisans.',
-      basePrice: 1799.0,
-      isPublished: true,
-      isFeatured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'DEC-DHK-HOR', name: 'Tribal Horse (8 inch)', stock: 12, size: '8 inch', color: 'Antique Brass' },
-      ],
-    },
-    {
-      categorySlug: 'handcrafted-decor',
-      name: 'Hand-Painted Blue Pottery Ceramic Vase',
-      slug: 'hand-painted-blue-pottery-ceramic-vase',
-      description: 'Traditional Jaipur blue pottery quartz-clay flower vase with cobalt blue and turquoise Mughal floral motifs.',
-      basePrice: 1099.0,
-      isPublished: true,
-      isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'DEC-POT-10', name: '10 inch Flower Vase', stock: 16, size: '10 inch', color: 'Cobalt Blue' },
-      ],
-    },
-    {
-      categorySlug: 'handcrafted-decor',
-      name: 'Carved Sheesham Wood Jharokha Mirror',
-      slug: 'carved-sheesham-wood-jharokha-mirror',
-      description: 'Rajasthani arched palace window style hand-carved solid Indian rosewood wall mirror with distressed brass accents.',
-      basePrice: 2699.0,
-      isPublished: true,
-      isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1618221195710-dd6b41faaea6?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'DEC-JHR-24', name: '18x24 inch / Walnut', stock: 8, size: '18x24 in', color: 'Walnut Brown' },
-      ],
-    },
-
-    // --- Category 10: Menswear Essentials ---
-    {
-      categorySlug: 'menswear-essentials',
-      name: 'Classic Oxford Cotton Button-Down Shirt',
-      slug: 'classic-oxford-cotton-button-down-shirt',
-      description: 'Tailored fit heavyweight Oxford weave formal/casual shirt featuring mother-of-pearl buttons and curved hemline.',
-      basePrice: 1599.0,
-      isPublished: true,
-      isFeatured: true,
-      imageUrl: 'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'MEN-SHT-39', name: 'Size 39 / Sky Blue', stock: 15, size: '39', color: 'Sky Blue' },
-        { sku: 'MEN-SHT-40', name: 'Size 40 / Sky Blue', stock: 20, size: '40', color: 'Sky Blue' },
-        { sku: 'MEN-SHT-42', name: 'Size 42 / Sky Blue', stock: 14, size: '42', color: 'Sky Blue' },
-      ],
-    },
-    {
-      categorySlug: 'menswear-essentials',
-      name: 'Slim Tapered Stretch Chino Trousers',
-      slug: 'slim-tapered-stretch-chino-trousers',
-      description: 'Mid-rise flat-front chinos crafted from 98% cotton and 2% elastane for unrestricted stretch and sharp tailoring.',
-      basePrice: 1799.0,
-      isPublished: true,
-      isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1473966968600-fa801b869a1a?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'MEN-CHN-32', name: '32 Waist / Khaki', stock: 18, size: '32', color: 'Khaki' },
-        { sku: 'MEN-CHN-34', name: '34 Waist / Khaki', stock: 22, size: '34', color: 'Khaki' },
-        { sku: 'MEN-CHN-36', name: '36 Waist / Khaki', stock: 12, size: '36', color: 'Khaki' },
-      ],
-    },
-    {
-      categorySlug: 'menswear-essentials',
-      name: 'Heavyweight Supima Cotton Crewneck T-Shirt',
-      slug: 'heavyweight-supima-cotton-crewneck-t-shirt',
-      description: '220 GSM American Supima extra-long staple cotton t-shirt with ribbed collar that resists sagging wash after wash.',
-      basePrice: 999.0,
-      isPublished: true,
-      isFeatured: false,
-      imageUrl: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?auto=format&fit=crop&w=800&q=80',
-      variants: [
-        { sku: 'MEN-TEE-M', name: 'Medium / Navy', stock: 25, size: 'M', color: 'Navy Blue' },
-        { sku: 'MEN-TEE-L', name: 'Large / Navy', stock: 30, size: 'L', color: 'Navy Blue' },
-        { sku: 'MEN-TEE-XL', name: 'XL / Navy', stock: 15, size: 'XL', color: 'Navy Blue' },
+        { sku: 'WEL-DHP-30', name: 'Box of 30 Cones with Pure Brass Holder', stock: 20, size: '30 Cones' },
+        { sku: 'WEL-DHP-60', name: 'Artisan Wood Chest (60 Cones)', stock: 12, size: '60 Cones', priceOverride: 3900.0 },
       ],
     },
   ];
@@ -687,29 +514,12 @@ async function main() {
   for (const item of productsData) {
     const categoryId = categoryMap[item.categorySlug];
     if (!categoryId) {
-      console.warn(`Category not found for slug: ${item.categorySlug}`);
+      console.warn(`Category slug not found for product: ${item.slug}`);
       continue;
     }
 
-    let sellerId: string | null = null;
-    if (['ethnic-wear', 'sarees', 'handcrafted-decor'].includes(item.categorySlug)) {
-      sellerId = seller1Profile.id;
-    } else if (['western-wear', 'home-living', 'kitchen-dining'].includes(item.categorySlug)) {
-      sellerId = seller2Profile.id;
-    }
-
-    const product = await prisma.product.upsert({
-      where: { slug: item.slug },
-      update: {
-        name: item.name,
-        description: item.description,
-        basePrice: item.basePrice,
-        isPublished: item.isPublished,
-        isFeatured: item.isFeatured,
-        categoryId,
-        sellerId,
-      },
-      create: {
+    const product = await prisma.product.create({
+      data: {
         name: item.name,
         slug: item.slug,
         description: item.description,
@@ -717,12 +527,12 @@ async function main() {
         isPublished: item.isPublished,
         isFeatured: item.isFeatured,
         categoryId,
-        sellerId,
+        sellerId: item.sellerId,
         images: {
           create: [
             {
               url: item.imageUrl,
-              altText: `${item.name} primary photo`,
+              altText: `${item.name} artisanal craft photo`,
               sortOrder: 0,
             },
           ],
@@ -732,22 +542,18 @@ async function main() {
 
     // Seed variants for this product
     for (const v of item.variants) {
-      await prisma.productVariant.upsert({
-        where: { sku: v.sku },
-        update: {
-          name: v.name,
-          stockQuantity: v.stock,
-          priceOverride: (v as any).priceOverride || null,
-          attributes: { size: v.size, color: v.color },
-        },
-        create: {
+      await prisma.productVariant.create({
+        data: {
           productId: product.id,
           sku: v.sku,
           name: v.name,
           stockQuantity: v.stock,
           priceOverride: (v as any).priceOverride || null,
-          attributes: { size: v.size, color: v.color },
-          weightGrams: 300,
+          attributes: {
+            ...((v as any).size ? { size: (v as any).size } : {}),
+            ...((v as any).color ? { color: (v as any).color } : {}),
+          },
+          weightGrams: 350,
         },
       });
     }
@@ -755,8 +561,8 @@ async function main() {
     seededCount++;
   }
 
-  console.log(`📦 ${seededCount} multi-variant products seeded across 10 categories.`);
-  console.log('✅ Database seeding completed successfully!');
+  console.log(`📦 ${seededCount} bespoke luxury & eco-friendly products seeded across 6 categories.`);
+  console.log('✅ Handcrafted & Sustainable Database Seeding Completed Successfully!');
 }
 
 main()

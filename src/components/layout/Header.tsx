@@ -308,40 +308,40 @@ export function Header() {
               All Collections
             </Link>
             <Link
-              href="/products?category=ethnic-wear"
+              href="/products?category=artisanal-handlooms"
               className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
             >
-              Artisanal Ethnic
+              Handlooms & Silks
             </Link>
             <Link
-              href="/products?category=sarees"
+              href="/products?category=pashmina-shawls"
               className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
             >
-              Banarasi & Silks
+              Eco Pashmina
             </Link>
             <Link
-              href="/products?category=handloom-fabrics"
+              href="/products?category=handcrafted-jewellery"
               className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
             >
-              Handloom Cottons
+              Heritage Jewellery
             </Link>
             <Link
-              href="/products?category=mens-kurtas"
+              href="/products?category=organic-khadi"
               className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
             >
-              Men&apos;s Couture
+              Organic Khadi
             </Link>
             <Link
-              href="/products?category=jewellery"
+              href="/products?category=sustainable-decor"
               className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
             >
-              Fine Jewellery
+              Sustainable Living
             </Link>
             <Link
-              href="/products?category=home-decor"
+              href="/products?category=botanical-wellness"
               className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
             >
-              Living & Textiles
+              Botanical Wellness
             </Link>
           </nav>
         </div>
@@ -389,46 +389,46 @@ export function Header() {
                 All Collections
               </Link>
               <Link
-                href="/products?category=ethnic-wear"
+                href="/products?category=artisanal-handlooms"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="py-3 hover:text-luxury-champagne transition-colors"
               >
-                Artisanal Ethnic
+                Artisanal Handlooms & Silks
               </Link>
               <Link
-                href="/products?category=sarees"
+                href="/products?category=pashmina-shawls"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="py-3 hover:text-luxury-champagne transition-colors"
               >
-                Banarasi & Silks
+                Eco Cashmere & Pashmina
               </Link>
               <Link
-                href="/products?category=handloom-fabrics"
+                href="/products?category=handcrafted-jewellery"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="py-3 hover:text-luxury-champagne transition-colors"
               >
-                Handloom Cottons
+                Heritage Handcrafted Jewellery
               </Link>
               <Link
-                href="/products?category=mens-kurtas"
+                href="/products?category=organic-khadi"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="py-3 hover:text-luxury-champagne transition-colors"
               >
-                Men&apos;s Couture
+                Organic Khadi & Ahimsa Cotton
               </Link>
               <Link
-                href="/products?category=jewellery"
+                href="/products?category=sustainable-decor"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="py-3 hover:text-luxury-champagne transition-colors"
               >
-                Fine Jewellery
+                Sustainable Living & Decor
               </Link>
               <Link
-                href="/products?category=home-decor"
+                href="/products?category=botanical-wellness"
                 onClick={() => setIsMobileMenuOpen(false)}
                 className="py-3 hover:text-luxury-champagne transition-colors"
               >
-                Living & Textiles
+                Botanical Wellness & Aromas
               </Link>
             </div>
 

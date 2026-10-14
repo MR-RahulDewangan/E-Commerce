@@ -64,10 +64,10 @@ export default async function HomePage() {
               <ArrowRight className="w-4 h-4" aria-hidden="true" />
             </Link>
             <Link
-              href="/products?category=sarees"
+              href="/products?category=artisanal-handlooms"
               className="w-full sm:w-auto px-8 py-4 bg-transparent border border-stone-400 hover:border-white text-white text-xs font-sans uppercase tracking-[0.18em] font-medium transition duration-200"
             >
-              The Silk & Saree Gallery
+              The Handloom & Silk Gallery
             </Link>
           </div>
         </div>
@@ -251,10 +251,10 @@ export default async function HomePage() {
             </p>
             <div className="pt-2">
               <Link
-                href="/products?category=handloom-fabrics"
+                href="/products?category=organic-khadi"
                 className="inline-flex items-center gap-2 px-6 py-3 border border-foreground text-foreground hover:bg-foreground hover:text-background text-[11px] font-sans uppercase tracking-[0.18em] font-medium transition duration-200"
               >
-                <span>Discover Handloom Cottons</span>
+                <span>Discover Organic Khadi</span>
                 <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
               </Link>
             </div>

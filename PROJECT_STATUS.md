@@ -20,7 +20,7 @@
 | **Admin Backoffice Portal** | 🟢 100% Complete | Dedicated `/admin` portal with responsive sidebar, live revenue & order KPIs, product/variant CRUD, atomic inventory adjustments with audit history, order fulfillment dispatch with courier tracking attachment, and gateway refund management. |
 | **Domain Logic Core** | 🟢 Verified & Tested | Auth crypto, 14-day rolling sessions, password reset with 15-min single-use tokens, catalog query module, Redis caching layer (`src/modules/catalog/cache.ts`), GST pricing engine (paise), concurrency-safe stock reservation, payment gateways (Mock/Razorpay/COD), order state machine, checkout order creation, signature verification, Razorpay webhook ingestion, stock reservation release worker, and rate limiting. |
 | **Test Suite Status** | 🟢 100% Passing | 205/205 Vitest unit & integration tests passing (34 test files), 2/2 Playwright E2E browser tests passing (Chrome), 50-worker concurrency stress test passed, zero lint warnings/errors, zero TypeScript errors, clean production build (45 static & dynamic routes compiled). |
-| **Database Status** | 🟢 Migrated & Seeded | PostgreSQL 16 container running and healthy; seeded with admin, customer, 2 dummy sellers, 10 categories, 30 products, 62 multi-variants. Binary-safe backup & verification verified. |
+| **Database Status** | 🟢 Migrated & Seeded | PostgreSQL 16 container running and healthy; seeded with admin, customer, 2 verified sustainable luxury sellers (Aura Handlooms of Varanasi, Kashmir Craft Atelier), 6 handcrafted luxury categories, 18 bespoke eco-friendly products (Chanderi silks, Changthangi pashmina, Bidriware, Ahimsa silk, bell metal Kansa, floral attar), and 36 multi-variants. Binary-safe backup & verification verified. |
 
 ---
 

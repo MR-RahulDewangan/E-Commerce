@@ -207,7 +207,7 @@ describe('Catalog Query Validation & Logic (Unit Tests with Mocked DB)', () => {
         } as any,
       ]);
 
-      const categories = await getCatalogCategories();
+      const categories = await getCatalogCategories({ skipCache: true });
       expect(categories.length).toBe(1);
       expect(categories[0].name).toBe('Ethnic Wear');
       expect(categories[0].productCount).toBe(12);

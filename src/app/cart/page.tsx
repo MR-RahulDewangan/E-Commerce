@@ -60,10 +60,10 @@ export default function CartPage() {
           </p>
           <div className="flex flex-wrap justify-center gap-2">
             {[
-              { label: 'Sarees', href: '/products?category=sarees' },
-              { label: 'Kurtas & Tunics', href: '/products?category=kurtas' },
-              { label: 'Pashmina Shawls', href: '/products?category=shawls' },
-              { label: 'Handloom Dupattas', href: '/products?category=dupattas' },
+              { label: 'Artisanal Silks', href: '/products?category=artisanal-handlooms' },
+              { label: 'Eco Cashmere', href: '/products?category=pashmina-shawls' },
+              { label: 'Handcrafted Jewellery', href: '/products?category=handcrafted-jewellery' },
+              { label: 'Organic Khadi', href: '/products?category=organic-khadi' },
             ].map((cat) => (
               <Link
                 key={cat.label}

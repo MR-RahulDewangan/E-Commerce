@@ -84,34 +84,34 @@ export function Footer() {
           <ul className="space-y-2.5 text-stone-400">
             <li>
               <Link
-                href="/products?category=sarees"
+                href="/products?category=artisanal-handlooms"
                 className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block"
               >
-                Banarasi & Silk Sarees
+                Artisanal Handlooms & Silks
               </Link>
             </li>
             <li>
               <Link
-                href="/products?category=ethnic-wear"
+                href="/products?category=pashmina-shawls"
                 className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block"
               >
-                Artisanal Ethnic Wear
+                Eco Cashmere & Pashmina
               </Link>
             </li>
             <li>
               <Link
-                href="/products?category=handloom-fabrics"
+                href="/products?category=handcrafted-jewellery"
                 className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block"
               >
-                Pure Handloom Cottons
+                Heritage Handcrafted Jewellery
               </Link>
             </li>
             <li>
               <Link
-                href="/products?category=mens-kurtas"
+                href="/products?category=organic-khadi"
                 className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block"
               >
-                Men&apos;s Festive Kurtas
+                Organic Khadi & Ahimsa Cotton
               </Link>
             </li>
             <li>
