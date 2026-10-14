@@ -7,8 +7,8 @@ import { CartDrawer } from '@/components/cart/CartDrawer';
 import { AuthModal } from '@/components/auth/AuthModal';
 
 export const metadata: Metadata = {
-  title: 'BharatStore | Handcrafted Indian Fashion & Home',
-  description: 'High-performance e-commerce platform for Indian retail with server-authoritative GST calculations.',
+  title: 'BharatStore Maison | Handcrafted Indian Luxury & Heritage',
+  description: 'High-performance luxury e-commerce platform for handcrafted Indian textiles and couture with server-authoritative GST calculations.',
 };
 
 export default function RootLayout({
@@ -18,7 +18,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased min-h-screen flex flex-col bg-zinc-50 text-zinc-900">
+      <body className="font-sans antialiased min-h-screen flex flex-col bg-background text-foreground">
         <AppProviders>
           <Header />
           <CartDrawer />

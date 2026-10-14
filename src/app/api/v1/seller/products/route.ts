@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireSellerOrAdmin } from '@/modules/auth/guards';
 import { getSellerProfile, getSellerProducts, createSellerProduct } from '@/modules/seller/service';
+import { invalidateCatalogCache } from '@/modules/catalog/cache';
 import { AuthError } from '@/modules/auth/service';
 import { z } from 'zod';
 
@@ -124,6 +125,8 @@ export async function POST(req: NextRequest) {
         },
       })),
     });
+
+    await invalidateCatalogCache();
 
     return NextResponse.json(
       {

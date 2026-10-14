@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
@@ -34,8 +34,8 @@ export function ProductCard({
   const { isInWishlist, toggleWishlist } = useWishlist();
 
   const isFavorited = firstVariantId ? isInWishlist(firstVariantId) : false;
-  const [isAdding, setIsAdding] = React.useState(false);
-  const [justAdded, setJustAdded] = React.useState(false);
+  const [isAdding, setIsAdding] = useState(false);
+  const [justAdded, setJustAdded] = useState(false);
 
   const handleQuickAdd = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -59,31 +59,33 @@ export function ProductCard({
   };
 
   return (
-    <div className="group relative bg-white border border-zinc-200 rounded-xl overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col">
-      {/* Thumbnail Container */}
-      <Link href={`/products/${slug}`} className="block relative aspect-3/4 bg-zinc-100 overflow-hidden">
-        {imageUrl ? (
-          <Image
-            src={imageUrl}
-            alt={name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-xs text-zinc-400">
-            No image available
-          </div>
-        )}
+    <article className="group relative bg-card border border-border transition-all duration-300 hover:border-luxury-champagne hover:shadow-sm flex flex-col h-full">
+      {/* Thumbnail Container with Luxury Aspect Ratio */}
+      <div className="relative aspect-[3/4] bg-muted overflow-hidden">
+        <Link href={`/products/${slug}`} className="block w-full h-full" tabIndex={-1}>
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={name}
+              fill
+              className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center text-xs text-muted-foreground uppercase tracking-widest font-sans">
+              Artisan Piece
+            </div>
+          )}
+        </Link>
 
-        {/* Badges */}
-        <div className="absolute top-2.5 left-2.5 flex flex-col gap-1 z-10">
+        {/* Status Badges */}
+        <div className="absolute top-3 left-3 flex flex-col gap-1 z-10 pointer-events-none">
           {!inStock ? (
-            <span className="bg-zinc-900/80 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded">
-              Out of Stock
+            <span className="bg-luxury-obsidian/90 backdrop-blur-xs text-luxury-ivory text-[9px] font-sans uppercase tracking-widest px-2 py-0.5 border border-stone-700">
+              Sold Out
             </span>
           ) : (
-            <span className="bg-emerald-600/90 backdrop-blur-xs text-white text-[10px] font-bold px-2 py-0.5 rounded">
+            <span className="bg-background/90 backdrop-blur-xs text-foreground text-[9px] font-sans uppercase tracking-widest px-2 py-0.5 border border-border">
               In Stock
             </span>
           )}
@@ -94,63 +96,73 @@ export function ProductCard({
           <button
             type="button"
             onClick={handleToggleWishlist}
-            className={`absolute top-2.5 right-2.5 p-2 rounded-full backdrop-blur-xs transition z-10 ${
+            className={`absolute top-3 right-3 p-2 rounded-full backdrop-blur-xs transition z-10 cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring ${
               isFavorited
-                ? 'bg-rose-50 text-rose-600'
-                : 'bg-white/80 text-zinc-600 hover:text-rose-600 hover:bg-white'
+                ? 'bg-rose-50 text-rose-700'
+                : 'bg-white/85 text-stone-700 hover:text-rose-700 hover:bg-white'
             }`}
-            aria-label="Wishlist toggle"
+            aria-label={isFavorited ? 'Remove from wishlist' : 'Save to wishlist'}
+            aria-pressed={isFavorited}
           >
-            <Heart className={`w-4 h-4 ${isFavorited ? 'fill-rose-600' : ''}`} />
+            <Heart
+              className={`w-3.5 h-3.5 transition-colors ${
+                isFavorited ? 'fill-rose-700 text-rose-700' : ''
+              }`}
+              aria-hidden="true"
+            />
           </button>
         )}
-      </Link>
+      </div>
 
-      {/* Details */}
-      <div className="p-3.5 flex flex-col flex-1 justify-between gap-3">
-        <div>
+      {/* Product Information */}
+      <div className="p-4 sm:p-5 flex flex-col flex-1 justify-between gap-3 bg-card">
+        <div className="space-y-1">
           {categoryName && (
-            <p className="text-[11px] font-semibold tracking-wider text-emerald-700 uppercase mb-0.5">
+            <p className="text-[10px] font-sans uppercase tracking-widest text-muted-foreground">
               {categoryName}
             </p>
           )}
-          <Link href={`/products/${slug}`}>
-            <h3 className="font-semibold text-zinc-900 text-sm line-clamp-2 hover:text-emerald-700 transition">
+          <h3 className="font-serif text-sm sm:text-base font-medium text-foreground line-clamp-2 leading-snug group-hover:text-luxury-charcoal transition-colors">
+            <Link href={`/products/${slug}`} className="focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
               {name}
-            </h3>
-          </Link>
+            </Link>
+          </h3>
         </div>
 
-        <div>
-          <div className="flex items-baseline gap-1.5">
-            <span className="font-bold text-zinc-900 text-base">
+        <div className="space-y-3 pt-1 border-t border-border/50">
+          <div className="flex items-baseline justify-between">
+            <span className="font-sans text-sm sm:text-base font-medium text-foreground tracking-tight">
               {formatInr(startingPrice)}
             </span>
-            <span className="text-[10px] text-zinc-400">incl. GST</span>
+            <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-sans">
+              Incl. 18% GST
+            </span>
           </div>
 
-          <div className="mt-3">
+          <div>
             {variantsCount > 1 ? (
               <Link
                 href={`/products/${slug}`}
-                className="block text-center w-full py-2 px-3 bg-zinc-100 hover:bg-zinc-200 text-zinc-800 text-xs font-semibold rounded-lg transition"
+                className="block text-center w-full py-2.5 px-3 bg-secondary text-secondary-foreground hover:bg-secondary-hover text-[11px] font-sans uppercase tracking-widest font-medium transition cursor-pointer border border-border"
               >
-                Choose Options ({variantsCount})
+                Select Options ({variantsCount})
               </Link>
             ) : inStock && firstVariantId ? (
               <button
                 type="button"
                 onClick={handleQuickAdd}
                 disabled={isAdding}
-                className="flex items-center justify-center gap-1.5 w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition disabled:opacity-50"
+                className="flex items-center justify-center gap-1.5 w-full py-2.5 px-3 bg-primary text-primary-foreground hover:bg-primary-hover text-[11px] font-sans uppercase tracking-widest font-medium transition cursor-pointer disabled:opacity-50"
               >
                 {justAdded ? (
                   <>
-                    <Check className="w-3.5 h-3.5" /> Added!
+                    <Check className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>Added to Bag</span>
                   </>
                 ) : (
                   <>
-                    <ShoppingBag className="w-3.5 h-3.5" /> Add to Cart
+                    <ShoppingBag className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>Add to Bag</span>
                   </>
                 )}
               </button>
@@ -158,7 +170,7 @@ export function ProductCard({
               <button
                 type="button"
                 disabled
-                className="w-full py-2 px-3 bg-zinc-100 text-zinc-400 text-xs font-semibold rounded-lg cursor-not-allowed"
+                className="w-full py-2.5 px-3 bg-muted text-muted-foreground text-[11px] font-sans uppercase tracking-widest font-medium cursor-not-allowed border border-border/60"
               >
                 Sold Out
               </button>
@@ -166,6 +178,6 @@ export function ProductCard({
           </div>
         </div>
       </div>
-    </div>
+    </article>
   );
 }

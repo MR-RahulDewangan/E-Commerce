@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
 import { formatInr } from '@/lib/utils';
-import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Truck } from 'lucide-react';
+import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Truck, RotateCcw, Sparkles } from 'lucide-react';
 
 const FREE_SHIPPING_THRESHOLD_INR = 999;
 
@@ -14,10 +14,16 @@ export default function CartPage() {
 
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
-        <div className="animate-pulse space-y-4 max-w-md mx-auto">
-          <div className="h-8 bg-zinc-200 rounded w-1/2 mx-auto" />
-          <div className="h-4 bg-zinc-200 rounded w-3/4 mx-auto" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="animate-pulse space-y-8 max-w-4xl mx-auto">
+          <div className="h-10 bg-stone-200/60 rounded-xs w-1/3" />
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 space-y-4">
+              <div className="h-32 bg-stone-200/60 rounded-xs" />
+              <div className="h-32 bg-stone-200/60 rounded-xs" />
+            </div>
+            <div className="h-64 bg-stone-200/60 rounded-xs" />
+          </div>
         </div>
       </div>
     );
@@ -25,20 +31,50 @@ export default function CartPage() {
 
   if (!cart || cart.items.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center space-y-4">
-        <div className="w-20 h-20 mx-auto bg-zinc-100 text-zinc-400 rounded-full flex items-center justify-center">
-          <ShoppingBag className="w-10 h-10" />
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center space-y-6">
+        <div className="w-20 h-20 mx-auto rounded-full bg-stone-100 border border-stone-200 text-muted-foreground flex items-center justify-center">
+          <ShoppingBag className="w-9 h-9 stroke-[1.25]" />
         </div>
-        <h1 className="text-2xl font-bold text-zinc-900">Your Shopping Cart is Empty</h1>
-        <p className="text-sm text-zinc-500 max-w-sm mx-auto">
-          Explore handcrafted handloom fabrics, silk sarees, kurtas, and artisanal treasures from across India.
-        </p>
-        <Link
-          href="/products"
-          className="inline-block mt-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition text-sm"
-        >
-          Explore Catalog
-        </Link>
+        <div className="space-y-2 max-w-md mx-auto">
+          <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            Your Shopping Bag is Empty
+          </h1>
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            Discover exquisite handlooms, pure mulberry silks, pashminas, and handcrafted treasures from master Indian artisans.
+          </p>
+        </div>
+
+        <div className="pt-2">
+          <Link
+            href="/products"
+            className="inline-block px-8 py-3.5 bg-primary hover:bg-charcoal text-primary-foreground text-xs uppercase tracking-widest font-medium transition shadow-xs"
+          >
+            Explore Catalog
+          </Link>
+        </div>
+
+        {/* Quick Collection Links */}
+        <div className="pt-10 border-t border-border/60 max-w-xl mx-auto">
+          <p className="text-xs uppercase tracking-widest text-muted-foreground mb-4 font-medium">
+            Curated Atelier Departments
+          </p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {[
+              { label: 'Sarees', href: '/products?category=sarees' },
+              { label: 'Kurtas & Tunics', href: '/products?category=kurtas' },
+              { label: 'Pashmina Shawls', href: '/products?category=shawls' },
+              { label: 'Handloom Dupattas', href: '/products?category=dupattas' },
+            ].map((cat) => (
+              <Link
+                key={cat.label}
+                href={cat.href}
+                className="px-4 py-1.5 text-xs border border-border/80 rounded-full hover:border-primary hover:text-foreground text-muted-foreground transition"
+              >
+                {cat.label}
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -55,85 +91,100 @@ export default function CartPage() {
   const remainingForFreeShipping = Math.max(0, FREE_SHIPPING_THRESHOLD_INR - subtotalInr);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
-          Shopping Cart ({itemCount} {itemCount === 1 ? 'item' : 'items'})
-        </h1>
-        <p className="text-xs sm:text-sm text-zinc-500 mt-1">
-          Items in your cart are subject to live stock reservation during checkout.
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10">
+      {/* Header */}
+      <div className="border-b border-border pb-6">
+        <div className="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2">
+          <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            Shopping Bag
+          </h1>
+          <span className="text-xs uppercase tracking-widest text-muted-foreground font-medium">
+            {itemCount} {itemCount === 1 ? 'Handcrafted Creation' : 'Handcrafted Creations'}
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground mt-2">
+          Creations in your bag are protected by temporary stock holds during active checkout.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Cart Line Items Column */}
-        <div className="lg:col-span-2 space-y-4">
-          {/* Free Shipping Alert Bar */}
-          <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-xl space-y-2">
-            <div className="flex justify-between items-center text-xs font-semibold text-emerald-950">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+        {/* Cart Line Items Column (8 Cols) */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* Complimentary Shipping Progress Banner */}
+          <div className="p-5 bg-stone-50 border border-stone-200/80 rounded-xs space-y-2.5">
+            <div className="flex justify-between items-center text-xs text-charcoal">
               {remainingForFreeShipping > 0 ? (
-                <span>
-                  Add <strong className="text-emerald-700">{formatInr(remainingForFreeShipping)}</strong> more to get Free Delivery!
+                <span className="text-muted-foreground">
+                  Add <strong className="font-semibold text-foreground">{formatInr(remainingForFreeShipping)}</strong> more to qualify for complimentary white-glove delivery across India.
                 </span>
               ) : (
-                <span className="text-emerald-700 font-bold">
-                  🎉 Congratulations! Your order qualifies for Free Delivery.
+                <span className="inline-flex items-center gap-1.5 font-medium text-foreground">
+                  <Sparkles className="w-3.5 h-3.5 text-champagne-dark" />
+                  Your order qualifies for complimentary white-glove delivery.
                 </span>
               )}
-              <span>{freeShippingProgress}%</span>
+              <span className="text-[11px] font-mono font-medium text-muted-foreground">
+                {freeShippingProgress}%
+              </span>
             </div>
-            <div className="w-full bg-emerald-200 h-2.5 rounded-full overflow-hidden">
+            <div className="w-full bg-stone-200 h-1.5 rounded-full overflow-hidden">
               <div
-                className="bg-emerald-600 h-full rounded-full transition-all duration-300"
+                className="bg-primary h-full rounded-full transition-all duration-500 ease-out"
                 style={{ width: `${freeShippingProgress}%` }}
               />
             </div>
           </div>
 
           {/* Line Items List */}
-          <div className="bg-white rounded-2xl border border-zinc-200 shadow-xs divide-y divide-zinc-100 overflow-hidden">
+          <div className="bg-card rounded-xs border border-border divide-y divide-border/60 overflow-hidden shadow-xs">
             {cart.items.map((item) => (
-              <div key={item.id} className="p-4 sm:p-6 flex gap-4 sm:gap-6 items-start">
-                {/* Product Thumbnail */}
-                <div className="relative w-20 h-28 sm:w-24 sm:h-32 rounded-lg bg-zinc-100 border border-zinc-200 flex-shrink-0 overflow-hidden">
+              <div key={item.id} className="p-5 sm:p-6 flex gap-5 sm:gap-6 items-start">
+                {/* Product Thumbnail in Luxury Portrait */}
+                <div className="relative w-24 aspect-[3/4] sm:w-28 rounded-xs bg-stone-100 border border-border/80 flex-shrink-0 overflow-hidden">
                   {item.imageUrl ? (
                     <Image
                       src={item.imageUrl}
                       alt={item.name}
                       fill
                       className="object-cover"
-                      sizes="96px"
+                      sizes="(max-width: 640px) 96px, 112px"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xs text-zinc-400">
-                      No Image
+                    <div className="w-full h-full flex items-center justify-center text-[10px] text-muted-foreground uppercase tracking-wider">
+                      Textile
                     </div>
                   )}
                 </div>
 
                 {/* Details */}
-                <div className="flex-1 min-w-0 space-y-1">
-                  <Link
-                    href={`/products/${item.productSlug}`}
-                    className="font-bold text-sm sm:text-base text-zinc-900 hover:text-emerald-700 transition line-clamp-1"
-                  >
-                    {item.productName}
-                  </Link>
-                  <p className="text-xs text-zinc-500">{item.name}</p>
-                  <p className="text-xs text-zinc-400 font-mono">SKU: {item.sku}</p>
+                <div className="flex-1 min-w-0 space-y-1.5">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-1">
+                    <div>
+                      <Link
+                        href={`/products/${item.productSlug}`}
+                        className="font-serif text-base sm:text-lg font-normal text-foreground hover:text-champagne-dark transition line-clamp-1"
+                      >
+                        {item.productName}
+                      </Link>
+                      <p className="text-xs text-muted-foreground mt-0.5">{item.name}</p>
+                      <p className="text-[11px] text-muted-foreground/70 font-mono mt-0.5">
+                        SKU: {item.sku}
+                      </p>
+                    </div>
 
-                  <div className="pt-2 flex items-baseline gap-2">
-                    <span className="font-extrabold text-sm sm:text-base text-zinc-900">
-                      {formatInr(item.totalPriceInr)}
-                    </span>
-                    <span className="text-[11px] text-zinc-400">
-                      ({formatInr(item.unitPriceInr)} each)
-                    </span>
+                    <div className="text-left sm:text-right pt-1 sm:pt-0">
+                      <span className="font-serif text-base sm:text-lg font-bold text-foreground">
+                        {formatInr(item.totalPriceInr)}
+                      </span>
+                      <p className="text-[11px] text-muted-foreground">
+                        {formatInr(item.unitPriceInr)} each
+                      </p>
+                    </div>
                   </div>
 
                   {/* Quantity and Remove Controls */}
-                  <div className="pt-3 flex items-center gap-4">
-                    <div className="flex items-center border border-zinc-300 rounded-lg bg-white">
+                  <div className="pt-3 flex flex-wrap items-center justify-between gap-3">
+                    <div className="inline-flex items-center border border-border rounded-xs bg-background">
                       <button
                         type="button"
                         onClick={() => {
@@ -143,18 +194,20 @@ export default function CartPage() {
                             removeItem(item.id);
                           }
                         }}
-                        className="p-1.5 text-zinc-600 hover:text-zinc-900"
-                        aria-label="Decrease quantity"
+                        className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted transition"
+                        aria-label={`Decrease quantity of ${item.productName}`}
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </button>
-                      <span className="px-3 text-xs font-bold text-zinc-900">{item.quantity}</span>
+                      <span className="px-3 text-xs font-semibold text-foreground font-mono">
+                        {item.quantity}
+                      </span>
                       <button
                         type="button"
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
                         disabled={item.quantity >= item.availableStock}
-                        className="p-1.5 text-zinc-600 hover:text-zinc-900 disabled:opacity-40"
-                        aria-label="Increase quantity"
+                        className="p-1.5 text-muted-foreground hover:text-foreground hover:bg-muted disabled:opacity-30 disabled:cursor-not-allowed transition"
+                        aria-label={`Increase quantity of ${item.productName}`}
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
@@ -163,67 +216,91 @@ export default function CartPage() {
                     <button
                       type="button"
                       onClick={() => removeItem(item.id)}
-                      className="text-xs text-rose-600 hover:text-rose-700 font-medium flex items-center gap-1 transition"
+                      className="text-xs text-muted-foreground hover:text-rose-700 font-medium flex items-center gap-1.5 transition"
+                      aria-label={`Remove ${item.productName} from bag`}
                     >
-                      <Trash2 className="w-3.5 h-3.5" /> Remove
+                      <Trash2 className="w-3.5 h-3.5 stroke-[1.5]" />
+                      <span>Remove</span>
                     </button>
                   </div>
+
+                  {item.quantity >= item.availableStock && (
+                    <p className="text-[11px] text-amber-700 pt-1">
+                      Available atelier inventory limit reached ({item.availableStock} units).
+                    </p>
+                  )}
                 </div>
               </div>
             ))}
           </div>
+
+          <div className="flex items-center justify-between pt-2">
+            <Link
+              href="/products"
+              className="text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground transition font-medium flex items-center gap-1.5"
+            >
+              <ArrowRight className="w-3.5 h-3.5 rotate-180" /> Continue Exploring
+            </Link>
+          </div>
         </div>
 
-        {/* Order Summary Card */}
-        <div className="space-y-4">
-          <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-xs space-y-4">
-            <h2 className="text-base font-extrabold text-zinc-900 border-b border-zinc-100 pb-3">
+        {/* Order Summary Column (4 Cols) */}
+        <div className="lg:col-span-4 space-y-6">
+          <div className="bg-card p-6 sm:p-7 rounded-xs border border-border shadow-xs space-y-6 sticky top-28">
+            <h2 className="font-serif text-xl font-normal text-foreground border-b border-border pb-4">
               Order Summary
             </h2>
 
-            <div className="space-y-2.5 text-xs sm:text-sm text-zinc-600">
+            <div className="space-y-3 text-xs sm:text-sm text-muted-foreground">
               <div className="flex justify-between">
-                <span>Items Subtotal</span>
-                <span className="font-semibold text-zinc-900">{formatInr(subtotalInr)}</span>
+                <span>Creations Subtotal</span>
+                <span className="font-medium text-foreground">{formatInr(subtotalInr)}</span>
               </div>
 
               <div className="flex justify-between">
-                <span>Estimated Delivery</span>
-                <span className="font-semibold">
+                <span>Shipping & Handling</span>
+                <span className="font-medium">
                   {shippingFeeInr === 0 ? (
-                    <span className="text-emerald-700 font-bold">FREE</span>
+                    <span className="text-emerald-700 font-medium">Complimentary</span>
                   ) : (
                     formatInr(shippingFeeInr)
                   )}
                 </span>
               </div>
 
-              <div className="flex justify-between text-zinc-500">
-                <span>Inclusive GST (18%)</span>
+              <div className="flex justify-between text-muted-foreground/80">
+                <span>GST (18% inclusive breakdown)</span>
                 <span>{formatInr(gstInr)}</span>
               </div>
 
-              <div className="border-t border-zinc-200 pt-3 flex justify-between text-base font-extrabold text-zinc-900">
-                <span>Total Amount</span>
-                <span className="text-emerald-700">{formatInr(totalInr)}</span>
+              <div className="border-t border-border pt-4 flex justify-between items-baseline text-base font-semibold text-foreground">
+                <span>Total Payable</span>
+                <span className="font-serif text-xl font-bold text-foreground">
+                  {formatInr(totalInr)}
+                </span>
               </div>
             </div>
 
             <Link
               href="/checkout"
-              className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-md transition flex items-center justify-center gap-2 text-sm"
+              className="w-full py-4 bg-primary hover:bg-charcoal text-primary-foreground text-xs uppercase tracking-widest font-medium transition flex items-center justify-center gap-2 shadow-xs"
             >
               Proceed to Checkout <ArrowRight className="w-4 h-4" />
             </Link>
 
-            <div className="pt-2 space-y-2 text-[11px] text-zinc-500">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                <span>100% Safe & Secure Checkout</span>
+            {/* Trust Assurances */}
+            <div className="pt-2 border-t border-border/60 space-y-2.5 text-[11px] text-muted-foreground">
+              <div className="flex items-start gap-2.5">
+                <ShieldCheck className="w-4 h-4 text-champagne-dark flex-shrink-0 mt-0.5" />
+                <span>100% Certified Authentic Artisanal Handlooms</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Truck className="w-4 h-4 text-emerald-600" />
-                <span>Dispatched through Delhivery & Blue Dart</span>
+              <div className="flex items-start gap-2.5">
+                <Truck className="w-4 h-4 text-champagne-dark flex-shrink-0 mt-0.5" />
+                <span>Insured Express Courier with Delhivery & Blue Dart</span>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <RotateCcw className="w-4 h-4 text-champagne-dark flex-shrink-0 mt-0.5" />
+                <span>Complimentary 7-Day Hassle-Free Returns</span>
               </div>
             </div>
           </div>

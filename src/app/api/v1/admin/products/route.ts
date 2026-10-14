@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireAdminOrFulfillment } from '@/modules/auth/guards';
 import { adminCreateProductSchema } from '@/modules/catalog/validation';
+import { invalidateCatalogCache } from '@/modules/catalog/cache';
 import { AuthError } from '@/modules/auth/service';
 
 function slugify(text: string): string {
@@ -224,6 +225,8 @@ export async function POST(req: NextRequest) {
 
       return product;
     });
+
+    await invalidateCatalogCache();
 
     return NextResponse.json(
       {

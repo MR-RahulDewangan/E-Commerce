@@ -3,8 +3,9 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { db } from '@/lib/db';
 import { formatInr } from '@/lib/utils';
-import { CheckCircle2, Clock, Printer, Package, ArrowRight, ShieldCheck, Truck } from 'lucide-react';
+import { CheckCircle2, Clock, Package, ArrowRight, ShieldCheck, Truck, Sparkles } from 'lucide-react';
 import { OrderStatus } from '@prisma/client';
+import { PrintInvoiceButton } from '@/components/checkout/PrintInvoiceButton';
 
 interface SuccessPageProps {
   searchParams: Promise<{ orderNumber?: string }>;
@@ -49,99 +50,114 @@ export default async function OrderSuccessPage({ searchParams }: SuccessPageProp
   const totalAmount = Number(order.totalAmount);
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-      {/* Confirmation Banner */}
-      <div className="text-center space-y-3 bg-white p-8 rounded-2xl border border-zinc-200 shadow-xs">
-        <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+      {/* Confirmation Hero Banner */}
+      <div className="text-center space-y-4 bg-card p-8 sm:p-10 rounded-xs border border-border shadow-xs">
+        <div className="w-16 h-16 mx-auto rounded-full bg-stone-100 border border-border text-foreground flex items-center justify-center">
           {isPaid ? (
-            <CheckCircle2 className="w-10 h-10 text-emerald-600" />
+            <CheckCircle2 className="w-8 h-8 text-champagne-dark stroke-[1.5]" />
           ) : (
-            <Clock className="w-10 h-10 text-amber-600" />
+            <Clock className="w-8 h-8 text-amber-700 stroke-[1.5]" />
           )}
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
-          {isPaid ? 'Thank You for Your Order!' : 'Order Placed — Cash on Delivery'}
-        </h1>
+        <div className="space-y-1.5 max-w-lg mx-auto">
+          <span className="text-[11px] uppercase tracking-widest text-muted-foreground font-medium">
+            Atelier Confirmation Certificate
+          </span>
+          <h1 className="font-serif text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            {isPaid ? 'Thank You for Your Order' : 'Order Placed — Cash on Delivery'}
+          </h1>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {isPaid
+              ? `Your payment has been successfully authorized. Your handcrafted creations are reserved in our atelier and scheduled for courier dispatch.`
+              : `Your order is confirmed. Payment of ${formatInr(totalAmount)} is due upon white-glove courier delivery.`}
+          </p>
+        </div>
 
-        <p className="text-xs sm:text-sm text-zinc-500 max-w-md mx-auto">
-          {isPaid
-            ? `Your payment has been successfully authorized. Stock is reserved and dispatched.`
-            : `Your order is confirmed. Payment of ${formatInr(totalAmount)} is due upon courier delivery.`}
-        </p>
-
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-zinc-100 rounded-full text-xs font-mono text-zinc-800">
-          Order Number: <strong>{order.orderNumber}</strong>
+        <div className="pt-2 flex flex-wrap justify-center items-center gap-3">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-stone-100 border border-stone-200/80 rounded-full text-xs font-mono text-foreground">
+            <span className="text-muted-foreground">Order Ref:</span>
+            <strong>{order.orderNumber}</strong>
+          </div>
+          <PrintInvoiceButton />
         </div>
       </div>
 
-      {/* Printable GST Tax Invoice Document */}
-      <div className="bg-white p-6 sm:p-10 rounded-2xl border border-zinc-200 shadow-xs space-y-8">
+      {/* Official Printable GST Tax Invoice Document */}
+      <div className="bg-card p-6 sm:p-10 rounded-xs border border-border shadow-xs space-y-8">
         {/* Invoice Header */}
-        <div className="flex flex-col sm:flex-row sm:items-start justify-between border-b border-zinc-200 pb-6 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-start justify-between border-b border-border pb-6 gap-6">
           <div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-base">
-                B
-              </div>
-              <span className="font-extrabold text-xl text-zinc-900">BharatStore</span>
+            <div className="flex items-center gap-2.5">
+              <span className="font-serif text-2xl font-light tracking-widest text-foreground uppercase">
+                BharatStore
+              </span>
+              <span className="text-[10px] tracking-widest uppercase font-serif text-champagne-dark border-l border-border pl-2.5">
+                Maison
+              </span>
             </div>
-            <p className="text-xs text-zinc-500 mt-1">Tax Invoice / Delivery Bill of Supply</p>
-            <p className="text-[11px] text-zinc-400">GSTIN: 29AABCB1234F1Z6 (Karnataka)</p>
+            <p className="text-xs uppercase tracking-wider text-muted-foreground mt-1.5 font-medium">
+              Tax Invoice / Delivery Bill of Supply
+            </p>
+            <p className="text-[11px] font-mono text-muted-foreground/80 mt-0.5">
+              GSTIN: 29AABCB1234F1Z6 (Karnataka, India)
+            </p>
           </div>
 
-          <div className="text-right sm:text-right space-y-1 text-xs text-zinc-600">
+          <div className="sm:text-right space-y-1 text-xs text-muted-foreground">
             <p>
-              <span className="text-zinc-400">Invoice Date:</span>{' '}
-              {new Date(order.createdAt).toLocaleDateString('en-IN', {
-                day: 'numeric',
-                month: 'short',
-                year: 'numeric',
-              })}
+              <span className="text-muted-foreground/70">Invoice Date:</span>{' '}
+              <span className="text-foreground font-medium">
+                {new Date(order.createdAt).toLocaleDateString('en-IN', {
+                  day: 'numeric',
+                  month: 'short',
+                  year: 'numeric',
+                })}
+              </span>
             </p>
             <p>
-              <span className="text-zinc-400">Payment Method:</span>{' '}
-              <strong className="text-zinc-900">{order.paymentMethod}</strong>
+              <span className="text-muted-foreground/70">Payment Atelier:</span>{' '}
+              <strong className="text-foreground">{order.paymentMethod}</strong>
             </p>
-            <p>
-              <span className="text-zinc-400">Order Status:</span>{' '}
+            <p className="pt-1">
               <span
-                className={`font-bold px-2 py-0.5 rounded text-[10px] ${
+                className={`inline-block font-mono text-[10px] uppercase tracking-wider px-2.5 py-0.5 rounded-2xs font-semibold ${
                   isPaid
-                    ? 'bg-emerald-100 text-emerald-800'
+                    ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
                     : isAwaitingPayment
-                    ? 'bg-amber-100 text-amber-800'
-                    : 'bg-zinc-100 text-zinc-800'
+                    ? 'bg-amber-50 text-amber-800 border border-amber-200'
+                    : 'bg-stone-100 text-stone-800 border border-stone-200'
                 }`}
               >
-                {order.status}
+                Status: {order.status}
               </span>
             </p>
           </div>
         </div>
 
-        {/* Customer & Delivery Address Snapshot */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs text-zinc-600 border-b border-zinc-200 pb-6">
-          <div>
-            <h3 className="font-bold text-zinc-900 text-xs uppercase tracking-wider mb-2">
-              Customer Details
+        {/* Customer & Delivery Address Snapshot (Preserving Rule 2.3) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs border-b border-border pb-6">
+          <div className="space-y-1 text-muted-foreground">
+            <h3 className="font-serif text-sm font-semibold text-foreground uppercase tracking-wider mb-2">
+              Billed To
             </h3>
-            <p className="font-semibold text-zinc-800">{order.customerName}</p>
+            <p className="font-medium text-foreground">{order.customerName}</p>
             <p>{order.customerEmail}</p>
-            <p>Phone: +91 {order.customerPhone}</p>
+            <p className="font-mono text-[11px]">Phone: +91 {order.customerPhone}</p>
           </div>
 
-          <div>
-            <h3 className="font-bold text-zinc-900 text-xs uppercase tracking-wider mb-2">
-              Delivery Address Snapshot
+          <div className="space-y-1 text-muted-foreground">
+            <h3 className="font-serif text-sm font-semibold text-foreground uppercase tracking-wider mb-2">
+              Immutable Delivery Address Snapshot
             </h3>
-            <p className="font-semibold text-zinc-800">{address.recipientName}</p>
+            <p className="font-medium text-foreground">{address.recipientName}</p>
             <p>{address.streetLine1}</p>
             {address.streetLine2 && <p>{address.streetLine2}</p>}
             <p>
-              {address.city}, {address.stateProvince} — {address.postalCode}
+              {address.city}, {address.stateProvince} — <span className="font-mono">{address.postalCode}</span>
             </p>
-            <p>India (IN)</p>
+            <p className="font-mono text-[11px]">Country: {address.countryCode} (India)</p>
           </div>
         </div>
 
@@ -149,22 +165,22 @@ export default async function OrderSuccessPage({ searchParams }: SuccessPageProp
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr className="border-b border-zinc-200 text-zinc-400 uppercase text-[10px] tracking-wider">
-                <th className="py-2">Item Description</th>
-                <th className="py-2">SKU</th>
-                <th className="py-2 text-right">Unit Price</th>
-                <th className="py-2 text-center">Qty</th>
-                <th className="py-2 text-right">Total (incl. GST)</th>
+              <tr className="border-b border-border text-muted-foreground uppercase text-[10px] tracking-wider font-medium">
+                <th className="py-3">Creation Description</th>
+                <th className="py-3">SKU Snapshot</th>
+                <th className="py-3 text-right">Unit Price</th>
+                <th className="py-3 text-center">Qty</th>
+                <th className="py-3 text-right">Total (incl. GST)</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-zinc-100">
+            <tbody className="divide-y divide-border/60">
               {order.items.map((item) => (
-                <tr key={item.id} className="text-zinc-700">
-                  <td className="py-3 font-semibold text-zinc-900">{item.nameSnapshot}</td>
-                  <td className="py-3 font-mono text-zinc-400">{item.skuSnapshot}</td>
-                  <td className="py-3 text-right">{formatInr(Number(item.unitPrice))}</td>
-                  <td className="py-3 text-center font-bold">{item.quantity}</td>
-                  <td className="py-3 text-right font-extrabold text-zinc-900">
+                <tr key={item.id} className="text-muted-foreground">
+                  <td className="py-3.5 font-serif text-sm text-foreground">{item.nameSnapshot}</td>
+                  <td className="py-3.5 font-mono text-[11px] text-muted-foreground/80">{item.skuSnapshot}</td>
+                  <td className="py-3.5 text-right font-mono">{formatInr(Number(item.unitPrice))}</td>
+                  <td className="py-3.5 text-center font-mono font-medium text-foreground">{item.quantity}</td>
+                  <td className="py-3.5 text-right font-serif text-sm font-bold text-foreground">
                     {formatInr(Number(item.unitPrice) * item.quantity)}
                   </td>
                 </tr>
@@ -174,55 +190,63 @@ export default async function OrderSuccessPage({ searchParams }: SuccessPageProp
         </div>
 
         {/* Totals & Tax Calculation Breakdown */}
-        <div className="border-t border-zinc-200 pt-4 flex flex-col sm:flex-row justify-between items-start gap-4">
-          <div className="text-xs text-zinc-500 space-y-1">
-            <p className="font-semibold text-zinc-700">GST Compliance Note:</p>
-            <p>All items billed with inclusive 18% GST (CGST 9% + SGST 9% / IGST 18%).</p>
-            <p>Permanent address snapshot captured at order placement time.</p>
+        <div className="border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-start gap-6">
+          <div className="text-xs text-muted-foreground space-y-1.5 max-w-sm">
+            <p className="font-medium text-foreground uppercase tracking-wider text-[11px]">
+              GST Statutory Compliance Note:
+            </p>
+            <p className="leading-relaxed">
+              All items are billed inclusive of 18% GST (CGST 9% + SGST 9% for intra-state, or IGST 18% for inter-state supply).
+            </p>
+            <p className="text-[11px] text-muted-foreground/70">
+              Permanent snapshot captured at order creation time pursuant to Indian tax regulations.
+            </p>
           </div>
 
-          <div className="w-full sm:w-64 space-y-2 text-xs text-zinc-600">
+          <div className="w-full sm:w-72 space-y-2 text-xs text-muted-foreground">
             <div className="flex justify-between">
-              <span>Subtotal:</span>
-              <span className="font-semibold text-zinc-900">{formatInr(subtotal)}</span>
+              <span>Creations Subtotal:</span>
+              <span className="font-medium text-foreground">{formatInr(subtotal)}</span>
             </div>
             <div className="flex justify-between">
               <span>Delivery Fee:</span>
-              <span className="font-semibold">
+              <span className="font-medium">
                 {shippingCost === 0 ? (
-                  <span className="text-emerald-700 font-bold">FREE</span>
+                  <span className="text-emerald-700 font-medium">Complimentary</span>
                 ) : (
                   formatInr(shippingCost)
                 )}
               </span>
             </div>
-            <div className="flex justify-between text-zinc-500">
+            <div className="flex justify-between text-muted-foreground/80">
               <span>Included 18% GST:</span>
               <span>{formatInr(taxAmount)}</span>
             </div>
-            <div className="border-t border-zinc-200 pt-2 flex justify-between text-sm font-extrabold text-zinc-900">
-              <span>Total Amount:</span>
-              <span className="text-emerald-700">{formatInr(totalAmount)}</span>
+            <div className="border-t border-border pt-3 flex justify-between items-baseline text-sm font-semibold text-foreground">
+              <span>Total Paid / Due:</span>
+              <span className="font-serif text-xl font-bold text-foreground">
+                {formatInr(totalAmount)}
+              </span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Action Links */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
+      {/* Navigation Actions */}
+      <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
         <Link
           href="/products"
-          className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 flex items-center gap-1"
+          className="text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground flex items-center gap-1.5 font-medium transition"
         >
-          <ArrowRight className="w-4 h-4 rotate-180" /> Continue Shopping
+          <ArrowRight className="w-3.5 h-3.5 rotate-180" /> Continue Exploring Collections
         </Link>
 
         <div className="flex items-center gap-3">
           <Link
             href="/account/orders"
-            className="px-4 py-2 border border-zinc-300 rounded-lg text-xs font-bold text-zinc-700 hover:bg-zinc-50 transition flex items-center gap-1.5"
+            className="px-5 py-2.5 border border-border rounded-xs text-xs uppercase tracking-wider font-medium text-foreground hover:bg-muted transition flex items-center gap-2"
           >
-            <Package className="w-4 h-4" /> View My Orders
+            <Package className="w-4 h-4 stroke-[1.5]" /> View Order History
           </Link>
         </div>
       </div>

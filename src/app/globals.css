@@ -1,23 +1,248 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #09090b;
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #09090b;
-    --foreground: #f4f4f5;
+    /* Luxury E-Commerce Semantic Token System */
+    --background: #FAF9F6; /* Soft Ivory */
+    --foreground: #111111; /* Obsidian */
+
+    --card: #FFFFFF; /* Pure White */
+    --card-foreground: #111111;
+
+    --popover: #FFFFFF;
+    --popover-foreground: #111111;
+
+    --primary: #111111; /* Obsidian */
+    --primary-foreground: #FFFFFF;
+    --primary-hover: #262626;
+
+    --secondary: #E7E3DC; /* Stone */
+    --secondary-foreground: #111111;
+    --secondary-hover: #DCD6CD;
+
+    --muted: #F2EFEA; /* Warm Stone Light */
+    --muted-foreground: #666059; /* Taupe Charcoal - WCAG AA 5.4:1 contrast */
+
+    --accent: #D8C3A5; /* Champagne */
+    --accent-foreground: #111111;
+    --accent-muted: #F5EFE6;
+
+    --destructive: #991B1B; /* Refined Crimson */
+    --destructive-foreground: #FFFFFF;
+
+    --border: #E7E3DC; /* Stone hairline */
+    --border-subtle: #F0EDE8;
+    --input: #E7E3DC;
+    --ring: #111111;
+
+    --radius: 0.125rem; /* 2px - crisp architectural corners */
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --background: #111111; /* Obsidian Canvas */
+      --foreground: #FAF9F6; /* Soft Ivory */
+
+      --card: #181818; /* Dark Charcoal Slate */
+      --card-foreground: #FAF9F6;
+
+      --popover: #181818;
+      --popover-foreground: #FAF9F6;
+
+      --primary: #FAF9F6; /* Inverted Soft Ivory */
+      --primary-foreground: #111111;
+      --primary-hover: #E7E3DC;
+
+      --secondary: #282828;
+      --secondary-foreground: #FAF9F6;
+      --secondary-hover: #333333;
+
+      --muted: #222222;
+      --muted-foreground: #A69B8D; /* Taupe */
+
+      --accent: #D8C3A5; /* Champagne */
+      --accent-foreground: #111111;
+      --accent-muted: #2A241C;
+
+      --destructive: #DC2626;
+      --destructive-foreground: #FFFFFF;
+
+      --border: #2B2825;
+      --border-subtle: #201E1C;
+      --input: #2B2825;
+      --ring: #D8C3A5;
+    }
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    color: var(--foreground);
+    background-color: var(--background);
+    margin: 0;
+    padding: 0;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: #D8C3A5;
+    color: #111111;
   }
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  margin: 0;
-  padding: 0;
+@layer components {
+  /* Editorial Typography */
+  .font-display {
+    font-family: var(--font-serif), 'Cormorant Garamond', Georgia, serif;
+    letter-spacing: -0.01em;
+  }
+
+  .font-body {
+    font-family: var(--font-sans), Inter, -apple-system, sans-serif;
+  }
+
+  /* Luxury Reusable Buttons */
+  .btn-luxury-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-sans), Inter, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 1px solid var(--primary);
+    border-radius: var(--radius);
+    transition: all 200ms ease;
+    cursor: pointer;
+  }
+  .btn-luxury-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+  }
+  .btn-luxury-primary:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--background), 0 0 0 4px var(--ring);
+  }
+  .btn-luxury-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-luxury-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: var(--secondary);
+    color: var(--secondary-foreground);
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-sans), Inter, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    transition: all 200ms ease;
+    cursor: pointer;
+  }
+  .btn-luxury-secondary:hover {
+    background-color: var(--secondary-hover);
+    border-color: var(--secondary-hover);
+  }
+
+  .btn-luxury-outline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background-color: transparent;
+    color: var(--foreground);
+    padding: 0.75rem 1.5rem;
+    font-family: var(--font-sans), Inter, sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border: 1px solid var(--foreground);
+    border-radius: var(--radius);
+    transition: all 200ms ease;
+    cursor: pointer;
+  }
+  .btn-luxury-outline:hover {
+    background-color: var(--foreground);
+    color: var(--background);
+  }
+
+  /* Luxury Reusable Form Input */
+  .input-luxury {
+    width: 100%;
+    background-color: var(--card);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    transition: border-color 150ms ease, box-shadow 150ms ease;
+  }
+  .input-luxury:focus {
+    outline: none;
+    border-color: var(--ring);
+    box-shadow: 0 0 0 1px var(--ring);
+  }
+  .input-luxury::placeholder {
+    color: var(--muted-foreground);
+  }
+
+  /* Luxury Reusable Card */
+  .card-luxury {
+    background-color: var(--card);
+    color: var(--card-foreground);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.04);
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+  }
+  .card-luxury:hover {
+    border-color: #D8C3A5;
+    box-shadow: 0 4px 12px rgba(17, 17, 17, 0.06);
+  }
+
+  /* Luxury Pill / Badge */
+  .badge-luxury {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    border-radius: 9999px;
+    background-color: var(--muted);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+  }
+  .badge-luxury-champagne {
+    background-color: #F5EFE6;
+    color: #111111;
+    border-color: #D8C3A5;
+  }
 }

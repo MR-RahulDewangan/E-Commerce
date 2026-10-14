@@ -13,6 +13,12 @@ import {
   CatalogVariantDetail,
   CatalogImageDetail,
 } from './types';
+import {
+  getCachedCategories,
+  setCachedCategories,
+  getCachedFeaturedProducts,
+  setCachedFeaturedProducts,
+} from './cache';
 
 export type {
   CatalogListResult,
@@ -34,6 +40,13 @@ export async function listCatalogProducts(
   const params = productListQuerySchema.parse(rawParams);
 
   const { page, limit, sort, category, search, minPrice, maxPrice, isFeatured } = params;
+
+  // Cache hit optimization for default featured queries
+  const isDefaultFeatured = isFeatured && !category && !search && minPrice === undefined && maxPrice === undefined && page === 1;
+  if (isDefaultFeatured) {
+    const cached = await getCachedFeaturedProducts();
+    if (cached) return cached;
+  }
 
   // 1. Build Prisma Where Clause
   // Strictly enforce isPublished: true so draft/unpublished items are never exposed
@@ -141,7 +154,7 @@ export async function listCatalogProducts(
 
   const totalPages = Math.ceil(totalItems / limit);
 
-  return {
+  const result: CatalogListResult = {
     items,
     pagination: {
       page,
@@ -152,6 +165,12 @@ export async function listCatalogProducts(
       hasPrevPage: page > 1,
     },
   };
+
+  if (isDefaultFeatured) {
+    await setCachedFeaturedProducts(result);
+  }
+
+  return result;
 }
 
 /**
@@ -264,7 +283,12 @@ export interface CatalogCategoryWithCount extends CatalogCategorySummary {
 /**
  * Retrieves all published categories with their active product counts.
  */
-export async function getCatalogCategories(): Promise<CatalogCategoryWithCount[]> {
+export async function getCatalogCategories(options?: { skipCache?: boolean }): Promise<CatalogCategoryWithCount[]> {
+  if (!options?.skipCache) {
+    const cached = await getCachedCategories();
+    if (cached) return cached;
+  }
+
   const categories = await db.category.findMany({
     orderBy: { sortOrder: 'asc' },
     select: {
@@ -283,7 +307,7 @@ export async function getCatalogCategories(): Promise<CatalogCategoryWithCount[]
     },
   });
 
-  return categories.map((cat) => ({
+  const result = categories.map((cat) => ({
     id: cat.id,
     name: cat.name,
     slug: cat.slug,
@@ -291,6 +315,12 @@ export async function getCatalogCategories(): Promise<CatalogCategoryWithCount[]
     sortOrder: cat.sortOrder,
     productCount: cat._count.products,
   }));
+
+  if (!options?.skipCache) {
+    await setCachedCategories(result);
+  }
+
+  return result;
 }
 
 export const queryProducts = listCatalogProducts;

@@ -58,3 +58,6 @@ Thumbs.db
 
 # Docker
 .docker/
+
+# Agent Skills
+.agents/

@@ -4,7 +4,7 @@ import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import { Store, Shield, ArrowRight, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Store, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
 
 function LoginFormContent() {
   const router = useRouter();
@@ -43,8 +43,6 @@ function LoginFormContent() {
         setLoading(false);
         return;
       }
-
-      // Successful login will trigger the useEffect redirect above once user state updates
     } catch (err: any) {
       setErrorMessage(err?.message || 'Network error during login.');
       setLoading(false);
@@ -58,30 +56,35 @@ function LoginFormContent() {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-zinc-50">
-      <div className="w-full max-w-md bg-white rounded-3xl p-8 border border-zinc-200 shadow-xl space-y-6">
+    <div className="min-h-[80vh] flex items-center justify-center px-4 py-16 sm:py-24 bg-background">
+      <div className="w-full max-w-md bg-card rounded-xs p-8 sm:p-10 border border-border shadow-xs space-y-6 text-card-foreground">
         <div className="text-center space-y-2">
-          <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center font-bold text-white text-xl mx-auto shadow-md">
-            E
+          <div className="flex items-center justify-center gap-2">
+            <span className="font-serif text-2xl font-light tracking-widest text-foreground uppercase">
+              BharatStore
+            </span>
+            <span className="text-[10px] tracking-widest uppercase font-serif text-champagne-dark border-l border-border pl-2">
+              Maison
+            </span>
           </div>
-          <h1 className="text-2xl font-extrabold text-zinc-900 tracking-tight">
+          <h1 className="font-serif text-2xl font-normal text-foreground tracking-tight pt-1">
             Sign In to Your Account
           </h1>
-          <p className="text-xs text-zinc-500">
-            Access your customer orders, merchant seller hub, or administrative dashboard.
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Access your customer dossier, artisan seller portal, or administrative backoffice.
           </p>
         </div>
 
         {errorMessage && (
-          <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 shrink-0 text-rose-500" />
+          <div className="p-3.5 rounded-xs bg-rose-50 border border-rose-200 text-rose-900 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0 text-rose-700" />
             <span>{errorMessage}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1">
-            <label className="block text-xs font-semibold text-zinc-700 uppercase tracking-wider">
+          <div className="space-y-1.5">
+            <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
               Email Address *
             </label>
             <input
@@ -89,21 +92,21 @@ function LoginFormContent() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. seller.kashmir@ecommerce.example.in"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+              placeholder="e.g. customer@ecommerce.example.in"
+              className="w-full px-3.5 py-2.5 rounded-xs bg-background border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-xs transition"
             />
           </div>
 
-          <div className="space-y-1">
+          <div className="space-y-1.5">
             <div className="flex items-center justify-between">
-              <label className="block text-xs font-semibold text-zinc-700 uppercase tracking-wider">
+              <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
                 Password *
               </label>
               <Link
                 href="/auth/forgot-password"
-                className="text-xs text-indigo-600 hover:text-indigo-800 font-medium"
+                className="text-xs text-muted-foreground hover:text-foreground transition underline underline-offset-2"
               >
-                Forgot?
+                Forgot password?
               </Link>
             </div>
             <input
@@ -112,14 +115,14 @@ function LoginFormContent() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••••••"
-              className="w-full px-3.5 py-2.5 rounded-xl border border-zinc-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm"
+              className="w-full px-3.5 py-2.5 rounded-xs bg-background border border-border text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary text-xs transition"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-3 px-4 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition flex items-center justify-center gap-2 disabled:opacity-50 shadow-sm"
+            className="w-full py-3.5 px-4 bg-primary text-primary-foreground rounded-xs text-xs uppercase tracking-widest font-medium hover:bg-charcoal transition flex items-center justify-center gap-2 disabled:bg-stone-400 shadow-xs cursor-pointer pt-3"
           >
             {loading ? (
               <>
@@ -127,41 +130,41 @@ function LoginFormContent() {
               </>
             ) : (
               <>
-                Sign In <ArrowRight className="w-4 h-4" />
+                Sign In <ArrowRight className="w-3.5 h-3.5" />
               </>
             )}
           </button>
         </form>
 
         {/* Quick Demo Fill Buttons for Testing */}
-        <div className="pt-2 border-t border-zinc-100 space-y-2">
-          <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider block text-center">
-            Quick Fill Demo Credentials
+        <div className="pt-4 border-t border-border space-y-2.5">
+          <span className="text-[10px] font-medium text-muted-foreground uppercase tracking-widest block text-center">
+            Demo Merchant Credentials
           </span>
           <div className="grid grid-cols-2 gap-2">
             <button
               type="button"
               onClick={() => fillSellerCredentials('seller.kashmir@ecommerce.example.in')}
-              className="p-2 rounded-lg border border-indigo-100 bg-indigo-50/50 hover:bg-indigo-50 text-[11px] text-indigo-700 font-semibold text-left transition flex items-center gap-1.5"
+              className="p-2.5 rounded-xs border border-border bg-stone-50/70 hover:bg-stone-100 text-[11px] text-foreground font-medium text-left transition flex items-center gap-1.5"
             >
-              <Store className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+              <Store className="w-3.5 h-3.5 text-champagne-dark shrink-0" />
               <span className="truncate">Seller 1 (Kashmir)</span>
             </button>
             <button
               type="button"
               onClick={() => fillSellerCredentials('seller.jaipur@ecommerce.example.in')}
-              className="p-2 rounded-lg border border-indigo-100 bg-indigo-50/50 hover:bg-indigo-50 text-[11px] text-indigo-700 font-semibold text-left transition flex items-center gap-1.5"
+              className="p-2.5 rounded-xs border border-border bg-stone-50/70 hover:bg-stone-100 text-[11px] text-foreground font-medium text-left transition flex items-center gap-1.5"
             >
-              <Store className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+              <Store className="w-3.5 h-3.5 text-champagne-dark shrink-0" />
               <span className="truncate">Seller 2 (Jaipur)</span>
             </button>
           </div>
         </div>
 
-        <div className="text-center text-xs text-zinc-500 pt-2">
+        <div className="text-center text-xs text-muted-foreground pt-2">
           Don&apos;t have an account?{' '}
-          <Link href="/" className="text-indigo-600 font-semibold hover:underline">
-            Register on Storefront
+          <Link href="/" className="text-foreground font-medium hover:underline underline-offset-2">
+            Return to Storefront
           </Link>
         </div>
       </div>
@@ -174,7 +177,7 @@ export default function LoginPage() {
     <Suspense
       fallback={
         <div className="min-h-[80vh] flex items-center justify-center">
-          <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+          <Loader2 className="w-8 h-8 animate-spin text-foreground" />
         </div>
       }
     >
@@ -182,3 +185,4 @@ export default function LoginPage() {
     </Suspense>
   );
 }
+

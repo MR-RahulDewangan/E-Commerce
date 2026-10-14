@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
@@ -19,6 +19,7 @@ import {
   ChevronDown,
   Store,
   Shield,
+  ArrowRight,
 } from 'lucide-react';
 
 export function Header() {
@@ -31,6 +32,35 @@ export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on click outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsUserDropdownOpen(false);
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Close menus on Escape key
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === 'Escape') {
+        setIsUserDropdownOpen(false);
+        setIsMobileMenuOpen(false);
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -41,66 +71,93 @@ export function Header() {
 
   return (
     <>
-      {/* Top promotional banner */}
-      <div className="bg-emerald-800 text-white text-xs py-2 px-4 text-center font-medium tracking-wide">
-        <span>🇮🇳 Free Delivery Across India on Orders Above ₹999 | Inclusive of 18% GST</span>
-      </div>
+      {/* Top Promotional Announcement Bar */}
+      <aside
+        aria-label="Promotional Announcement"
+        className="bg-luxury-obsidian text-luxury-ivory text-[11px] sm:text-xs py-2 px-4 text-center tracking-widest uppercase font-sans border-b border-stone-800"
+      >
+        <div className="max-w-7xl mx-auto flex items-center justify-center gap-2 sm:gap-3 flex-wrap">
+          <span className="font-medium">Complimentary All-India Shipping on Orders ₹999+</span>
+          <span className="hidden sm:inline text-luxury-champagne">•</span>
+          <span className="hidden sm:inline text-stone-300">Certified Master Artisan Handlooms</span>
+          <span className="hidden md:inline text-luxury-champagne">•</span>
+          <span className="hidden md:inline text-stone-300">Prices Inclusive of 18% GST</span>
+        </div>
+      </aside>
 
-      <header className="sticky top-0 z-40 bg-white border-b border-zinc-200 shadow-sm">
+      {/* Main Luxury Header */}
+      <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-md border-b border-border transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 gap-4">
+          <div className="flex items-center justify-between h-18 sm:h-20 gap-4">
             {/* Mobile menu trigger */}
             <button
               type="button"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="lg:hidden p-2 rounded-md text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100"
-              aria-label="Toggle navigation"
+              className="lg:hidden p-2 rounded-sm text-foreground hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              aria-label="Toggle navigation menu"
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-navigation-drawer"
             >
-              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {isMobileMenuOpen ? (
+                <X className="w-5 h-5" aria-hidden="true" />
+              ) : (
+                <Menu className="w-5 h-5" aria-hidden="true" />
+              )}
             </button>
 
-            {/* Logo */}
-            <Link href="/" className="flex items-center gap-2 flex-shrink-0">
-              <div className="w-9 h-9 rounded-lg bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shadow-sm">
-                B
-              </div>
-              <span className="font-extrabold text-xl tracking-tight text-zinc-900 hidden sm:inline">
-                Bharat<span className="text-emerald-600">Store</span>
+            {/* Brand Logo / Wordmark */}
+            <Link
+              href="/"
+              className="flex flex-col items-start flex-shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring p-1 rounded-xs"
+            >
+              <span className="font-serif text-xl sm:text-2xl font-medium tracking-[0.18em] uppercase text-foreground group-hover:text-luxury-charcoal transition-colors">
+                BharatStore
+              </span>
+              <span className="text-[9px] tracking-[0.28em] uppercase text-muted-foreground font-sans font-medium -mt-1 group-hover:text-luxury-champagne transition-colors">
+                Maison &bull; Handcrafted
               </span>
             </Link>
 
             {/* Search Bar (Desktop) */}
             <form
               onSubmit={handleSearch}
-              className="hidden md:flex flex-1 max-w-lg relative items-center"
+              role="search"
+              className="hidden md:flex flex-1 max-w-sm lg:max-w-md relative items-center mx-4"
             >
+              <label htmlFor="desktop-search-input" className="sr-only">
+                Search products
+              </label>
+              <Search
+                className="w-4 h-4 text-muted-foreground absolute left-3.5 pointer-events-none"
+                aria-hidden="true"
+              />
               <input
-                type="text"
-                placeholder="Search handlooms, kurtas, sarees, jewellery..."
+                id="desktop-search-input"
+                type="search"
+                placeholder="Search handlooms, sarees, kurtas..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-zinc-300 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-zinc-50 hover:bg-white transition-colors"
+                className="w-full pl-10 pr-20 py-2 bg-card border border-border text-xs text-foreground placeholder:text-muted-foreground tracking-wide focus-visible:outline-none focus-visible:border-ring focus-visible:ring-1 focus-visible:ring-ring transition-all"
               />
-              <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 pointer-events-none" />
               <button
                 type="submit"
-                className="absolute right-1.5 px-3 py-1 bg-emerald-600 text-white text-xs font-semibold rounded-full hover:bg-emerald-700 transition"
+                className="absolute right-1 px-2.5 py-1 bg-primary text-primary-foreground text-[10px] uppercase tracking-widest font-medium hover:bg-primary-hover transition cursor-pointer"
               >
                 Search
               </button>
             </form>
 
-            {/* Actions: Wishlist, Cart, User */}
-            <div className="flex items-center gap-2 sm:gap-4">
+            {/* Actions: Wishlist, Cart, Account */}
+            <div className="flex items-center gap-1 sm:gap-3">
               {/* Wishlist Link */}
               <Link
                 href="/account/wishlist"
-                className="relative p-2 text-zinc-700 hover:text-emerald-600 rounded-full hover:bg-zinc-100 transition"
-                aria-label="Wishlist"
+                className="relative p-2.5 text-foreground hover:text-luxury-champagne hover:bg-muted/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                aria-label={`Wishlist, ${wishlistCount} items saved`}
               >
-                <Heart className="w-6 h-6" />
+                <Heart className="w-5 h-5" aria-hidden="true" />
                 {wishlistCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow">
+                  <span className="absolute 1 top-1 right-1 bg-luxury-obsidian text-luxury-ivory border border-luxury-champagne text-[10px] font-medium rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center shadow-xs">
                     {wishlistCount > 9 ? '9+' : wishlistCount}
                   </span>
                 )}
@@ -110,12 +167,12 @@ export function Header() {
               <button
                 type="button"
                 onClick={openCartDrawer}
-                className="relative p-2 text-zinc-700 hover:text-emerald-600 rounded-full hover:bg-zinc-100 transition"
-                aria-label="Shopping Cart"
+                className="relative p-2.5 text-foreground hover:text-luxury-champagne hover:bg-muted/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+                aria-label={`Shopping bag, ${itemCount} items`}
               >
-                <ShoppingBag className="w-6 h-6" />
+                <ShoppingBag className="w-5 h-5" aria-hidden="true" />
                 {itemCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-emerald-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow">
+                  <span className="absolute top-1 right-1 bg-luxury-obsidian text-luxury-ivory border border-luxury-champagne text-[10px] font-medium rounded-full min-w-[18px] h-[18px] px-1 flex items-center justify-center shadow-xs">
                     {itemCount > 9 ? '9+' : itemCount}
                   </span>
                 )}
@@ -123,84 +180,104 @@ export function Header() {
 
               {/* Customer Account Menu */}
               {user ? (
-                <div className="relative">
+                <div className="relative" ref={dropdownRef}>
                   <button
                     type="button"
                     onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                    className="flex items-center gap-1.5 p-1.5 rounded-full text-zinc-700 hover:bg-zinc-100 text-sm font-medium transition"
+                    className="flex items-center gap-1.5 p-1.5 rounded-xs text-foreground hover:bg-muted transition text-xs font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring cursor-pointer"
+                    aria-expanded={isUserDropdownOpen}
+                    aria-haspopup="true"
+                    aria-label="User account menu"
                   >
-                    <div className="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-xs">
+                    <div className="w-7 h-7 bg-luxury-stone text-luxury-obsidian border border-border flex items-center justify-center font-serif text-xs font-semibold">
                       {user.firstName[0]?.toUpperCase() || 'U'}
                     </div>
-                    <span className="hidden xl:inline text-xs text-zinc-800 max-w-[100px] truncate">
+                    <span className="hidden xl:inline text-xs tracking-editorial uppercase max-w-[100px] truncate">
                       {user.firstName}
                     </span>
-                    <ChevronDown className="w-3.5 h-3.5 text-zinc-500" />
+                    <ChevronDown className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
                   </button>
 
+                  {/* Dropdown Menu */}
                   {isUserDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-52 bg-white rounded-lg shadow-xl border border-zinc-100 py-1.5 z-50 text-sm">
-                      <div className="px-4 py-2 border-b border-zinc-100">
-                        <p className="font-semibold text-zinc-900 truncate">
+                    <div
+                      role="menu"
+                      aria-orientation="vertical"
+                      className="absolute right-0 mt-2 w-56 bg-card text-card-foreground border border-border shadow-xl py-2 z-50 text-xs animate-in fade-in-50 duration-150"
+                    >
+                      <div className="px-4 py-2 border-b border-border/80">
+                        <p className="font-medium text-foreground truncate font-serif text-sm">
                           {user.firstName} {user.lastName}
                         </p>
-                        <p className="text-xs text-zinc-500 truncate">{user.email}</p>
+                        <p className="text-[11px] text-muted-foreground truncate">{user.email}</p>
                       </div>
 
                       <Link
                         href="/account/orders"
+                        role="menuitem"
                         onClick={() => setIsUserDropdownOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2 text-zinc-700 hover:bg-emerald-50 hover:text-emerald-700"
+                        className="flex items-center gap-2.5 px-4 py-2 text-foreground hover:bg-muted transition-colors"
                       >
-                        <Package className="w-4 h-4" /> My Orders
+                        <Package className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                        <span>My Orders</span>
                       </Link>
 
                       <Link
                         href="/account/addresses"
+                        role="menuitem"
                         onClick={() => setIsUserDropdownOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2 text-zinc-700 hover:bg-emerald-50 hover:text-emerald-700"
+                        className="flex items-center gap-2.5 px-4 py-2 text-foreground hover:bg-muted transition-colors"
                       >
-                        <MapPin className="w-4 h-4" /> Address Book
+                        <MapPin className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                        <span>Delivery Addresses</span>
                       </Link>
 
                       <Link
                         href="/account/profile"
+                        role="menuitem"
                         onClick={() => setIsUserDropdownOpen(false)}
-                        className="flex items-center gap-2 px-4 py-2 text-zinc-700 hover:bg-emerald-50 hover:text-emerald-700"
+                        className="flex items-center gap-2.5 px-4 py-2 text-foreground hover:bg-muted transition-colors"
                       >
-                        <UserIcon className="w-4 h-4" /> Account Profile
+                        <UserIcon className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                        <span>Account Profile</span>
                       </Link>
 
                       {(user.role === 'SELLER' || user.role === 'ADMIN') && (
                         <Link
                           href="/seller"
+                          role="menuitem"
                           onClick={() => setIsUserDropdownOpen(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-indigo-700 bg-indigo-50/50 hover:bg-indigo-50 font-semibold"
+                          className="flex items-center gap-2.5 px-4 py-2 text-amber-900 bg-amber-50/60 hover:bg-amber-100/60 font-medium transition-colors"
                         >
-                          <Store className="w-4 h-4 text-indigo-600" /> Seller Portal
+                          <Store className="w-4 h-4 text-amber-800" aria-hidden="true" />
+                          <span>Seller Portal</span>
                         </Link>
                       )}
 
                       {user.role === 'ADMIN' && (
                         <Link
                           href="/admin"
+                          role="menuitem"
                           onClick={() => setIsUserDropdownOpen(false)}
-                          className="flex items-center gap-2 px-4 py-2 text-emerald-800 bg-emerald-50/50 hover:bg-emerald-50 font-semibold"
+                          className="flex items-center gap-2.5 px-4 py-2 text-stone-900 bg-stone-100 hover:bg-stone-200 font-medium transition-colors"
                         >
-                          <Shield className="w-4 h-4 text-emerald-700" /> Admin Portal
+                          <Shield className="w-4 h-4 text-stone-800" aria-hidden="true" />
+                          <span>Admin Backoffice</span>
                         </Link>
                       )}
 
-                      <div className="border-t border-zinc-100 mt-1 pt-1">
+                      <div className="border-t border-border/80 mt-1 pt-1">
                         <button
                           type="button"
+                          role="menuitem"
                           onClick={() => {
                             setIsUserDropdownOpen(false);
                             logout();
                           }}
-                          className="flex items-center gap-2 w-full text-left px-4 py-2 text-rose-600 hover:bg-rose-50 text-sm font-medium"
+                          className="flex items-center gap-2.5 w-full text-left px-4 py-2 text-destructive hover:bg-red-50 text-xs font-medium cursor-pointer"
                         >
-                          <LogOut className="w-4 h-4" /> Sign Out
+                          <LogOut className="w-4 h-4" aria-hidden="true" />
+                          <span>Sign Out</span>
                         </button>
                       </div>
                     </div>
@@ -210,109 +287,197 @@ export function Header() {
                 <button
                   type="button"
                   onClick={() => openAuthModal('login')}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-emerald-600 text-emerald-700 hover:bg-emerald-50 text-sm font-medium transition"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 border border-foreground text-foreground hover:bg-foreground hover:text-background text-[11px] font-sans font-medium uppercase tracking-editorial transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 >
-                  <UserIcon className="w-4 h-4" />
+                  <UserIcon className="w-3.5 h-3.5" aria-hidden="true" />
                   <span>Sign In</span>
                 </button>
               )}
             </div>
           </div>
 
-          {/* Category Navigation Bar (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-8 py-2.5 border-t border-zinc-100 text-sm font-medium text-zinc-600 overflow-x-auto">
-            <Link href="/products" className="hover:text-emerald-600 transition flex-shrink-0">
-              All Products
+          {/* Desktop Category Navigation Bar */}
+          <nav
+            aria-label="Product categories"
+            className="hidden lg:flex items-center justify-center gap-8 py-3 border-t border-border/70 text-xs uppercase tracking-editorial font-medium text-muted-foreground overflow-x-auto"
+          >
+            <Link
+              href="/products"
+              className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
+            >
+              All Collections
             </Link>
             <Link
               href="/products?category=ethnic-wear"
-              className="hover:text-emerald-600 transition flex-shrink-0"
+              className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
             >
-              Ethnic Wear
+              Artisanal Ethnic
             </Link>
             <Link
               href="/products?category=sarees"
-              className="hover:text-emerald-600 transition flex-shrink-0"
+              className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
             >
-              Sarees & Silks
+              Banarasi & Silks
             </Link>
             <Link
               href="/products?category=handloom-fabrics"
-              className="hover:text-emerald-600 transition flex-shrink-0"
+              className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
             >
-              Handloom Fabrics
+              Handloom Cottons
             </Link>
             <Link
               href="/products?category=mens-kurtas"
-              className="hover:text-emerald-600 transition flex-shrink-0"
+              className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
             >
-              Men&apos;s Kurtas
+              Men&apos;s Couture
             </Link>
             <Link
               href="/products?category=jewellery"
-              className="hover:text-emerald-600 transition flex-shrink-0"
+              className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
             >
-              Jewellery & Crafts
+              Fine Jewellery
             </Link>
             <Link
               href="/products?category=home-decor"
-              className="hover:text-emerald-600 transition flex-shrink-0"
+              className="hover:text-foreground transition-colors flex-shrink-0 relative py-1 hover:border-b hover:border-foreground"
             >
-              Home & Living
+              Living & Textiles
             </Link>
           </nav>
         </div>
 
         {/* Mobile Navigation Drawer */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden border-t border-zinc-200 bg-white px-4 pt-3 pb-6 space-y-4">
-            <form onSubmit={handleSearch} className="relative">
+          <div
+            id="mobile-navigation-drawer"
+            ref={mobileMenuRef}
+            className="lg:hidden border-t border-border bg-background px-4 pt-4 pb-8 space-y-5 animate-in slide-in-from-top-2 duration-200"
+          >
+            {/* Mobile Search Form */}
+            <form onSubmit={handleSearch} role="search" className="relative">
+              <label htmlFor="mobile-search-input" className="sr-only">
+                Search products
+              </label>
+              <Search
+                className="w-4 h-4 text-muted-foreground absolute left-3.5 top-3 pointer-events-none"
+                aria-hidden="true"
+              />
               <input
-                type="text"
-                placeholder="Search products..."
+                id="mobile-search-input"
+                type="search"
+                placeholder="Search handlooms, kurtas..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 border border-zinc-300 rounded-lg text-sm bg-zinc-50"
+                className="w-full pl-10 pr-12 py-2.5 bg-card border border-border text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:border-ring"
               />
-              <Search className="w-4 h-4 text-zinc-400 absolute left-3 top-3 pointer-events-none" />
+              <button
+                type="submit"
+                className="absolute right-2 top-2 p-1.5 text-muted-foreground hover:text-foreground cursor-pointer"
+                aria-label="Submit search"
+              >
+                <ArrowRight className="w-4 h-4" aria-hidden="true" />
+              </button>
             </form>
 
-            <div className="flex flex-col space-y-2 text-sm font-medium text-zinc-700">
+            {/* Mobile Categories Links */}
+            <div className="flex flex-col divide-y divide-border/60 text-xs uppercase tracking-editorial font-medium text-foreground">
               <Link
                 href="/products"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="py-1.5 hover:text-emerald-600"
+                className="py-3 hover:text-luxury-champagne transition-colors"
               >
-                All Products
+                All Collections
               </Link>
               <Link
                 href="/products?category=ethnic-wear"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="py-1.5 hover:text-emerald-600"
+                className="py-3 hover:text-luxury-champagne transition-colors"
               >
-                Ethnic Wear
+                Artisanal Ethnic
               </Link>
               <Link
                 href="/products?category=sarees"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="py-1.5 hover:text-emerald-600"
+                className="py-3 hover:text-luxury-champagne transition-colors"
               >
-                Sarees & Silks
+                Banarasi & Silks
               </Link>
               <Link
                 href="/products?category=handloom-fabrics"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="py-1.5 hover:text-emerald-600"
+                className="py-3 hover:text-luxury-champagne transition-colors"
               >
-                Handloom Fabrics
+                Handloom Cottons
               </Link>
               <Link
                 href="/products?category=mens-kurtas"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="py-1.5 hover:text-emerald-600"
+                className="py-3 hover:text-luxury-champagne transition-colors"
               >
-                Men&apos;s Kurtas
+                Men&apos;s Couture
               </Link>
+              <Link
+                href="/products?category=jewellery"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="py-3 hover:text-luxury-champagne transition-colors"
+              >
+                Fine Jewellery
+              </Link>
+              <Link
+                href="/products?category=home-decor"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="py-3 hover:text-luxury-champagne transition-colors"
+              >
+                Living & Textiles
+              </Link>
+            </div>
+
+            {/* Mobile Account Quick Navigation */}
+            <div className="pt-2 border-t border-border">
+              {user ? (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between py-1 text-xs text-muted-foreground">
+                    <span>Signed in as <strong className="text-foreground">{user.firstName}</strong></span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        logout();
+                      }}
+                      className="text-destructive font-medium uppercase tracking-wider text-[11px] cursor-pointer"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 pt-1 text-xs">
+                    <Link
+                      href="/account/orders"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="p-2.5 bg-card border border-border text-center font-medium"
+                    >
+                      My Orders
+                    </Link>
+                    <Link
+                      href="/account/addresses"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="p-2.5 bg-card border border-border text-center font-medium"
+                    >
+                      Addresses
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    openAuthModal('login');
+                  }}
+                  className="w-full py-3 bg-primary text-primary-foreground text-xs uppercase tracking-widest font-medium text-center cursor-pointer hover:bg-primary-hover transition"
+                >
+                  Sign In / Register
+                </button>
+              )}
             </div>
           </div>
         )}

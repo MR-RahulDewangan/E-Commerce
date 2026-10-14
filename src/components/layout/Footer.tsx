@@ -1,124 +1,176 @@
 import React from 'react';
 import Link from 'next/link';
-import { ShieldCheck, Truck, RotateCcw, CreditCard } from 'lucide-react';
+import { ShieldCheck, Truck, RotateCcw, CreditCard, Sparkles } from 'lucide-react';
 
 export function Footer() {
   return (
-    <footer className="bg-zinc-900 text-zinc-300 mt-auto border-t border-zinc-800">
+    <footer className="bg-luxury-obsidian text-stone-300 mt-auto border-t border-stone-800 font-sans">
       {/* Value Proposition Highlights */}
-      <div className="border-b border-zinc-800 py-8 bg-zinc-950/60">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 text-center md:text-left">
-          <div className="flex items-center justify-center md:justify-start gap-3">
-            <div className="p-2.5 bg-emerald-950/60 text-emerald-400 rounded-lg">
-              <Truck className="w-5 h-5" />
+      <section
+        aria-label="Artisan Trust & Service Promises"
+        className="border-b border-stone-800/80 py-10 bg-[#161616]"
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
+          <div className="flex items-start gap-3.5">
+            <div className="p-2.5 bg-stone-900 border border-stone-800 text-luxury-champagne rounded-xs flex-shrink-0">
+              <Truck className="w-5 h-5" aria-hidden="true" />
             </div>
             <div>
-              <p className="font-semibold text-white text-sm">All-India Delivery</p>
-              <p className="text-xs text-zinc-400">Free delivery on ₹999+</p>
+              <p className="font-serif text-white text-sm tracking-wide">Pan-India Delivery</p>
+              <p className="text-xs text-stone-400 mt-0.5 leading-normal">Complimentary on orders ₹999+</p>
             </div>
           </div>
 
-          <div className="flex items-center justify-center md:justify-start gap-3">
-            <div className="p-2.5 bg-emerald-950/60 text-emerald-400 rounded-lg">
-              <ShieldCheck className="w-5 h-5" />
+          <div className="flex items-start gap-3.5">
+            <div className="p-2.5 bg-stone-900 border border-stone-800 text-luxury-champagne rounded-xs flex-shrink-0">
+              <ShieldCheck className="w-5 h-5" aria-hidden="true" />
             </div>
             <div>
-              <p className="font-semibold text-white text-sm">100% Authentic</p>
-              <p className="text-xs text-zinc-400">Direct artisan sourcing</p>
+              <p className="font-serif text-white text-sm tracking-wide">Artisan Provenance</p>
+              <p className="text-xs text-stone-400 mt-0.5 leading-normal">Certified authentic handlooms</p>
             </div>
           </div>
 
-          <div className="flex items-center justify-center md:justify-start gap-3">
-            <div className="p-2.5 bg-emerald-950/60 text-emerald-400 rounded-lg">
-              <CreditCard className="w-5 h-5" />
+          <div className="flex items-start gap-3.5">
+            <div className="p-2.5 bg-stone-900 border border-stone-800 text-luxury-champagne rounded-xs flex-shrink-0">
+              <CreditCard className="w-5 h-5" aria-hidden="true" />
             </div>
             <div>
-              <p className="font-semibold text-white text-sm">Secure Indian Payments</p>
-              <p className="text-xs text-zinc-400">UPI, RuPay, Netbanking, COD</p>
+              <p className="font-serif text-white text-sm tracking-wide">Domestic Payments</p>
+              <p className="text-xs text-stone-400 mt-0.5 leading-normal">UPI, RuPay, Netbanking, COD</p>
             </div>
           </div>
 
-          <div className="flex items-center justify-center md:justify-start gap-3">
-            <div className="p-2.5 bg-emerald-950/60 text-emerald-400 rounded-lg">
-              <RotateCcw className="w-5 h-5" />
+          <div className="flex items-start gap-3.5">
+            <div className="p-2.5 bg-stone-900 border border-stone-800 text-luxury-champagne rounded-xs flex-shrink-0">
+              <RotateCcw className="w-5 h-5" aria-hidden="true" />
             </div>
             <div>
-              <p className="font-semibold text-white text-sm">GST Compliant</p>
-              <p className="text-xs text-zinc-400">18% GST invoices with HSN</p>
+              <p className="font-serif text-white text-sm tracking-wide">GST Tax Invoices</p>
+              <p className="text-xs text-stone-400 mt-0.5 leading-normal">18% inclusive statutory billing</p>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Main Footer Links */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-sm">
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded bg-emerald-600 text-white flex items-center justify-center font-bold text-sm">
-              B
-            </div>
-            <span className="font-bold text-white text-base">BharatStore</span>
+      {/* Main Footer Navigation & Brand Pillars */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-xs">
+        {/* Brand Column */}
+        <div className="space-y-4">
+          <div className="flex flex-col items-start">
+            <span className="font-serif text-xl tracking-[0.2em] uppercase text-white font-medium">
+              BharatStore
+            </span>
+            <span className="text-[9px] tracking-[0.3em] uppercase text-luxury-champagne font-sans font-medium -mt-0.5">
+              Maison &bull; Handcrafted
+            </span>
           </div>
-          <p className="text-xs text-zinc-400 leading-relaxed">
-            India&apos;s premier enterprise handloom and modern retail destination. Built with server-authoritative GST pricing and atomic inventory protection.
+          <p className="text-stone-400 leading-relaxed text-xs">
+            A celebrated atelier for authentic Indian textiles, handloom Banarasi weaves, and artisanal heritage couture. Engineered with server-authoritative GST calculations and atomic stock integrity.
           </p>
+          <div className="pt-2">
+            <span className="inline-flex items-center gap-1.5 text-[11px] text-stone-400 border border-stone-800 px-3 py-1.5 bg-stone-950">
+              <Sparkles className="w-3.5 h-3.5 text-luxury-champagne" aria-hidden="true" />
+              <span>Certified Handloom Silk & Pure Cotton</span>
+            </span>
+          </div>
         </div>
 
+        {/* Collections Column */}
         <div>
-          <p className="font-semibold text-white mb-3 text-sm">Explore Catalog</p>
-          <ul className="space-y-2 text-xs text-zinc-400">
+          <p className="font-serif uppercase tracking-[0.15em] text-white text-sm mb-4 font-medium">
+            Curated Collections
+          </p>
+          <ul className="space-y-2.5 text-stone-400">
             <li>
-              <Link href="/products?category=ethnic-wear" className="hover:text-emerald-400 transition">
-                Ethnic Wear
-              </Link>
-            </li>
-            <li>
-              <Link href="/products?category=sarees" className="hover:text-emerald-400 transition">
+              <Link
+                href="/products?category=sarees"
+                className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block"
+              >
                 Banarasi & Silk Sarees
               </Link>
             </li>
             <li>
-              <Link href="/products?category=handloom-fabrics" className="hover:text-emerald-400 transition">
-                Handloom Cottons
+              <Link
+                href="/products?category=ethnic-wear"
+                className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block"
+              >
+                Artisanal Ethnic Wear
               </Link>
             </li>
             <li>
-              <Link href="/products?category=mens-kurtas" className="hover:text-emerald-400 transition">
-                Men&apos;s Formal Kurtas
+              <Link
+                href="/products?category=handloom-fabrics"
+                className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block"
+              >
+                Pure Handloom Cottons
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/products?category=mens-kurtas"
+                className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block"
+              >
+                Men&apos;s Festive Kurtas
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/products"
+                className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block text-stone-300 font-medium"
+              >
+                View All Collections &rarr;
               </Link>
             </li>
           </ul>
         </div>
 
+        {/* Concierge & Orders */}
         <div>
-          <p className="font-semibold text-white mb-3 text-sm">Customer Care</p>
-          <ul className="space-y-2 text-xs text-zinc-400">
-            <li>
-              <Link href="/account/orders" className="hover:text-emerald-400 transition">
-                Track Orders
-              </Link>
-            </li>
-            <li>
-              <Link href="/account/addresses" className="hover:text-emerald-400 transition">
-                Shipping & PIN Lookup
-              </Link>
-            </li>
-            <li>
-              <span className="text-zinc-500">Support: support@bharatstore.in</span>
-            </li>
-            <li>
-              <span className="text-zinc-500">Toll-free: 1800-202-6000 (Mon-Sat 9AM-7PM)</span>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <p className="font-semibold text-white mb-3 text-sm">Compliance & Trust</p>
-          <p className="text-xs text-zinc-400 leading-relaxed">
-            Registered with GSTIN Karnataka. All transactions encrypted via TLS 1.3. Prices displayed are MRP inclusive of 18% GST.
+          <p className="font-serif uppercase tracking-[0.15em] text-white text-sm mb-4 font-medium">
+            Client Concierge
           </p>
-          <div className="mt-4 flex gap-2 text-xs text-zinc-500">
-            <span>© 2026 BharatStore. All rights reserved.</span>
+          <ul className="space-y-2.5 text-stone-400">
+            <li>
+              <Link
+                href="/account/orders"
+                className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block"
+              >
+                Track My Consignment
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/account/addresses"
+                className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block"
+              >
+                Shipping & PIN Code Lookup
+              </Link>
+            </li>
+            <li>
+              <span className="block text-stone-400">
+                Email: <span className="text-stone-300">concierge@bharatstore.in</span>
+              </span>
+            </li>
+            <li>
+              <span className="block text-stone-400">
+                Toll-free: <span className="text-stone-300">1800-202-6000 (Mon–Sat 9AM–7PM)</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+
+        {/* Compliance & Trust */}
+        <div>
+          <p className="font-serif uppercase tracking-[0.15em] text-white text-sm mb-4 font-medium">
+            Statutory & Trust
+          </p>
+          <p className="text-stone-400 leading-relaxed text-xs">
+            Registered entity under Karnataka GST regulations. All digital transactions are protected via TLS 1.3 encryption. Displayed consumer prices are inclusive of 18% GST (MRP).
+          </p>
+          <div className="mt-5 pt-4 border-t border-stone-800 text-[11px] text-stone-500 space-y-1">
+            <p>&copy; {new Date().getFullYear()} BharatStore Maison. All rights reserved.</p>
+            <p className="tracking-wide">Domestic E-Commerce Platform &bull; India</p>
           </div>
         </div>
       </div>

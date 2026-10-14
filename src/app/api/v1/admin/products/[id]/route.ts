@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { requireAdminOrFulfillment } from '@/modules/auth/guards';
 import { adminUpdateProductSchema } from '@/modules/catalog/validation';
+import { invalidateCatalogCache } from '@/modules/catalog/cache';
 import { AuthError } from '@/modules/auth/service';
 
 function slugify(text: string): string {
@@ -216,6 +217,8 @@ export async function PUT(
       });
     });
 
+    await invalidateCatalogCache();
+
     return NextResponse.json({
       success: true,
       data: {
@@ -278,6 +281,8 @@ export async function DELETE(
         data: { isPublished: false },
       });
 
+      await invalidateCatalogCache();
+
       return NextResponse.json({
         success: true,
         message: 'Product unpublished to preserve historical customer order records.',
@@ -289,6 +294,8 @@ export async function DELETE(
     await db.product.delete({
       where: { id },
     });
+
+    await invalidateCatalogCache();
 
     return NextResponse.json({
       success: true,

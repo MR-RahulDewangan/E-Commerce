@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { MapPin, Plus, Loader2, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { MapPin, Plus, Loader2, AlertCircle, CheckCircle2, X } from 'lucide-react';
+import { AccountNav } from '@/components/account/AccountNav';
 
 interface SavedAddress {
   id: string;
@@ -91,7 +92,7 @@ export default function AddressBookPage() {
       if (!res.ok) {
         setErrorMessage(json.error?.message || 'Failed to add address.');
       } else {
-        setSuccessMessage('Delivery address saved successfully!');
+        setSuccessMessage('Delivery address saved successfully to your dossier!');
         setIsAdding(false);
         // Reset fields
         setRecipientName('');
@@ -110,14 +111,18 @@ export default function AddressBookPage() {
 
   if (!user && !isLoading) {
     return (
-      <div className="max-w-md mx-auto px-4 py-20 text-center space-y-4">
-        <MapPin className="w-12 h-12 mx-auto text-zinc-400" />
-        <h2 className="text-xl font-bold text-zinc-900">Sign In Required</h2>
-        <p className="text-xs text-zinc-500">Sign in to manage your saved shipping addresses.</p>
+      <div className="max-w-md mx-auto px-4 py-24 text-center space-y-5">
+        <div className="w-16 h-16 mx-auto rounded-full bg-stone-100 border border-border text-muted-foreground flex items-center justify-center">
+          <MapPin className="w-7 h-7 stroke-[1.25]" />
+        </div>
+        <h2 className="font-serif text-2xl font-normal text-foreground">Sign In Required</h2>
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          Please sign in to manage your verified shipping addresses.
+        </p>
         <button
           type="button"
           onClick={() => openAuthModal('login')}
-          className="px-5 py-2.5 bg-emerald-600 text-white rounded-lg text-xs font-bold"
+          className="inline-block px-6 py-3 bg-primary hover:bg-charcoal text-primary-foreground text-xs uppercase tracking-widest font-medium transition shadow-xs cursor-pointer"
         >
           Sign In Now
         </button>
@@ -126,14 +131,16 @@ export default function AddressBookPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-8">
+      <AccountNav />
+
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
+          <h2 className="font-serif text-2xl font-normal text-foreground tracking-tight">
             Saved Delivery Addresses
-          </h1>
-          <p className="text-xs sm:text-sm text-zinc-500 mt-1">
-            Manage your verified Indian shipping addresses.
+          </h2>
+          <p className="text-xs text-muted-foreground mt-1">
+            Manage your verified destinations across India for expedited white-glove dispatch.
           </p>
         </div>
 
@@ -141,23 +148,23 @@ export default function AddressBookPage() {
           <button
             type="button"
             onClick={() => setIsAdding(true)}
-            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-lg shadow-sm transition flex items-center gap-1.5"
+            className="px-5 py-2.5 bg-primary hover:bg-charcoal text-primary-foreground text-xs uppercase tracking-widest font-medium rounded-xs shadow-xs transition flex items-center gap-1.5 cursor-pointer"
           >
-            <Plus className="w-4 h-4" /> Add New Address
+            <Plus className="w-3.5 h-3.5" /> Add New Address
           </button>
         )}
       </div>
 
       {successMessage && (
-        <div className="p-4 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs font-medium flex items-center gap-2">
-          <CheckCircle2 className="w-4 h-4 flex-shrink-0" />
+        <div className="p-3.5 bg-stone-50 border border-stone-200 text-foreground text-xs rounded-xs flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 text-champagne-dark flex-shrink-0" />
           <span>{successMessage}</span>
         </div>
       )}
 
       {errorMessage && (
-        <div className="p-4 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs font-medium flex items-center gap-2">
-          <AlertCircle className="w-4 h-4 flex-shrink-0" />
+        <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-900 rounded-xs text-xs font-medium flex items-center gap-2">
+          <AlertCircle className="w-4 h-4 text-rose-700 flex-shrink-0" />
           <span>{errorMessage}</span>
         </div>
       )}
@@ -166,22 +173,24 @@ export default function AddressBookPage() {
       {isAdding && (
         <form
           onSubmit={handleAddAddress}
-          className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-sm space-y-4"
+          className="bg-card p-6 sm:p-8 rounded-xs border border-border shadow-xs space-y-5 text-card-foreground animate-in fade-in duration-200"
         >
-          <div className="flex justify-between items-center border-b border-zinc-100 pb-3">
-            <h2 className="text-sm font-bold text-zinc-900">Add New Shipping Address</h2>
+          <div className="flex justify-between items-center border-b border-border pb-4">
+            <h3 className="font-serif text-lg font-normal text-foreground">
+              Add New Delivery Destination
+            </h3>
             <button
               type="button"
               onClick={() => setIsAdding(false)}
-              className="text-xs text-zinc-500 hover:text-zinc-800"
+              className="text-xs uppercase tracking-wider text-muted-foreground hover:text-foreground flex items-center gap-1"
             >
-              Cancel
+              <X className="w-3.5 h-3.5" /> Cancel
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 mb-1">
+              <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
                 Recipient Name *
               </label>
               <input
@@ -189,13 +198,13 @@ export default function AddressBookPage() {
                 required
                 value={recipientName}
                 onChange={(e) => setRecipientName(e.target.value)}
-                placeholder="Pooja Sharma"
-                className="w-full text-xs border border-zinc-300 rounded-lg p-2.5 focus:ring-2 focus:ring-emerald-500"
+                placeholder="e.g. Pooja Sharma"
+                className="w-full text-xs bg-background border border-border rounded-xs p-3 text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 mb-1">
+              <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
                 Mobile Number *
               </label>
               <input
@@ -204,63 +213,77 @@ export default function AddressBookPage() {
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
                 placeholder="+919876543210"
-                className="w-full text-xs border border-zinc-300 rounded-lg p-2.5 focus:ring-2 focus:ring-emerald-500"
+                className="w-full text-xs bg-background border border-border rounded-xs p-3 text-foreground font-mono focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
               />
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold text-zinc-700 mb-1">
-                Address Line 1 *
+              <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
+                Address Line 1 (Flat, House No, Building, Street) *
               </label>
               <input
                 type="text"
                 required
                 value={streetLine1}
                 onChange={(e) => setStreetLine1(e.target.value)}
-                placeholder="Flat 402, Lotus Apartments, 12th Cross"
-                className="w-full text-xs border border-zinc-300 rounded-lg p-2.5 focus:ring-2 focus:ring-emerald-500"
+                placeholder="Flat 402, Lotus Residences, 12th Cross"
+                className="w-full text-xs bg-background border border-border rounded-xs p-3 text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
               />
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-xs font-semibold text-zinc-700 mb-1">
-                Address Line 2 (Optional)
+              <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
+                Address Line 2 (Area, Landmark - Optional)
               </label>
               <input
                 type="text"
                 value={streetLine2}
                 onChange={(e) => setStreetLine2(e.target.value)}
-                placeholder="Indiranagar"
-                className="w-full text-xs border border-zinc-300 rounded-lg p-2.5 focus:ring-2 focus:ring-emerald-500"
+                placeholder="Indiranagar 100ft Road"
+                className="w-full text-xs bg-background border border-border rounded-xs p-3 text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 mb-1">City *</label>
+              <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
+                City / District *
+              </label>
               <input
                 type="text"
                 required
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="Bengaluru"
-                className="w-full text-xs border border-zinc-300 rounded-lg p-2.5 focus:ring-2 focus:ring-emerald-500"
+                className="w-full text-xs bg-background border border-border rounded-xs p-3 text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 mb-1">State *</label>
-              <input
-                type="text"
-                required
+              <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
+                State / Union Territory *
+              </label>
+              <select
                 value={stateProvince}
                 onChange={(e) => setStateProvince(e.target.value)}
-                placeholder="Karnataka"
-                className="w-full text-xs border border-zinc-300 rounded-lg p-2.5 focus:ring-2 focus:ring-emerald-500"
-              />
+                className="w-full text-xs bg-background border border-border rounded-xs p-3 text-foreground focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition cursor-pointer"
+              >
+                <option value="Karnataka">Karnataka</option>
+                <option value="Maharashtra">Maharashtra</option>
+                <option value="Delhi">Delhi</option>
+                <option value="Tamil Nadu">Tamil Nadu</option>
+                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                <option value="Telangana">Telangana</option>
+                <option value="West Bengal">West Bengal</option>
+                <option value="Gujarat">Gujarat</option>
+                <option value="Kerala">Kerala</option>
+                <option value="Rajasthan">Rajasthan</option>
+                <option value="Punjab">Punjab</option>
+                <option value="Goa">Goa</option>
+              </select>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 mb-1">
+              <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
                 PIN Code (6 digits) *
               </label>
               <input
@@ -270,25 +293,26 @@ export default function AddressBookPage() {
                 value={postalCode}
                 onChange={(e) => setPostalCode(e.target.value)}
                 placeholder="560038"
-                className="w-full text-xs border border-zinc-300 rounded-lg p-2.5 focus:ring-2 focus:ring-emerald-500 font-mono"
+                className="w-full text-xs bg-background border border-border rounded-xs p-3 text-foreground font-mono focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition tracking-wider"
               />
             </div>
           </div>
 
-          <div className="flex justify-end gap-3 pt-2">
+          <div className="flex justify-end gap-3 pt-3 border-t border-border">
             <button
               type="button"
               onClick={() => setIsAdding(false)}
-              className="px-4 py-2 border border-zinc-300 rounded-lg text-xs font-semibold text-zinc-700"
+              className="px-4 py-2 border border-border rounded-xs text-xs uppercase tracking-wider font-medium text-muted-foreground hover:text-foreground"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition flex items-center gap-1.5"
+              className="px-6 py-2.5 bg-primary hover:bg-charcoal text-primary-foreground rounded-xs text-xs uppercase tracking-widest font-medium transition flex items-center gap-2 cursor-pointer shadow-xs disabled:bg-stone-400"
             >
-              {isSubmitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />} Save Address
+              {isSubmitting && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+              <span>Save Address</span>
             </button>
           </div>
         </form>
@@ -296,35 +320,46 @@ export default function AddressBookPage() {
 
       {/* Address cards */}
       {isLoading ? (
-        <div className="py-12 text-center">
-          <Loader2 className="w-6 h-6 animate-spin mx-auto text-emerald-600" />
+        <div className="py-16 text-center">
+          <Loader2 className="w-8 h-8 animate-spin mx-auto text-foreground" />
         </div>
       ) : addresses.length === 0 ? (
-        <div className="text-center py-16 bg-white rounded-2xl border border-zinc-200 p-8 space-y-2">
-          <p className="font-semibold text-zinc-800 text-sm">No saved addresses</p>
-          <p className="text-xs text-zinc-500">Add a delivery address to speed up checkout.</p>
+        <div className="text-center py-20 bg-card rounded-xs border border-border p-8 space-y-4 text-card-foreground">
+          <div className="w-16 h-16 mx-auto rounded-full bg-stone-100 border border-border text-muted-foreground flex items-center justify-center">
+            <MapPin className="w-7 h-7 stroke-[1.25]" />
+          </div>
+          <div className="space-y-1">
+            <p className="font-serif text-lg text-foreground">No Saved Addresses</p>
+            <p className="text-xs text-muted-foreground">Add a delivery address to expedite your checkout orders.</p>
+          </div>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {addresses.map((addr) => (
             <div
               key={addr.id}
-              className={`p-5 rounded-2xl border bg-white space-y-2 relative shadow-xs ${
-                addr.isDefault ? 'border-emerald-600 ring-1 ring-emerald-500' : 'border-zinc-200'
+              className={`p-6 rounded-xs border bg-card space-y-3 relative shadow-xs text-card-foreground ${
+                addr.isDefault ? 'border-primary ring-1 ring-primary' : 'border-border'
               }`}
             >
               {addr.isDefault && (
-                <span className="inline-block bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">
-                  Default Address
+                <span className="inline-block bg-primary text-primary-foreground text-[10px] uppercase tracking-wider font-semibold px-2 py-0.5 rounded-2xs">
+                  Default Destination
                 </span>
               )}
-              <p className="font-bold text-sm text-zinc-900">{addr.recipientName}</p>
-              <p className="text-xs text-zinc-600">{addr.streetLine1}</p>
-              {addr.streetLine2 && <p className="text-xs text-zinc-600">{addr.streetLine2}</p>}
-              <p className="text-xs text-zinc-600">
-                {addr.city}, {addr.stateProvince} — {addr.postalCode}
+              <div>
+                <p className="font-serif text-base font-normal text-foreground">{addr.recipientName}</p>
+                <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{addr.streetLine1}</p>
+                {addr.streetLine2 && (
+                  <p className="text-xs text-muted-foreground leading-relaxed">{addr.streetLine2}</p>
+                )}
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {addr.city}, {addr.stateProvince} — <span className="font-mono">{addr.postalCode}</span>
+                </p>
+              </div>
+              <p className="text-[11px] font-mono text-muted-foreground pt-1 border-t border-border/60">
+                Phone: {addr.phoneNumber}
               </p>
-              <p className="text-xs text-zinc-400">Phone: {addr.phoneNumber}</p>
             </div>
           ))}
         </div>
@@ -332,3 +367,4 @@ export default function AddressBookPage() {
     </div>
   );
 }
+

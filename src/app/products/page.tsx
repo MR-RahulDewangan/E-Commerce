@@ -3,7 +3,9 @@ import Link from 'next/link';
 import { db } from '@/lib/db';
 import { queryProducts, ProductSortOption } from '@/modules/catalog/queries';
 import { ProductCard } from '@/components/catalog/ProductCard';
-import { SlidersHorizontal, Search, RotateCcw, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CatalogFilters } from '@/components/catalog/CatalogFilters';
+import { SortSelect } from '@/components/catalog/SortSelect';
+import { Search, ChevronLeft, ChevronRight, X, Sparkles } from 'lucide-react';
 
 interface ProductsPageProps {
   searchParams: Promise<{
@@ -16,7 +18,7 @@ interface ProductsPageProps {
   }>;
 }
 
-export const revalidate = 30;
+export const revalidate = 30; // 30s ISR cache
 
 export default async function ProductsPage({ searchParams }: ProductsPageProps) {
   const params = await searchParams;
@@ -48,174 +50,154 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   const { items: products, pagination } = productsData;
   const { totalItems: total, totalPages, hasNextPage: hasNext, hasPrevPage: hasPrev } = pagination;
 
+  const currentCategory = category ? categories.find((c) => c.slug === category) : null;
   const hasActiveFilters = Boolean(category || search || minPrice || maxPrice);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-      {/* Header Banner */}
-      <div className="bg-white p-6 rounded-2xl border border-zinc-200 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-zinc-900 tracking-tight">
-            {category
-              ? categories.find((c) => c.slug === category)?.name || 'Catalog'
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-8 sm:space-y-10">
+      {/* 1. Editorial Collection Header */}
+      <header className="bg-card border border-border p-6 sm:p-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+        <div className="space-y-2 max-w-2xl">
+          <div className="inline-flex items-center gap-1.5 text-[10px] font-sans uppercase tracking-[0.25em] text-muted-foreground font-medium">
+            <Sparkles className="w-3 h-3 text-luxury-champagne" aria-hidden="true" />
+            <span>Artisanal Collections &bull; Pan-India Dispatch</span>
+          </div>
+
+          <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-normal text-foreground tracking-tight">
+            {currentCategory
+              ? currentCategory.name
               : search
               ? `Search: "${search}"`
-              : 'All Products'}
+              : 'All Creations'}
           </h1>
-          <p className="text-xs sm:text-sm text-zinc-500 mt-1">
-            Showing {products.length} of {total} available products (18% inclusive GST)
+
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            {currentCategory
+              ? `Master weaves and authentic handcrafted heritage pieces in ${currentCategory.name}. Directly sourced from certified regional ateliers.`
+              : search
+              ? `Showing all curated results matching your inquiry across verified craft ateliers.`
+              : 'Explore genuine Indian textiles, Banarasi silk brocades, handloom cottons, and heirloom jewellery. Prices inclusive of 18% GST with transparent billing.'}
+          </p>
+
+          <p className="text-[11px] text-stone-500 font-sans tracking-wide pt-1">
+            Displaying {products.length} of {total} available items
           </p>
         </div>
 
-        {/* Sort selector */}
-        <div className="flex items-center gap-3">
-          <label htmlFor="sort-select" className="text-xs font-semibold text-zinc-600">
-            Sort by:
-          </label>
-          <form method="GET" action="/products" className="inline-block">
-            {category && <input type="hidden" name="category" value={category} />}
-            {search && <input type="hidden" name="search" value={search} />}
-            {minPrice !== undefined && <input type="hidden" name="minPrice" value={minPrice} />}
-            {maxPrice !== undefined && <input type="hidden" name="maxPrice" value={maxPrice} />}
-            <select
-              id="sort-select"
-              name="sort"
-              defaultValue={sort}
-              // In Next.js, a simple change submits the form
-              className="text-xs font-medium border border-zinc-300 rounded-lg py-2 px-3 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-            >
-              <option value="newest">Newest Arrivals</option>
-              <option value="price_asc">Price: Low to High</option>
-              <option value="price_desc">Price: High to Low</option>
-            </select>
-          </form>
+        {/* Sort Controls */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <span className="text-xs uppercase tracking-editorial font-medium text-muted-foreground">
+            Sort By:
+          </span>
+          <SortSelect currentSort={sort} />
         </div>
-      </div>
+      </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Filters Sidebar */}
-        <aside className="lg:col-span-1 space-y-6 bg-white p-5 rounded-2xl border border-zinc-200 shadow-xs h-fit">
-          <div className="flex items-center justify-between border-b border-zinc-100 pb-3">
-            <span className="font-bold text-sm text-zinc-900 flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4 text-emerald-600" /> Filters
-            </span>
-            {hasActiveFilters && (
-              <Link
-                href="/products"
-                className="text-xs text-rose-600 hover:text-rose-700 font-semibold flex items-center gap-1"
-              >
-                <RotateCcw className="w-3 h-3" /> Reset
-              </Link>
-            )}
-          </div>
+      {/* 2. Active Filters Pill Bar (if any) */}
+      {hasActiveFilters && (
+        <div className="flex items-center gap-2 flex-wrap text-xs">
+          <span className="text-muted-foreground uppercase tracking-widest text-[10px] font-medium mr-1">
+            Active Refinements:
+          </span>
 
-          {/* Category Filter List */}
-          <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-700 mb-2.5">
-              Categories
-            </h3>
-            <div className="space-y-1 text-xs">
-              <Link
-                href={`/products${search ? `?search=${encodeURIComponent(search)}` : ''}`}
-                className={`flex items-center justify-between py-1.5 px-2 rounded-lg transition ${
-                  !category
-                    ? 'bg-emerald-50 text-emerald-800 font-bold'
-                    : 'text-zinc-600 hover:bg-zinc-50'
-                }`}
-              >
-                <span>All Categories</span>
-                <span>{categories.reduce((s, c) => s + c._count.products, 0)}</span>
-              </Link>
+          {currentCategory && (
+            <Link
+              href={`/products?${new URLSearchParams({
+                ...(search ? { search } : {}),
+                ...(minPrice ? { minPrice: minPrice.toString() } : {}),
+                ...(maxPrice ? { maxPrice: maxPrice.toString() } : {}),
+                sort,
+              }).toString()}`}
+              className="inline-flex items-center gap-1.5 px-3 py-1 bg-muted border border-border text-foreground hover:bg-stone-200 transition text-[11px]"
+            >
+              <span>Category: <strong>{currentCategory.name}</strong></span>
+              <X className="w-3 h-3 text-muted-foreground" aria-hidden="true" />
+            </Link>
+          )}
 
-              {categories.map((cat) => {
-                const isActive = category === cat.slug;
-                const queryParams = new URLSearchParams();
-                queryParams.set('category', cat.slug);
-                if (search) queryParams.set('search', search);
-                if (sort) queryParams.set('sort', sort);
+          {search && (
+            <Link
+              href={`/products?${new URLSearchParams({
+                ...(category ? { category } : {}),
+                ...(minPrice ? { minPrice: minPrice.toString() } : {}),
+                ...(maxPrice ? { maxPrice: maxPrice.toString() } : {}),
+                sort,
+              }).toString()}`}
+              className="inline-flex items-center gap-1.5 px-3 py-1 bg-muted border border-border text-foreground hover:bg-stone-200 transition text-[11px]"
+            >
+              <span>Search: <strong>&ldquo;{search}&rdquo;</strong></span>
+              <X className="w-3 h-3 text-muted-foreground" aria-hidden="true" />
+            </Link>
+          )}
 
-                return (
-                  <Link
-                    key={cat.id}
-                    href={`/products?${queryParams.toString()}`}
-                    className={`flex items-center justify-between py-1.5 px-2 rounded-lg transition ${
-                      isActive
-                        ? 'bg-emerald-50 text-emerald-800 font-bold'
-                        : 'text-zinc-600 hover:bg-zinc-50'
-                    }`}
-                  >
-                    <span>{cat.name}</span>
-                    <span className="text-zinc-400">{cat._count.products}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
+          {(minPrice !== undefined || maxPrice !== undefined) && (
+            <Link
+              href={`/products?${new URLSearchParams({
+                ...(category ? { category } : {}),
+                ...(search ? { search } : {}),
+                sort,
+              }).toString()}`}
+              className="inline-flex items-center gap-1.5 px-3 py-1 bg-muted border border-border text-foreground hover:bg-stone-200 transition text-[11px]"
+            >
+              <span>
+                Price: ₹{minPrice || 0} &ndash; {maxPrice ? `₹${maxPrice}` : 'Above'}
+              </span>
+              <X className="w-3 h-3 text-muted-foreground" aria-hidden="true" />
+            </Link>
+          )}
 
-          {/* Price Range Filter Form */}
-          <div className="border-t border-zinc-100 pt-4">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-700 mb-2.5">
-              Price Range (₹)
-            </h3>
-            <form method="GET" action="/products" className="space-y-3">
-              {category && <input type="hidden" name="category" value={category} />}
-              {search && <input type="hidden" name="search" value={search} />}
-              {sort && <input type="hidden" name="sort" value={sort} />}
-              <div className="grid grid-cols-2 gap-2 text-xs">
-                <div>
-                  <label className="text-[10px] text-zinc-500">Min (₹)</label>
-                  <input
-                    type="number"
-                    name="minPrice"
-                    placeholder="0"
-                    defaultValue={minPrice || ''}
-                    className="w-full border border-zinc-300 rounded p-1.5 focus:ring-1 focus:ring-emerald-500"
-                  />
-                </div>
-                <div>
-                  <label className="text-[10px] text-zinc-500">Max (₹)</label>
-                  <input
-                    type="number"
-                    name="maxPrice"
-                    placeholder="10000"
-                    defaultValue={maxPrice || ''}
-                    className="w-full border border-zinc-300 rounded p-1.5 focus:ring-1 focus:ring-emerald-500"
-                  />
-                </div>
-              </div>
-              <button
-                type="submit"
-                className="w-full py-1.5 bg-zinc-900 hover:bg-zinc-800 text-white rounded text-xs font-semibold transition"
-              >
-                Apply Price
-              </button>
-            </form>
-          </div>
-        </aside>
+          <Link
+            href="/products"
+            className="text-[11px] uppercase tracking-wider text-muted-foreground hover:text-foreground underline underline-offset-4 ml-2"
+          >
+            Clear All
+          </Link>
+        </div>
+      )}
 
-        {/* Product Grid Area */}
-        <main className="lg:col-span-3 space-y-6">
+      {/* 3. Catalog Grid Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 lg:gap-10">
+        {/* Left Column: Filter Sidebar */}
+        <div className="lg:col-span-1">
+          <CatalogFilters
+            categories={categories}
+            activeCategory={category}
+            searchQuery={search}
+            minPrice={minPrice}
+            maxPrice={maxPrice}
+            currentSort={sort}
+          />
+        </div>
+
+        {/* Right Column: Product Grid & Pagination */}
+        <main className="lg:col-span-3 space-y-10">
           {products.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-zinc-200 p-8 space-y-4">
-              <div className="w-16 h-16 mx-auto bg-zinc-100 text-zinc-400 rounded-full flex items-center justify-center">
-                <Search className="w-8 h-8" />
+            /* Empty State */
+            <div className="bg-card border border-border p-12 sm:p-20 text-center space-y-6">
+              <div className="w-16 h-16 mx-auto bg-muted text-muted-foreground flex items-center justify-center border border-border">
+                <Search className="w-6 h-6" aria-hidden="true" />
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-zinc-900">No products match your criteria</h3>
-                <p className="text-xs text-zinc-500 mt-1">
-                  Try clearing some filters or searching with a different term.
+              <div className="space-y-2 max-w-md mx-auto">
+                <h2 className="font-serif text-2xl font-medium text-foreground tracking-tight">
+                  No Creations Found in this Curation
+                </h2>
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+                  We could not locate items matching your chosen criteria. Try widening your price range, searching with a broader keyword, or clearing refinements.
                 </p>
               </div>
-              <Link
-                href="/products"
-                className="inline-block px-5 py-2 bg-emerald-600 text-white text-xs font-bold rounded-lg hover:bg-emerald-700 transition"
-              >
-                Reset All Filters
-              </Link>
+              <div>
+                <Link
+                  href="/products"
+                  className="inline-block px-6 py-3 bg-primary text-primary-foreground hover:bg-primary-hover text-[11px] font-sans uppercase tracking-widest font-medium transition cursor-pointer"
+                >
+                  Reset All Filters
+                </Link>
+              </div>
             </div>
           ) : (
             <>
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+              {/* Refined Luxury Product Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
                 {products.map((p) => (
                   <ProductCard
                     key={p.id}
@@ -231,10 +213,13 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                 ))}
               </div>
 
-              {/* Pagination Bar */}
+              {/* Luxury Pagination Controls */}
               {totalPages > 1 && (
-                <div className="flex items-center justify-center gap-2 pt-6">
-                  {hasPrev && (
+                <nav
+                  aria-label="Catalog Pagination"
+                  className="flex items-center justify-center gap-3 pt-8 border-t border-border/80"
+                >
+                  {hasPrev ? (
                     <Link
                       href={`/products?${new URLSearchParams({
                         ...(category ? { category } : {}),
@@ -244,17 +229,24 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                         sort,
                         page: (page - 1).toString(),
                       }).toString()}`}
-                      className="p-2 border border-zinc-300 rounded-lg text-zinc-700 hover:bg-zinc-100 flex items-center text-xs font-semibold"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-card border border-border text-foreground hover:border-foreground text-xs font-sans uppercase tracking-widest font-medium transition"
+                      aria-label="Go to previous page"
                     >
-                      <ChevronLeft className="w-4 h-4" /> Previous
+                      <ChevronLeft className="w-4 h-4" aria-hidden="true" />
+                      <span>Previous</span>
                     </Link>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 px-4 py-2 border border-border/40 text-muted-foreground/50 text-xs font-sans uppercase tracking-widest font-medium cursor-not-allowed">
+                      <ChevronLeft className="w-4 h-4" aria-hidden="true" />
+                      <span>Previous</span>
+                    </span>
                   )}
 
-                  <span className="px-3 text-xs text-zinc-500 font-medium">
-                    Page {page} of {totalPages}
+                  <span className="px-4 font-serif text-sm text-foreground tracking-wide">
+                    Page {page} <span className="text-muted-foreground">of</span> {totalPages}
                   </span>
 
-                  {hasNext && (
+                  {hasNext ? (
                     <Link
                       href={`/products?${new URLSearchParams({
                         ...(category ? { category } : {}),
@@ -264,12 +256,19 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
                         sort,
                         page: (page + 1).toString(),
                       }).toString()}`}
-                      className="p-2 border border-zinc-300 rounded-lg text-zinc-700 hover:bg-zinc-100 flex items-center text-xs font-semibold"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 bg-card border border-border text-foreground hover:border-foreground text-xs font-sans uppercase tracking-widest font-medium transition"
+                      aria-label="Go to next page"
                     >
-                      Next <ChevronRight className="w-4 h-4" />
+                      <span>Next</span>
+                      <ChevronRight className="w-4 h-4" aria-hidden="true" />
                     </Link>
+                  ) : (
+                    <span className="inline-flex items-center gap-1.5 px-4 py-2 border border-border/40 text-muted-foreground/50 text-xs font-sans uppercase tracking-widest font-medium cursor-not-allowed">
+                      <span>Next</span>
+                      <ChevronRight className="w-4 h-4" aria-hidden="true" />
+                    </span>
                   )}
-                </div>
+                </nav>
               )}
             </>
           )}

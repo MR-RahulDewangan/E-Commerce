@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import { X, Lock, Mail, User, Phone, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { X, Lock, Mail, User, Phone, Eye, EyeOff, Loader2, AlertCircle } from 'lucide-react';
 
 export function AuthModal() {
   const { isAuthModalOpen, closeAuthModal, authModalTab, openAuthModal, login, register } =
@@ -19,6 +19,23 @@ export function AuthModal() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // Close on Escape key press
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isAuthModalOpen) {
+        closeAuthModal();
+      }
+    };
+    if (isAuthModalOpen) {
+      document.body.style.overflow = 'hidden';
+      window.addEventListener('keydown', handleKeyDown);
+    }
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isAuthModalOpen, closeAuthModal]);
+
   if (!isAuthModalOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -30,7 +47,7 @@ export function AuthModal() {
       const res = await login({ email, password });
       setIsLoading(false);
       if (!res.success) {
-        setErrorMessage(res.error || 'Invalid credentials.');
+        setErrorMessage(res.error || 'Invalid email or password.');
       }
     } else {
       if (!firstName.trim() || !lastName.trim()) {
@@ -53,27 +70,33 @@ export function AuthModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="auth-modal-title"
+    >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
+        className="absolute inset-0 bg-charcoal/70 backdrop-blur-xs transition-opacity duration-300"
         onClick={closeAuthModal}
+        aria-hidden="true"
       />
 
-      <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl border border-zinc-100 overflow-hidden z-10">
+      <div className="relative w-full max-w-md bg-card rounded-xs shadow-2xl border border-border overflow-hidden z-10 text-card-foreground animate-in fade-in zoom-in-95 duration-200">
         {/* Header bar */}
-        <div className="flex items-center justify-between p-4 border-b border-zinc-100">
-          <div className="flex gap-2">
+        <div className="flex items-center justify-between px-6 py-5 border-b border-border bg-stone-50/50">
+          <div className="flex gap-4">
             <button
               type="button"
               onClick={() => {
                 setErrorMessage(null);
                 openAuthModal('login');
               }}
-              className={`pb-1 text-sm font-bold border-b-2 transition ${
+              className={`pb-1 text-xs uppercase tracking-widest font-medium border-b-2 transition ${
                 authModalTab === 'login'
-                  ? 'border-emerald-600 text-emerald-600'
-                  : 'border-transparent text-zinc-500 hover:text-zinc-800'
+                  ? 'border-primary text-foreground'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
             >
               Sign In
@@ -84,10 +107,10 @@ export function AuthModal() {
                 setErrorMessage(null);
                 openAuthModal('register');
               }}
-              className={`pb-1 text-sm font-bold border-b-2 transition ${
+              className={`pb-1 text-xs uppercase tracking-widest font-medium border-b-2 transition ${
                 authModalTab === 'register'
-                  ? 'border-emerald-600 text-emerald-600'
-                  : 'border-transparent text-zinc-500 hover:text-zinc-800'
+                  ? 'border-primary text-foreground'
+                  : 'border-transparent text-muted-foreground hover:text-foreground'
               }`}
             >
               Create Account
@@ -97,25 +120,39 @@ export function AuthModal() {
           <button
             type="button"
             onClick={closeAuthModal}
-            className="p-1 rounded-full text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition"
+            className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition"
             aria-label="Close modal"
           >
-            <X className="w-5 h-5" />
+            <X className="w-4 h-4" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 sm:p-7 space-y-4">
+          <div className="space-y-1">
+            <h2 id="auth-modal-title" className="font-serif text-2xl font-normal text-foreground">
+              {authModalTab === 'login' ? 'Welcome Back' : 'Create an Account'}
+            </h2>
+            <p className="text-xs text-muted-foreground">
+              {authModalTab === 'login'
+                ? 'Sign in to access your curated wishlist, order history, and saved addresses.'
+                : 'Join BharatStore Maison for exclusive artisan drops and bespoke order tracking.'}
+            </p>
+          </div>
+
           {errorMessage && (
-            <div className="p-3 bg-rose-50 border border-rose-200 text-rose-700 rounded-lg text-xs font-medium">
-              {errorMessage}
+            <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-900 rounded-xs text-xs font-medium flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-700 flex-shrink-0" />
+              <span>{errorMessage}</span>
             </div>
           )}
 
           {authModalTab === 'register' && (
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 mb-1">First Name</label>
+                <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
+                  First Name *
+                </label>
                 <div className="relative">
                   <input
                     type="text"
@@ -123,14 +160,16 @@ export function AuthModal() {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     placeholder="e.g. Pooja"
-                    className="w-full pl-8 pr-3 py-2 text-xs border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full pl-8 pr-3 py-2.5 text-xs bg-background border border-border rounded-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition text-foreground"
                   />
-                  <User className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-2.5" />
+                  <User className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-3" />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 mb-1">Last Name</label>
+                <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
+                  Last Name *
+                </label>
                 <div className="relative">
                   <input
                     type="text"
@@ -138,16 +177,18 @@ export function AuthModal() {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     placeholder="e.g. Sharma"
-                    className="w-full pl-8 pr-3 py-2 text-xs border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full pl-8 pr-3 py-2.5 text-xs bg-background border border-border rounded-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition text-foreground"
                   />
-                  <User className="w-3.5 h-3.5 text-zinc-400 absolute left-2.5 top-2.5" />
+                  <User className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-3" />
                 </div>
               </div>
             </div>
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-zinc-700 mb-1">Email Address</label>
+            <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
+              Email Address *
+            </label>
             <div className="relative">
               <input
                 type="email"
@@ -155,15 +196,15 @@ export function AuthModal() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="name@example.in"
-                className="w-full pl-9 pr-3 py-2 text-xs border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full pl-9 pr-3 py-2.5 text-xs bg-background border border-border rounded-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition text-foreground"
               />
-              <Mail className="w-4 h-4 text-zinc-400 absolute left-2.5 top-2.5" />
+              <Mail className="w-4 h-4 text-muted-foreground absolute left-2.5 top-3" />
             </div>
           </div>
 
           {authModalTab === 'register' && (
             <div>
-              <label className="block text-xs font-semibold text-zinc-700 mb-1">
+              <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium mb-1.5">
                 Phone Number (Optional)
               </label>
               <div className="relative">
@@ -172,21 +213,23 @@ export function AuthModal() {
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   placeholder="+91 98765 43210"
-                  className="w-full pl-9 pr-3 py-2 text-xs border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full pl-9 pr-3 py-2.5 text-xs bg-background border border-border rounded-xs font-mono focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition text-foreground"
                 />
-                <Phone className="w-4 h-4 text-zinc-400 absolute left-2.5 top-2.5" />
+                <Phone className="w-4 h-4 text-muted-foreground absolute left-2.5 top-3" />
               </div>
             </div>
           )}
 
           <div>
-            <div className="flex items-center justify-between mb-1">
-              <label className="block text-xs font-semibold text-zinc-700">Password</label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="block text-[11px] uppercase tracking-wider text-muted-foreground font-medium">
+                Password *
+              </label>
               {authModalTab === 'login' && (
                 <Link
                   href="/auth/forgot-password"
                   onClick={closeAuthModal}
-                  className="text-xs text-emerald-600 hover:underline"
+                  className="text-xs text-muted-foreground hover:text-foreground transition underline underline-offset-2"
                 >
                   Forgot password?
                 </Link>
@@ -200,16 +243,16 @@ export function AuthModal() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full pl-9 pr-9 py-2 text-xs border border-zinc-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full pl-9 pr-9 py-2.5 text-xs bg-background border border-border rounded-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition text-foreground"
               />
-              <Lock className="w-4 h-4 text-zinc-400 absolute left-2.5 top-2.5" />
+              <Lock className="w-4 h-4 text-muted-foreground absolute left-2.5 top-3" />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-2.5 top-2.5 text-zinc-400 hover:text-zinc-600"
+                className="absolute right-2.5 top-2.5 p-1 text-muted-foreground hover:text-foreground"
                 aria-label="Toggle password visibility"
               >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
               </button>
             </div>
           </div>
@@ -217,10 +260,10 @@ export function AuthModal() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-400 text-white font-bold rounded-lg text-sm shadow transition flex items-center justify-center gap-2"
+            className="w-full py-3.5 bg-primary hover:bg-charcoal disabled:bg-stone-400 text-primary-foreground text-xs uppercase tracking-widest font-medium transition shadow-xs flex items-center justify-center gap-2 cursor-pointer mt-2"
           >
             {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
-            {authModalTab === 'login' ? 'Sign In to Account' : 'Register Account'}
+            <span>{authModalTab === 'login' ? 'Sign In' : 'Create Account'}</span>
           </button>
         </form>
       </div>

@@ -451,4 +451,35 @@ describe('Checkout API Integration Tests (Live PostgreSQL 16)', () => {
     const createData = await createRes.json();
     expect(createData.error.code).toBe('EMPTY_CART');
   });
+
+  it('Scenario G: Rejects checkout with invalid Indian PIN code and phone number', async () => {
+    const createReq = new NextRequest('http://localhost:3000/api/v1/checkout/create-order', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        customer: {
+          name: 'Pooja Sharma',
+          email: 'pooja@example.in',
+          phone: '12345', // Invalid phone
+        },
+        shippingAddress: {
+          recipientName: 'Pooja Sharma',
+          phoneNumber: '12345',
+          streetLine1: 'Indiranagar 100ft Road',
+          city: 'Bengaluru',
+          stateProvince: 'Karnataka',
+          postalCode: '012345', // Starts with 0 (invalid Indian PIN)
+          countryCode: 'IN',
+        },
+        paymentMethod: 'MOCK',
+        items: [{ variantId: variantStandardId, quantity: 1 }],
+      }),
+    });
+
+    const createRes = await createOrderHandler(createReq);
+    expect(createRes.status).toBe(422);
+    const createData = await createRes.json();
+    expect(createData.error.code).toBe('VALIDATION_ERROR');
+    expect(createData.error.details.length).toBeGreaterThan(0);
+  });
 });

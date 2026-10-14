@@ -5,6 +5,7 @@ import {
   getCatalogProductBySlug,
   getCatalogCategories,
 } from '@/modules/catalog/queries';
+import { invalidateCatalogCache } from '@/modules/catalog/cache';
 
 describe('Catalog Query Integration Tests (Live PostgreSQL 16)', () => {
   const catSlug = `test-cat-${Date.now()}`;
@@ -25,6 +26,8 @@ describe('Catalog Query Integration Tests (Live PostgreSQL 16)', () => {
       },
     });
     createdCategoryId = cat.id;
+
+    await invalidateCatalogCache();
 
     // 2. Create published product with variants and image
     const pubProduct = await db.product.create({
@@ -184,7 +187,7 @@ describe('Catalog Query Integration Tests (Live PostgreSQL 16)', () => {
 
   describe('getCatalogCategories against Live Database', () => {
     it('accurately counts published products excluding drafts', async () => {
-      const categories = await getCatalogCategories();
+      const categories = await getCatalogCategories({ skipCache: true });
       const testCat = categories.find((c) => c.slug === catSlug);
 
       expect(testCat).toBeDefined();
