@@ -15,6 +15,7 @@ import {
   X,
   ExternalLink,
   ShieldCheck,
+  LineChart,
 } from 'lucide-react';
 
 interface SellerSidebarProps {
@@ -25,6 +26,7 @@ interface SellerSidebarProps {
 
 const NAV_ITEMS = [
   { label: 'Dashboard', href: '/seller', icon: LayoutDashboard },
+  { label: 'Intelligence & Analytics', href: '/seller/analytics', icon: LineChart },
   { label: 'My Products', href: '/seller/products', icon: Package },
   { label: 'Inventory', href: '/seller/inventory', icon: Boxes },
   { label: 'Orders', href: '/seller/orders', icon: ShoppingBag },

@@ -364,3 +364,65 @@ All seller routes enforce strict tenant isolation (`where: { seller: { userId: u
   - **Auth:** `SELLER` or `ADMIN`
   - **Response `200 OK`:** Returns customer orders that include items supplied by the seller, including line-item breakdowns and the seller's specific revenue share.
 
+---
+
+## 9. Seller Intelligence & Predictive Analytics Endpoints
+
+### 9.1 Public Behavioral Event Ingestion
+- **Route:** `POST /api/v1/analytics/events`
+- **Auth:** Public / Client Beacon
+- **Request Body:**
+  ```json
+  {
+    "eventType": "PRODUCT_VIEW",
+    "sessionId": "sess_01HXYZ9876",
+    "productId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "metadata": { "device": "mobile" }
+  }
+  ```
+- **Response `201 Created`:** `{ "success": true, "recorded": true }`
+
+### 9.2 Seller Sales Intelligence
+- **Route:** `GET /api/v1/seller/analytics/sales?range={7d|30d|90d|1y|custom}&startDate={ISO}&endDate={ISO}`
+- **Auth:** `SELLER` or `ADMIN`
+- **Response `200 OK`:** Returns verified realized sales revenue, eligible orders, units sold, AOV, cancellation and return rates, gross margin, daily revenue trajectory points, category breakdown, and fulfillment/payment mix.
+
+### 9.3 Customer Intelligence (RFM & Retention Cohorts)
+- **Route:** `GET /api/v1/seller/analytics/customers?windowDays={days}`
+- **Auth:** `SELLER` or `ADMIN`
+- **Response `200 OK`:** Returns seller-scoped RFM customer segmentation (Champions, Loyal, Potential Loyalists, New, At Risk, Hibernating), repeat purchase rate, and monthly retention cohort heatmap.
+
+### 9.4 Geographic & Market Benchmarking
+- **Route:** `GET /api/v1/seller/analytics/geographic?range={preset}`
+- **Auth:** `SELLER` or `ADMIN`
+- **Response `200 OK`:** Returns state and city sales distribution (with PII masking), promising market identification, and category market benchmarking against platform aggregates.
+
+### 9.5 Conversion Funnel & Drop-Off Analytics
+- **Route:** `GET /api/v1/seller/analytics/funnel?range={preset}`
+- **Auth:** `SELLER` or `ADMIN`
+- **Response `200 OK`:** Returns deduplicated unique sessions at each stage (Discovery -> Product Views -> Add to Cart -> Checkout -> Purchase), step-to-step conversion percentages, drop-off rates, and product view-to-cart ratios.
+
+### 9.6 Product Performance & Market Basket Affinity
+- **Route:** `GET /api/v1/seller/analytics/products?range={preset}`
+- **Auth:** `SELLER` or `ADMIN`
+- **Response `200 OK`:** Returns product ASP, velocity, inventory turnover, stock duration, GMROI metrics, and Apriori association rules (Support, Confidence, Lift) for recommended bundles.
+
+### 9.7 Predictive Intelligence (Forecasting & Churn)
+- **Route:** `GET /api/v1/seller/analytics/predictions?horizonDays={14|30}&productId={id}`
+- **Auth:** `SELLER` or `ADMIN`
+- **Response `200 OK`:** Returns ML demand forecasts with 85% prediction intervals (via Python statsmodels/EWMA), stockout/overstock risk indicators, customer churn risk stratification, and retention suggestions.
+
+### 9.8 Dynamic Pricing Recommendation & Approval
+- **List / Generate Recommendations:** `GET /api/v1/seller/analytics/pricing` / `POST /api/v1/seller/analytics/pricing`
+- **Approve or Reject Adjustment:** `POST /api/v1/seller/analytics/pricing`
+  - **Auth:** `SELLER` or `ADMIN`
+  - **Request Body:**
+    ```json
+    {
+      "recommendationId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "action": "APPROVE"
+    }
+    ```
+  - **Behavior:** Explicit approval atomically mutates `ProductVariant.priceOverride` and logs the audit record. Rejection marks the suggestion dismissed without altering live prices.
+
+

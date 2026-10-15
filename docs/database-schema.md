@@ -585,7 +585,49 @@ model SellerProfile {
 
   user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   products       Product[]
+  pricingRecommendations PricingRecommendation[]
 
   @@map("seller_profiles")
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(uuid())
+  eventType String   // HOMEPAGE_VIEW, PRODUCT_VIEW, ADD_TO_CART, CHECKOUT_INITIATED, PURCHASE_COMPLETED
+  sessionId String
+  userId    String?
+  sellerId  String?
+  productId String?
+  metadata  Json     @default("{}")
+  createdAt DateTime @default(now())
+
+  @@index([eventType, createdAt])
+  @@index([sellerId, eventType])
+  @@index([sessionId])
+  @@index([createdAt])
+  @@map("analytics_events")
+}
+
+model PricingRecommendation {
+  id              String    @id @default(uuid())
+  sellerId        String
+  productId       String
+  variantId       String
+  currentPrice    Decimal   @db.Decimal(12, 2)
+  suggestedPrice  Decimal   @db.Decimal(12, 2)
+  minMarginPct    Decimal?  @db.Decimal(5, 2)
+  strategy        String    // VELOCITY_CLEARANCE, MARGIN_OPTIMIZER, DEMAND_SURGE
+  reasoning       String    @db.Text
+  metricsSnapshot Json      @default("{}")
+  status          String    @default("PENDING_APPROVAL") // PENDING_APPROVAL, APPLIED, REJECTED
+  appliedAt       DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  seller          SellerProfile  @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  product         Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  variant         ProductVariant @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+  @@index([sellerId, status])
+  @@map("pricing_recommendations")
 }
 ```
