@@ -266,3 +266,17 @@ The platform operates as a multi-vendor marketplace where independent Indian mer
   - Cross-tenant inventory manipulation attempts throw immediate authorization errors.
 - Storefront Product Detail Pages (PDP) dynamically credit the originating seller with a verified merchant badge (`Sold by [Store Name]`).
 
+### 9.3 Seller Onboarding & Verification Workflow
+The platform implements a **compliance-first seller onboarding** model where existing customers must apply to become verified sellers:
+
+1. **Customer Registration**: Users register as `CUSTOMER` via the standard auth modal (`/api/v1/auth/register`).
+2. **Application Submission**: Logged-in customers navigate to "Become a Seller" in the footer → `/account/become-seller`. They submit official documents:
+   - GSTIN (15-char Indian GST Identification Number)
+   - PAN (10-char Permanent Account Number)
+   - Bank Account Number & IFSC Code
+   - Store Name & Description
+3. **Admin Review**: Admins review applications at `/api/v1/admin/seller-applications`. Actions:
+   - **APPROVE**: Atomically creates `SellerProfile`, upgrades `User.role` from `CUSTOMER` to `SELLER`, marks application `APPROVED`.
+   - **REJECT**: Marks application `REJECTED` with reason; user may reapply.
+4. **Seller Portal Access**: Approved users gain access to `/seller` dashboard, catalog management, inventory, and analytics.
+

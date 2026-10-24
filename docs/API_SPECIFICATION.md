@@ -86,6 +86,18 @@
   - **Body:** `{ "token": "cryp_tok_xxx", "newPassword": "NewSecurePassword123!" }`
   - **Response `200 OK`:** `{ "success": true, "message": "Password reset successfully." }`
 
+### 2.4 Email Verification
+- **Route:** `POST /api/v1/auth/verify-email`
+  - **Auth:** Public
+  - **Body:**
+    ```json
+    {
+      "token": "verify_tok_xxx"
+    }
+    ```
+  - **Response `200 OK`:** `{ "success": true, "message": "Email verified successfully. You can now sign in to your account." }`
+  - **Notes:** Token is JWT signed, valid for 24 hours, single-use. Verify link sent via email after registration.
+
 ### 2.4 User Addresses Management
 - `GET /api/v1/addresses`: Returns saved delivery addresses for current customer.
 - `POST /api/v1/addresses`: Adds address with 6-digit PIN code (`postalCode`), `stateProvince`, `city`, `streetLine1`, `recipientName`, `phoneNumber`.
@@ -298,11 +310,39 @@
 
 All seller routes enforce strict tenant isolation (`where: { seller: { userId: user.id } }` or `sellerId: sellerProfile.id`), preventing cross-tenant access.
 
-### 8.1 Seller Profile & Settings
+### 8.1 Seller Application & Profile
+- **Apply to Become Seller:** `POST /api/v1/seller/apply`
+  - **Auth:** Authenticated Customer (`CUSTOMER` role)
+  - **Request Body:**
+    ```json
+    {
+      "storeName": "Varanasi Weaves & Silks",
+      "storeDescription": "Heritage handloom enterprise from Varanasi...",
+      "gstin": "29ABCDE1234F1Z5",
+      "pan": "ABCDE1234F",
+      "bankAccount": "9876543210123",
+      "bankIfsc": "SBIN0001234"
+    }
+    ```
+  - **Response `201 Created`:** Creates a `SellerApplication` record in `PENDING` status for admin review.
+- **Check Application Status:** `GET /api/v1/seller/apply`
+  - **Auth:** Authenticated Customer
+  - **Response `200 OK`:** Returns current user's seller application and review status.
+- **Admin Review Seller Applications:** `POST /api/v1/admin/seller-applications`
+  - **Auth:** `ADMIN`
+  - **Request Body:**
+    ```json
+    {
+      "applicationId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+      "action": "APPROVE",
+      "rejectionReason": "Optional reason for rejection"
+    }
+    ```
+  - **Behavior:** On `APPROVE`, atomically creates `SellerProfile`, updates `User.role` from `CUSTOMER` to `SELLER`, and sets application status to `APPROVED`.
+- **Admin List Applications:** `GET /api/v1/admin/seller-applications?status={PENDING|APPROVED|REJECTED}&page={n}&limit={n}`
+  - **Auth:** `ADMIN`
+  - **Response `200 OK`:** Returns paginated list of seller applications.
 - **Retrieve Profile:** `GET /api/v1/seller/profile`
-  - **Auth:** `SELLER` or `ADMIN`
-  - **Response `200 OK`:** Returns store name, slug, bio, GSTIN, PAN, bank settlement details, and platform commission rate.
-- **Update Profile:** `PUT /api/v1/seller/profile`
   - **Auth:** `SELLER` or `ADMIN`
   - **Request Body:**
     ```json

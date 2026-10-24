@@ -18,6 +18,7 @@ export function AuthModal() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   // Close on Escape key press
   useEffect(() => {
@@ -41,6 +42,7 @@ export function AuthModal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+    setFieldErrors({});
     setIsLoading(true);
 
     if (authModalTab === 'login') {
@@ -50,11 +52,21 @@ export function AuthModal() {
         setErrorMessage(res.error || 'Invalid email or password.');
       }
     } else {
-      if (!firstName.trim() || !lastName.trim()) {
+      // Basic field validation before submit
+      const errors: Record<string, string> = {};
+
+      if (!firstName.trim()) errors.firstName = 'First name is required.';
+      if (!lastName.trim()) errors.lastName = 'Last name is required.';
+      if (!email) errors.email = 'Email is required.';
+      if (!password) errors.password = 'Password is required.';
+
+      if (Object.keys(errors).length > 0) {
         setIsLoading(false);
-        setErrorMessage('First and last name are required.');
+        setFieldErrors(errors);
+        setErrorMessage('Please fix the errors marked below.');
         return;
       }
+
       const res = await register({
         email,
         password,
@@ -158,12 +170,26 @@ export function AuthModal() {
                     type="text"
                     required
                     value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
+                    onChange={(e) => {
+                      setFirstName(e.target.value);
+                      setFieldErrors(prev => {
+                        const next = { ...prev };
+                        delete next.firstName;
+                        return next;
+                      });
+                    }}
                     placeholder="e.g. Pooja"
-                    className="w-full pl-8 pr-3 py-2.5 text-xs bg-background border border-border rounded-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition text-foreground"
+                    className={`w-full pl-8 pr-3 py-2.5 text-xs bg-background border rounded-xs focus:outline-none focus:ring-1 transition text-foreground ${
+                      fieldErrors.firstName
+                        ? 'border-rose-400 focus:ring-rose-500 bg-rose-50/30'
+                        : 'border-border focus:ring-primary focus:border-primary'
+                    }`}
                   />
                   <User className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-3" />
                 </div>
+                {fieldErrors.firstName && (
+                  <p className="text-[10px] text-rose-600 mt-1">{fieldErrors.firstName}</p>
+                )}
               </div>
 
               <div>
@@ -175,12 +201,26 @@ export function AuthModal() {
                     type="text"
                     required
                     value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
+                    onChange={(e) => {
+                      setLastName(e.target.value);
+                      setFieldErrors(prev => {
+                        const next = { ...prev };
+                        delete next.lastName;
+                        return next;
+                      });
+                    }}
                     placeholder="e.g. Sharma"
-                    className="w-full pl-8 pr-3 py-2.5 text-xs bg-background border border-border rounded-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition text-foreground"
+                    className={`w-full pl-8 pr-3 py-2.5 text-xs bg-background border rounded-xs focus:outline-none focus:ring-1 transition text-foreground ${
+                      fieldErrors.lastName
+                        ? 'border-rose-400 focus:ring-rose-500 bg-rose-50/30'
+                        : 'border-border focus:ring-primary focus:border-primary'
+                    }`}
                   />
                   <User className="w-3.5 h-3.5 text-muted-foreground absolute left-2.5 top-3" />
                 </div>
+                {fieldErrors.lastName && (
+                  <p className="text-[10px] text-rose-600 mt-1">{fieldErrors.lastName}</p>
+                )}
               </div>
             </div>
           )}
@@ -194,12 +234,26 @@ export function AuthModal() {
                 type="email"
                 required
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  setFieldErrors(prev => {
+                    const next = { ...prev };
+                    delete next.email;
+                    return next;
+                  });
+                }}
                 placeholder="name@example.in"
-                className="w-full pl-9 pr-3 py-2.5 text-xs bg-background border border-border rounded-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition text-foreground"
+                className={`w-full pl-9 pr-3 py-2.5 text-xs bg-background border rounded-xs focus:outline-none focus:ring-1 transition text-foreground ${
+                  fieldErrors.email
+                    ? 'border-rose-400 focus:ring-rose-500 bg-rose-50/30'
+                    : 'border-border focus:ring-primary focus:border-primary'
+                }`}
               />
               <Mail className="w-4 h-4 text-muted-foreground absolute left-2.5 top-3" />
             </div>
+            {fieldErrors.email && (
+              <p className="text-[10px] text-rose-600 mt-1">{fieldErrors.email}</p>
+            )}
           </div>
 
           {authModalTab === 'register' && (
@@ -241,9 +295,20 @@ export function AuthModal() {
                 required
                 minLength={8}
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  setFieldErrors(prev => {
+                    const next = { ...prev };
+                    delete next.password;
+                    return next;
+                  });
+                }}
                 placeholder="••••••••"
-                className="w-full pl-9 pr-9 py-2.5 text-xs bg-background border border-border rounded-xs focus:outline-none focus:ring-1 focus:ring-primary focus:border-primary transition text-foreground"
+                className={`w-full pl-9 pr-9 py-2.5 text-xs bg-background border rounded-xs focus:outline-none focus:ring-1 transition text-foreground ${
+                  fieldErrors.password
+                    ? 'border-rose-400 focus:ring-rose-500 bg-rose-50/30'
+                    : 'border-border focus:ring-primary focus:border-primary'
+                }`}
               />
               <Lock className="w-4 h-4 text-muted-foreground absolute left-2.5 top-3" />
               <button
@@ -255,6 +320,14 @@ export function AuthModal() {
                 {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
               </button>
             </div>
+            {fieldErrors.password && (
+              <p className="text-[10px] text-rose-600 mt-1">{fieldErrors.password}</p>
+            )}
+            {authModalTab === 'register' && !fieldErrors.password && (
+              <p className="text-[10px] text-muted-foreground mt-1">
+                Min 8 chars, uppercase, lowercase, number, special char
+              </p>
+            )}
           </div>
 
           <button

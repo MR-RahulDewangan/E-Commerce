@@ -90,6 +90,27 @@ erDiagram
 - `CREATE UNIQUE INDEX idx_seller_profiles_user_id ON seller_profiles(user_id);`
 - `CREATE UNIQUE INDEX idx_seller_profiles_store_slug ON seller_profiles(store_slug);`
 
+### 3.3 Seller Applications (`seller_applications`)
+| Column | Type | Constraints | Description |
+| :--- | :--- | :--- | :--- |
+| `id` | `VARCHAR(36)` / UUID | PK, NOT NULL | Application UUID |
+| `user_id` | `VARCHAR(36)` | UNIQUE, FK -> `users.id` (ON DELETE CASCADE) | Applicant user account |
+| `store_name` | `VARCHAR(100)` | NOT NULL | Proposed store name |
+| `store_description` | `TEXT` | NULLABLE | Store background and craftsmanship details |
+| `gstin` | `VARCHAR(15)` | NOT NULL | 15-character statutory Indian GSTIN |
+| `pan` | `VARCHAR(10)` | NOT NULL | 10-character Indian Permanent Account Number |
+| `bank_account` | `VARCHAR(30)` | NOT NULL | Merchant settlement bank account number |
+| `bank_ifsc` | `VARCHAR(11)` | NOT NULL | 11-character Indian Financial System Code |
+| `status` | `VARCHAR(20)` | NOT NULL, DEFAULT 'PENDING' | `PENDING`, `APPROVED`, `REJECTED` |
+| `submitted_at` | `TIMESTAMP` | NOT NULL, DEFAULT NOW() | Application submission timestamp |
+| `reviewed_at` | `TIMESTAMP` | NULLABLE | Admin review timestamp |
+| `reviewed_by` | `VARCHAR(36)` | NULLABLE, FK -> `users.id` | Admin user ID who reviewed |
+| `rejection_reason` | `VARCHAR(500)` | NULLABLE | Reason for rejection if applicable |
+
+**Indexes:**
+- `CREATE UNIQUE INDEX idx_seller_applications_user_id ON seller_applications(user_id);`
+- `CREATE INDEX idx_seller_applications_status ON seller_applications(status);`
+
 **Indexes:**
 - `CREATE UNIQUE INDEX idx_users_email ON users(email);`
 - `CREATE INDEX idx_users_phone ON users(phone_number);`
@@ -588,6 +609,27 @@ model SellerProfile {
   pricingRecommendations PricingRecommendation[]
 
   @@map("seller_profiles")
+}
+
+model SellerApplication {
+  id              String                   @id @default(uuid())
+  userId          String                   @unique
+  storeName       String
+  storeDescription String?                 @db.Text
+  gstin           String
+  pan             String
+  bankAccount     String
+  bankIfsc        String
+  status          SellerApplicationStatus  @default(PENDING)
+  submittedAt     DateTime                 @default(now())
+  reviewedAt      DateTime?
+  reviewedBy      String?                  // Admin user ID who reviewed
+  rejectionReason String?
+
+  user            User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("seller_applications")
 }
 
 model AnalyticsEvent {

@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { registerSchema } from '@/modules/auth/validation';
 import { registerUser, AuthError } from '@/modules/auth/service';
+import { sendVerificationEmail } from '@/modules/auth/email-verification';
 import { getSessionCookieOptions } from '@/modules/auth/session';
 import { apiError, apiSuccess } from '@/lib/api-response';
 
@@ -32,7 +33,15 @@ export async function POST(req: NextRequest) {
     }
 
     const { user, token } = await registerUser(parseResult.data);
-    const response = apiSuccess({ user }, 201);
+
+    // Send verification email (non-blocking)
+    sendVerificationEmail(user.id, user.email, user.firstName).catch(console.error);
+
+    const response = apiSuccess({
+      user,
+      message: 'Account created successfully! Please check your email to verify your address.',
+    }, 201);
+
     const cookieOptions = getSessionCookieOptions();
 
     response.cookies.set({

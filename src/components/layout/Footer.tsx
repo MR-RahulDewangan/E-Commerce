@@ -133,6 +133,14 @@ export function Footer() {
           <ul className="space-y-2.5 text-stone-400">
             <li>
               <Link
+                href="/account/become-seller"
+                className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block text-luxury-champagne font-medium"
+              >
+                Become a Seller &rarr;
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/account/orders"
                 className="hover:text-luxury-champagne hover:translate-x-1 transition-all inline-block"
               >

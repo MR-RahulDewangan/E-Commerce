@@ -154,6 +154,11 @@ The platform is an enterprise-grade, high-performance, mobile-first e-commerce w
 - **FR-MKT-3:** Real-time stock adjusting interface (`/seller/inventory`) with tenant-isolated ownership checks.
 - **FR-MKT-4:** Multi-vendor order breakdown (`/seller/orders`) showing vendor item line totals and realized revenue.
 - **FR-MKT-5:** Storefront merchant attribution displaying "Sold by [Store Name]" badge on Product Detail Pages.
+- **FR-MKT-6:** Seller Application & Compliance Verification Workflow:
+  - Existing customers apply to become sellers via `/account/become-seller` with official documents (GSTIN, PAN, Bank IFSC).
+  - Admin review portal at `/api/v1/admin/seller-applications` for compliance verification.
+  - Atomic role upgrade from `CUSTOMER` to `SELLER` upon approval with `SellerProfile` creation.
+  - Rejected applications include reason and allow re-application.
 
 ---
 

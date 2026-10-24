@@ -44,6 +44,12 @@ enum ReservationStatus {
   RELEASED
 }
 
+enum SellerApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
   id              String       @id @default(uuid())
   email           String       @unique
@@ -56,11 +62,12 @@ model User {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
 
-  addresses       Address[]
-  orders          Order[]
-  carts           Cart[]
-  wishlist        Wishlist?
-  sellerProfile   SellerProfile?
+  addresses        Address[]
+  orders           Order[]
+  carts            Cart[]
+  wishlist         Wishlist?
+  sellerProfile    SellerProfile?
+  sellerApplication SellerApplication?
 
   @@map("users")
 }
@@ -310,6 +317,27 @@ model SellerProfile {
   pricingRecommendations PricingRecommendation[]
 
   @@map("seller_profiles")
+}
+
+model SellerApplication {
+  id              String                   @id @default(uuid())
+  userId          String                   @unique
+  storeName       String
+  storeDescription String?                 @db.Text
+  gstin           String
+  pan             String
+  bankAccount     String
+  bankIfsc        String
+  status          SellerApplicationStatus  @default(PENDING)
+  submittedAt     DateTime                 @default(now())
+  reviewedAt      DateTime?
+  reviewedBy      String?                  // Admin user ID who reviewed
+  rejectionReason String?
+
+  user            User                     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@map("seller_applications")
 }
 
 model AnalyticsEvent {
