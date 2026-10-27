@@ -23,6 +23,7 @@ test-results
 # Production artifacts
 *.tsbuildinfo
 next-env.d.ts
+.verification-emails/
 
 # Environment variables
 .env
