@@ -56,8 +56,10 @@ jobs:
           npx prisma generate
           npx prisma db push --skip-generate
 
-      - name: Database - Seed Catalog Fixtures
-        run: npx prisma db seed
+      - name: Database - Seed Catalog & Analytics Fixtures
+        run: |
+          npx prisma db seed
+          npx tsx scripts/seed-analytics-data.ts
 
       - name: Test Suite - Vitest Unit Tests
         run: npm run test:unit

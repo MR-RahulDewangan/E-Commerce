@@ -51,6 +51,29 @@ async function seedAnalyticsData() {
 
   console.log(`Found ${sellers.length} sellers to enrich.`);
 
+  // Clean up any existing analytics events and orders for idempotency
+  console.log('🧹 Purging prior analytics events and demo orders...');
+  await prisma.analyticsEvent.deleteMany({});
+  const analyticsOrders = await prisma.order.findMany({
+    where: { orderNumber: { startsWith: 'ORD-ANL-' } },
+    select: { id: true },
+  });
+  const analyticsOrderIds = analyticsOrders.map((o) => o.id);
+  if (analyticsOrderIds.length > 0) {
+    await prisma.stockReservation.deleteMany({
+      where: { orderId: { in: analyticsOrderIds } },
+    });
+    await prisma.paymentTransaction.deleteMany({
+      where: { orderId: { in: analyticsOrderIds } },
+    });
+    await prisma.orderItem.deleteMany({
+      where: { orderId: { in: analyticsOrderIds } },
+    });
+    await prisma.order.deleteMany({
+      where: { id: { in: analyticsOrderIds } },
+    });
+  }
+
   // 2. Set costPrice on variants if not already populated (roughly 55-65% of price)
   for (const seller of sellers) {
     for (const product of seller.products) {
