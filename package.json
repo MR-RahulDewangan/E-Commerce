@@ -18,33 +18,33 @@
     "prisma:seed": "node --loader ts-node/esm prisma/seed.ts"
   },
   "dependencies": {
-    "@prisma/client": "^6.4.1",
+    "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.3",
     "clsx": "^2.1.1",
-    "ioredis": "^6.0.0",
+    "ioredis": "^5.6.0",
     "jose": "^6.2.12",
     "lucide-react": "^0.477.0",
-    "next": "15.2.1",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "tailwind-merge": "^3.0.2",
-    "zod": "^3.24.2"
+    "next": "^15.5.28",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "tailwind-merge": "^3.7.0",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@playwright/test": "^1.64.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/ioredis": "^4.28.10",
-    "@types/node": "^22.13.9",
-    "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4",
-    "eslint": "^9.21.0",
-    "eslint-config-next": "15.2.1",
-    "postcss": "^8.5.3",
-    "prisma": "^6.4.1",
-    "tailwindcss": "^3.4.17",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^15.5.28",
+    "postcss": "^8.5.30",
+    "prisma": "^6.19.3",
+    "tailwindcss": "^3.4.19",
     "tsx": "^4.23.15",
-    "typescript": "^5.8.2",
-    "vitest": "^3.0.7"
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.7"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
