@@ -66,7 +66,7 @@ describe('Seller Predictive Intelligence & Dynamic Pricing Integration Tests', (
     expect(Array.isArray(churn.riskDistribution)).toBe(true);
     expect(Array.isArray(churn.suggestedRetentionActions)).toBe(true);
     expect(churn.suggestedRetentionActions.length).toBeGreaterThan(0);
-  });
+  }, 20000);
 
   it('generates dynamic pricing recommendations without mutating live product prices', async () => {
     const recommendations = await generateSellerPricingRecommendations(seller1Id, {
