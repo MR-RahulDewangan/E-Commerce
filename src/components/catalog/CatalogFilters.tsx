@@ -166,31 +166,31 @@ export function CatalogFilters({
           <div className="grid grid-cols-2 gap-1.5 text-[11px]">
             <button
               type="button"
-              onClick={() => handleQuickPrice(undefined, 2000)}
+              onClick={() => handleQuickPrice(undefined, 999)}
               className="py-1.5 px-2 border border-border text-center text-foreground hover:border-foreground transition cursor-pointer"
             >
-              Under ₹2,000
+              Under ₹999
             </button>
             <button
               type="button"
-              onClick={() => handleQuickPrice(2000, 5000)}
+              onClick={() => handleQuickPrice(1000, 1999)}
               className="py-1.5 px-2 border border-border text-center text-foreground hover:border-foreground transition cursor-pointer"
             >
-              ₹2,000 - ₹5,000
+              ₹1,000 - ₹1,999
             </button>
             <button
               type="button"
-              onClick={() => handleQuickPrice(5000, 10000)}
+              onClick={() => handleQuickPrice(2000, 2999)}
               className="py-1.5 px-2 border border-border text-center text-foreground hover:border-foreground transition cursor-pointer"
             >
-              ₹5,000 - ₹10,000
+              ₹2,000 - ₹2,999
             </button>
             <button
               type="button"
-              onClick={() => handleQuickPrice(10000, undefined)}
+              onClick={() => handleQuickPrice(3000, undefined)}
               className="py-1.5 px-2 border border-border text-center text-foreground hover:border-foreground transition cursor-pointer"
             >
-              ₹10,000 &amp; Above
+              ₹3,000 &amp; Above
             </button>
           </div>
 
