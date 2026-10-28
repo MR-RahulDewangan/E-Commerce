@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+
+language: "en-US"
+early_access: false
+
+reviews:
+  profile: "chill"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - "main"
+      - "master"
+
+  ignore_usernames:
+    - "dependabot[bot]"
+    - "renovate[bot]"
+
+  path_filters:
+    - "!**/node_modules/**"
+    - "!dist/**"
+    - "!build/**"
+    - "!**/*.lock"
+    - "!.next/**"
+    - "!.verification-emails/**"
+    - "!test-results/**"
+    - "src/**"
+    - "prisma/**"
+    - "test/**"
+    - "scripts/**"
+    - "docs/**"
+
+  path_instructions:
+    - path: "src/modules/cart/pricing.ts"
+      instructions: |
+        Strictly verify monetary precision. All calculations, amounts, GST, and totals must be represented as integers in Paise (1 INR = 100 paise).
+        Never permit native floating-point arithmetic on currency values.
+    - path: "src/modules/checkout/**"
+      instructions: |
+        Verify delivery address immutability and transactional safety. Ensure shipping addresses are snapshotted into the order record upon creation.
+    - path: "src/modules/inventory/**"
+      instructions: |
+        Verify atomic conditional SQL stock decrement queries to prevent overselling. Ensure non-negative stock constraints remain enforced.
+    - path: "src/modules/payment/**"
+      instructions: |
+        Verify cryptographic timing-safe HMAC-SHA256 signature verification on Razorpay callbacks. Enforce webhook idempotency via payment_transactions tracking.
+    - path: "src/modules/auth/**"
+      instructions: |
+        Enforce secure HTTP-only cookies (SameSite=Lax, Secure in production). Passwords must be securely hashed with at least 12 salt rounds. Verify defense-in-depth role guards.
+    - path: "src/app/api/**"
+      instructions: |
+        Ensure all incoming request bodies and query parameters are strictly validated with Zod schemas. Verify role-based access control (RBAC) on admin and seller routes.
+
+chat:
+  auto_reply: true

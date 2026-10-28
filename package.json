@@ -15,7 +15,7 @@
     "test:watch": "vitest",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "node --loader ts-node/esm prisma/seed.ts",
+    "prisma:seed": "tsx prisma/seed.ts",
     "prisma:seed:analytics": "tsx scripts/seed-analytics-data.ts"
   },
   "dependencies": {
