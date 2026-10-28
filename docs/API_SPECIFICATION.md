@@ -78,6 +78,14 @@
   ```
 - **Response `200 OK`:** Sets HTTP-only `session_token` cookie.
 
+#### Seeded Demo Login Credentials Reference
+| Role | Email | Password | Primary Portal |
+| :--- | :--- | :--- | :--- |
+| `ADMIN` | `admin@ecommerce.example.in` | `AdminSecure2026!` | `/admin` |
+| `SELLER` | `seller.kashmir@ecommerce.example.in` | `SellerSecure2026!` | `/seller` |
+| `SELLER` | `seller.jaipur@ecommerce.example.in` | `SellerSecure2026!` | `/seller` |
+| `CUSTOMER` | `customer@ecommerce.example.in` | `CustomerPass123!` | `/account/profile` |
+
 ### 2.3 Forgot & Reset Password
 - **Route:** `POST /api/v1/auth/forgot-password`
   - **Body:** `{ "email": "customer@example.in" }`

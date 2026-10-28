@@ -79,7 +79,7 @@ Visit [http://localhost:3000](http://localhost:3000) to view the storefront.
 
 ---
 
-## 👥 Seeded Test Accounts & Portal Access
+## 👥 Seeded Test Accounts & Login Credentials
 
 The database seed (`npm run prisma:seed` or `npx tsx prisma/seed.ts`) populates default test accounts for all user roles:
 

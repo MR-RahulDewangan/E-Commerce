@@ -135,3 +135,16 @@ ENV PORT 3000
 
 CMD ["node", "server.js"]
 ```
+
+---
+
+## 5. Seeded Administrative & Demo User Accounts
+
+When bootstrapping a new staging or development instance via `npx prisma db seed` and `npx tsx scripts/seed-analytics-data.ts`, the following pre-configured user credentials are available:
+
+| Role | Persona Name | Email | Password | Primary Portal URL | Capabilities |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **System Admin** | Maison Curator | `admin@ecommerce.example.in` | `AdminSecure2026!` | `/admin` | Complete store oversight, inventory adjustment logs, courier tracking, and refund processing. |
+| **Artisan Seller 1** | Tariq Ahmad | `seller.kashmir@ecommerce.example.in` | `SellerSecure2026!` | `/seller` | Multi-vendor seller workspace, stock level updates, orders, ML predictive analytics. |
+| **Artisan Seller 2** | Rajesh Meena | `seller.jaipur@ecommerce.example.in` | `SellerSecure2026!` | `/seller` | Multi-tenant isolated workspace, stock updates, analytics, order fulfillment. |
+| **Customer** | Pooja Sharma | `customer@ecommerce.example.in` | `CustomerPass123!` | `/account/profile` | Storefront shopping bag, wishlist, multi-step checkout (Mock/COD), GST tax invoice certificate. |

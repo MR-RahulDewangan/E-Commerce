@@ -95,3 +95,16 @@ All tests run cleanly in GitHub Actions CI without needing external third-party 
 - Payment tests run against the built-in `MockPaymentGateway`.
 - Database runs against an ephemeral PostgreSQL Docker container.
 - Zero mock service fees or network timeouts.
+
+---
+
+## 4. Seeded Test User Matrix & Login Credentials
+
+For local integration tests, Playwright journeys, and manual QA exploration, the following credentials are seeded into the test database:
+
+| Role | Persona Name | Email | Password | Primary Portal Route | Scope |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **System Admin** | Maison Curator | `admin@ecommerce.example.in` | `AdminSecure2026!` | `/admin` | Admin backoffice oversight, inventory logs, refund processing |
+| **Artisan Seller 1** | Tariq Ahmad | `seller.kashmir@ecommerce.example.in` | `SellerSecure2026!` | `/seller` | Multi-vendor seller workspace, inventory updates, analytics |
+| **Artisan Seller 2** | Rajesh Meena | `seller.jaipur@ecommerce.example.in` | `SellerSecure2026!` | `/seller` | Multi-tenant isolated workspace, stock updates, analytics |
+| **Customer** | Pooja Sharma | `customer@ecommerce.example.in` | `CustomerPass123!` | `/login` &rarr; `/account` | Storefront shopping bag, wishlist, multi-step checkout (Mock/COD) |

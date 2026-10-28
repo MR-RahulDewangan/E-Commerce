@@ -8,7 +8,18 @@
 
 ---
 
-## 1. Executive Status Summary
+## 🔑 Demo & Test Login Credentials Quick Reference
+
+The platform is seeded with realistic Indian persona accounts for immediate testing:
+
+| Role | Persona Name | Email | Password | Login Route | Capabilities & Features |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **System Admin** | Maison Curator | `admin@ecommerce.example.in` | `AdminSecure2026!` | [`/login`](http://localhost:3000/login) &rarr; [`/admin`](http://localhost:3000/admin) | Full admin backoffice: platform revenue & order KPIs, product/variant CRUD, inventory adjustment logs, courier tracking, gateway refund management. |
+| **Artisan Seller 1** | Tariq Ahmad *(Kashmir Master Weavers)* | `seller.kashmir@ecommerce.example.in` | `SellerSecure2026!` | [`/login`](http://localhost:3000/login) &rarr; [`/seller`](http://localhost:3000/seller) | Seller workspace: inventory management, product CRUD, order dispatch, ML demand forecasting, dynamic pricing & RFM analytics. |
+| **Artisan Seller 2** | Rajesh Meena *(Jaipur Eco Heritage)* | `seller.jaipur@ecommerce.example.in` | `SellerSecure2026!` | [`/login`](http://localhost:3000/login) &rarr; [`/seller`](http://localhost:3000/seller) | Multi-tenant isolated workspace, stock updates, analytics, order fulfillment. |
+| **Customer** | Pooja Sharma | `customer@ecommerce.example.in` | `CustomerPass123!` | [`/login`](http://localhost:3000/login) &rarr; [`/account`](http://localhost:3000/account/profile) | Storefront browsing, shopping bag, wishlist, multi-step checkout (Mock/COD), saved Bengaluru address, GST tax invoice certificate. |
+
+---
 
 | Area | Status | Notes |
 | :--- | :--- | :--- |
