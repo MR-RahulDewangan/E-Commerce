@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import {
   Plus,
   Trash2,
@@ -402,9 +403,15 @@ export function ProductForm({ categories, initialData }: ProductFormProps) {
         <div className="space-y-3">
           {images.map((img, idx) => (
             <div key={idx} className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-lg bg-zinc-100 border border-zinc-200 overflow-hidden shrink-0 flex items-center justify-center">
+              <div className="w-9 h-9 rounded-lg bg-zinc-100 border border-zinc-200 overflow-hidden shrink-0 flex items-center justify-center relative">
                 {img.url ? (
-                  <img src={img.url} alt="Preview" className="w-full h-full object-cover" />
+                  <Image
+                    src={img.url}
+                    alt="Preview"
+                    fill
+                    className="object-cover"
+                    sizes="36px"
+                  />
                 ) : (
                   <ImageIcon className="w-4 h-4 text-zinc-400" />
                 )}

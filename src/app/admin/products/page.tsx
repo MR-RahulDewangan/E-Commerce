@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { db } from '@/lib/db';
 import {
   Package,
@@ -156,10 +157,12 @@ export default async function AdminProductsPage({
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 rounded-lg bg-zinc-100 border border-zinc-200 overflow-hidden shrink-0 flex items-center justify-center">
                             {primaryImg ? (
-                              <img
+                              <Image
                                 src={primaryImg}
                                 alt={p.name}
-                                className="w-full h-full object-cover"
+                                fill
+                                className="object-cover"
+                                sizes="48px"
                               />
                             ) : (
                               <Package className="w-5 h-5 text-zinc-400" />
