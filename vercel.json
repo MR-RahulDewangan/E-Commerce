@@ -1,0 +1,12 @@
+{
+  "buildCommand": "npx prisma generate && npx prisma db push --skip-generate && npx prisma db seed && next build",
+  "devCommand": "next dev",
+  "installCommand": "npm ci",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "maxDuration": 30
+    }
+  }
+}
